@@ -1,0 +1,59 @@
+conky.config={
+
+	---------------------------------------
+	-- CONKY SETTINGS
+	---------------------------------------
+	update_interval=1,
+	background=true,
+	double_buffer=true,
+	no_buffers=true,
+
+	---------------------------------------
+	-- WINDOW PARAMETERS
+	---------------------------------------
+	own_window=true,
+	own_window_type='desktop',
+	own_window_argb_visual=true,
+	own_window_argb_value=0,
+	alignment='top_left',
+	gap_x=0,
+	gap_y=320,
+	minimum_width=1920,
+	maximum_width=1920,
+	border_inner_margin=0,
+	border_outer_margin=0,
+
+	---------------------------------------
+	-- GRAPHICS SETTINGS
+	---------------------------------------
+	draw_shades=false,
+	draw_outline=false,
+	draw_borders=false,
+	draw_graph_borders=false,
+
+	---------------------------------------
+	-- TEXT SETTINGS
+	---------------------------------------
+	use_xft=true,
+	xftalpha=0.8,
+	override_utf8_locale=true,
+	default_color='FFFFFF',
+	color1='#CCCCCC',
+
+	---------------------------------------
+	-- LUA PARAMETERS
+	---------------------------------------
+	lua_load='~/.config/conky/sands_time/overlay.lua',
+	lua_draw_hook_post='start',
+
+	---------------------------------------
+	-- FONT VARIABLES
+	---------------------------------------
+	template1='Ubuntu'	-- Standard font
+};
+
+conky.text=[[
+${voffset 50}${goto 700}${font ${template1}:size=260}${time %H:%M}
+${goto 450}${voffset -415}${font ${template1}:size=80}${time %d}
+${voffset -135}${alignr 1500}${font ${template1}:size=26}${time %B}
+]]
