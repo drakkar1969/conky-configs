@@ -17,9 +17,9 @@ conky.config={
 	own_window_type='desktop',
 	own_window_argb_visual=true,
 	own_window_argb_value=0,
-	alignment='bottom_left',
+	alignment='top_left',
 	gap_x=70,
-	gap_y=50,
+	gap_y=90,
 	minimum_width=600,
 	maximum_width=600,
 	minimum_height=100,
@@ -45,7 +45,7 @@ conky.config={
 	---------------------------------------
 	-- LUA PARAMETERS
 	---------------------------------------
-	lua_load='~/Github/conky-configs/mpris/mpris.lua',
+	lua_load='~/.config/conky/mpris/mpris.lua',
 	lua_draw_hook_pre='albumart',
 
 	---------------------------------------
