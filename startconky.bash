@@ -18,5 +18,8 @@ sleep 7        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less
 # Rings
 conky -d -c $CONKYFOLDER/rings/rings
 
-# User
-conky -d -c $CONKYFOLDER/user/user
+# # User
+# conky -d -c $CONKYFOLDER/user/user
+
+# MPRIS
+conky -d -c $CONKYFOLDER/mpris/mpris
