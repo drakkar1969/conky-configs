@@ -1,0 +1,69 @@
+conky.config={
+
+	---------------------------------------
+	-- CONKY SETTINGS
+	---------------------------------------
+	update_interval=1,
+	background=true,
+	double_buffer=true,
+	no_buffers=true,
+	text_buffer_size=256,
+	imlib_cache_size=0,
+
+	---------------------------------------
+	-- WINDOW PARAMETERS
+	---------------------------------------
+	own_window=true,
+	own_window_type='desktop',
+	own_window_argb_visual=true,
+	own_window_argb_value=0,
+	alignment='bottom_left',
+	gap_x=70,
+	gap_y=50,
+	minimum_width=600,
+	maximum_width=600,
+	minimum_height=100,
+	border_inner_margin=0,
+	border_outer_margin=0,
+
+	---------------------------------------
+	-- GRAPHICS SETTINGS
+	---------------------------------------
+	draw_shades=false,
+	draw_outline=false,
+	draw_borders=false,
+	draw_graph_borders=false,
+
+	---------------------------------------
+	-- TEXT SETTINGS
+	---------------------------------------
+	use_xft=true,
+	xftalpha=0.8,
+	uppercase=false,
+	override_utf8_locale=true,
+
+	---------------------------------------
+	-- LUA PARAMETERS
+	---------------------------------------
+	lua_load='~/Github/conky-configs/mpris/mpris.lua',
+	lua_draw_hook_pre='albumart',
+
+	---------------------------------------
+	-- FONT/COLOR VARIABLES
+	---------------------------------------
+	default_color='21232b',
+	color1='383c4a',
+	color2='4d5366',
+	template1=[[${font Ubuntu:size=20}${color1}]],		-- Title font
+	template2=[[${font Ubuntu:size=15}${color}]],			-- Artist font
+	template3=[[${font Ubuntu:size=11}${color2}]]			-- Time font
+};
+
+conky.text=[[
+${template1}\
+${voffset -2}${goto 110}${exec 'playerctl metadata --player=Lollypop --format "{{ uc(title) }}" 2>/dev/null'}
+${template2}\
+${voffset 2}${goto 110}${exec 'playerctl metadata --player=Lollypop --format "{{ uc(artist) }}" 2>/dev/null'}
+${template3}\
+${voffset 6}${goto 110}${exec 'playerctl metadata --player=Lollypop --format "{{ duration(position) }} / {{ duration(mpris:length) }}" 2>/dev/null'}
+]]
