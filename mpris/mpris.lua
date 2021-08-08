@@ -1,10 +1,23 @@
 ---------------------------------------
--- Image variables
+-- Variables
 ---------------------------------------
-image_size=90
+image_size=80
 frame_padding=1
 frame_color=0x383c4a
 frame_alpha=0.7
+text_font="Ubuntu"
+text_size_title=24
+text_size_artist=18
+text_size_pos=13
+text_color_title=0x383c4a
+text_color_artist=0x21232b
+text_color_pos=0x4d5366
+x_title=image_size+2*frame_padding+20
+y_title=25
+x_artist=x_title
+y_artist=y_title+27
+x_pos=x_title
+y_pos=y_title+50
 
 ---------------------------------------
 -- LUA FUNCTIONS
@@ -22,41 +35,45 @@ end
 ---------------------------------------
 -- Function draw_frame
 ---------------------------------------
-function draw_frame()
-	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
-
-	local cr=cairo_create(cs)
-
+function draw_frame(cr)
 	cairo_rectangle(cr, 0, 0, image_size+2*frame_padding, image_size+2*frame_padding)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(frame_color,frame_alpha))
 	cairo_fill(cr)
-
-	cairo_destroy(cr)
-	cairo_surface_destroy(cs)
 end
 
 ---------------------------------------
 -- Function draw_imlib2_image
 ---------------------------------------
-function draw_imlib2_image(file)
-	draw_frame()
-
+function draw_imlib2_image(cr, file)
 	local image = imlib_load_image(file)
+	if image==nil then return end
+
+	draw_frame(cr)
+
 	imlib_context_set_image(image)
 
 	local width = imlib_image_get_width()
 	local height = imlib_image_get_height()
 
-	local buffer = imlib_create_image(image_size, image_size)
-	imlib_context_set_image(buffer)
+	local scaled = imlib_create_cropped_scaled_image (0, 0, width, height, image_size, image_size)
 
-	imlib_blend_image_onto_image(image, 0, 0, 0, width, height, 0, 0, image_size, image_size)
-	imlib_context_set_image(image)
 	imlib_free_image()
 
-	imlib_context_set_image(buffer)
+	imlib_context_set_image(scaled)
 	imlib_render_image_on_drawable(frame_padding, frame_padding)
 	imlib_free_image()
+end
+
+---------------------------------------
+-- Function draw_text
+---------------------------------------
+function draw_text(cr, x, y, text, f_size, color)
+	cairo_select_font_face (cr, text_font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size (cr, f_size)
+	cairo_set_source_rgba (cr, rgb_to_r_g_b(color, 1))
+	cairo_move_to (cr, x, y)
+	cairo_show_text (cr, text)
+	cairo_stroke (cr)
 end
 
 ---------------------------------------
@@ -65,12 +82,30 @@ end
 function conky_albumart()
 	if conky_window==nil then return end
 
-	image_path = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ mpris:artUrl }}\" 2>/dev/null'}")
+	local metadata = conky_parse("${exec 'playerctl metadata --player=Lollypop 2>/dev/null'}")
 
-	if image_path==nil then return end
-	if image_path=="" then return end
+	local start, finish, meta_title = metadata:find("Lollypop xesam:title[%s%c]+([%a%s%p]-)\n")
 
-	image_path = image_path:gsub("file:%/%/","")
+	if meta_title==nil then return end
 
-	draw_imlib2_image(image_path)
+	meta_title = meta_title:upper()
+
+	local meta_artist = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ uc(artist) }}\"'}")
+	local meta_pos = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\"'}")
+
+	local meta_art = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ mpris:artUrl }}\"'}")
+	meta_art = meta_art:gsub("file:%/%/","")
+
+	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
+
+	local cr=cairo_create(cs)
+
+	draw_imlib2_image(cr, meta_art)
+
+	draw_text(cr, x_title, y_title, meta_title, text_size_title, text_color_title)
+	draw_text(cr, x_artist, y_artist, meta_artist, text_size_artist, text_color_artist)
+	draw_text(cr, x_pos, y_pos, meta_pos, text_size_pos, text_color_pos)
+
+	cairo_destroy(cr)
+	cairo_surface_destroy(cs)
 end
