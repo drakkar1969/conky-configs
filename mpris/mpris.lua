@@ -13,11 +13,11 @@ text_color_title=0x383c4a
 text_color_artist=0x21232b
 text_color_pos=0x4d5366
 x_title=image_size+2*frame_padding+20
-y_title=25
+y_title=23
 x_artist=x_title
-y_artist=y_title+27
+y_artist=y_title+28
 x_pos=x_title
-y_pos=y_title+50
+y_pos=y_title+53
 
 ---------------------------------------
 -- LUA FUNCTIONS
