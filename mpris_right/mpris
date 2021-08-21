@@ -1,0 +1,53 @@
+conky.config={
+
+	---------------------------------------
+	-- CONKY SETTINGS
+	---------------------------------------
+	update_interval=1,
+	background=true,
+	double_buffer=true,
+	no_buffers=true,
+	text_buffer_size=256,
+	imlib_cache_size=0,
+
+	---------------------------------------
+	-- WINDOW PARAMETERS
+	---------------------------------------
+	own_window=true,
+	own_window_type='desktop',
+	own_window_argb_visual=true,
+	own_window_argb_value=0,
+	alignment='top_right',
+	gap_x=70,
+	gap_y=90,
+	minimum_width=600,
+	maximum_width=600,
+	minimum_height=100,
+	border_inner_margin=0,
+	border_outer_margin=0,
+
+	---------------------------------------
+	-- GRAPHICS SETTINGS
+	---------------------------------------
+	draw_shades=false,
+	draw_outline=false,
+	draw_borders=false,
+	draw_graph_borders=false,
+
+	---------------------------------------
+	-- TEXT SETTINGS
+	---------------------------------------
+	use_xft=true,
+	xftalpha=0.8,
+	uppercase=false,
+	override_utf8_locale=true,
+
+	---------------------------------------
+	-- LUA PARAMETERS
+	---------------------------------------
+	lua_load='~/.config/conky/mpris_right/mpris.lua',
+	lua_draw_hook_pre='albumart'
+};
+
+conky.text=[[
+]]

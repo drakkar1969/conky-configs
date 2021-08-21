@@ -23,3 +23,4 @@ conky -d -c $CONKYFOLDER/rings/rings
 
 # MPRIS
 conky -d -c $CONKYFOLDER/mpris/mpris
+# conky -d -c $CONKYFOLDER/mpris_right/mpris
