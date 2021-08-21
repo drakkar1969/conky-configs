@@ -57,13 +57,12 @@ conky.config={
 	color1='383c4a',
 	template1=[[${font Ubuntu:size=11}${color}]],			-- Disks
 	template2=[[${font Ubuntu:size=15}${color1}]],			-- Large title
-	template3=[[${font Ubuntu:size=14}${color1}]],			-- Large value
-	template4=[[${font Ubuntu:size=14}${color1}]],			-- Smaller title
-	template5=[[${font Ubuntu:size=13}${color1}]],			-- Smaller value
-	template6=[[${font Ubuntu:size=32}${color1}]],			-- Time
-	template7=[[${font Ubuntu:light:size=20}${color}]],		-- Data
-	template8=[[${font Ubuntu:size=10}${color}]],			-- Mem/Cpu
-	template9=[[wlp3s0]]									-- Net interface
+	template3=[[${font Ubuntu:size=14}${color1}]],			-- Large value/smaller title
+	template4=[[${font Ubuntu:size=13}${color1}]],			-- Smaller value
+	template5=[[${font Ubuntu:size=32}${color1}]],			-- Time
+	template6=[[${font Ubuntu:light:size=20}${color}]],		-- Data
+	template7=[[${font Ubuntu:size=10}${color}]],			-- Mem/Cpu
+	template8=[[wlp3s0]]									-- Net interface
 };
 
 conky.text=[[
@@ -72,22 +71,22 @@ ${alignr 780}root     ${fs_used /home} / ${fs_size /home}
 ${voffset -17}${goto 240}data     ${fs_used /home/data} / ${fs_size /home/data}
 ${template2}\
 ${voffset 40}${goto 330}CORE TEMP${offset 20}${template3}${acpitemp}°C
-${template6}\
+${template5}\
 ${voffset 34}${alignc 271}${time %H:%M}
-${template7}\
+${template6}\
 ${voffset -20}${alignc -90}${time %A, %d %B %Y}
-${template4}\
-${voffset -85}${goto 840}NET${template5}${alignr}${downspeed ${template9}}
+${template3}\
+${voffset -85}${goto 840}NET${template4}${alignr}${downspeed ${template8}}
 ${template2}\
 ${voffset 125}${goto 30}RAM ${alignr 770}${template3}${memperc}%
-${template8}\
+${template7}\
 ${voffset 19}${goto 30}${top_mem name 1} ${alignr 770}${top_mem mem 1}
 ${goto 30}${top_mem name 2} ${alignr 770}${top_mem mem 2}
 ${goto 30}${top_mem name 3} ${alignr 770}${top_mem mem 3}
 ${goto 30}${top_mem name 4} ${alignr 770}${top_mem mem 4}
 ${template2}\
 ${voffset -137}${goto 300}CPU${alignr 500}${template3}${cpu}%
-${template8}\
+${template7}\
 ${voffset 19}${goto 300}Processes: ${alignr 500}${running_processes}/${processes}
 ${voffset 10}${goto 300}${top name 1} ${alignr 500}${top cpu 1}
 ${goto 300}${top name 2} ${alignr 500}${top cpu 2}
