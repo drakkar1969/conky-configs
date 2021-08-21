@@ -53,13 +53,13 @@ conky.config={
 	---------------------------------------
 	default_color='21232b',
 	color1='383c4a',
-	template1=[[${font Ubuntu:size=16}${color1}]],			-- User font
-	template2=[[${font Ubuntu:size=10}${color}]]			-- System font
+	template1=[[${font Ubuntu:size=19}${color1}]],			-- User font
+	template2=[[${font Ubuntu:size=11}${color}]]			-- System font
 };
 
 conky.text=[[
 ${template1}\
-${voffset 18}${goto 100}${exec "id -un"}
+${voffset 13}${goto 100}${exec "id -un"}
 ${template2}\
 ${voffset -5}${goto 100}${exec "cat /etc/os-release | grep PRETTY_NAME | sed 's/PRETTY_NAME=//' | tr -d \""}
 ]]
