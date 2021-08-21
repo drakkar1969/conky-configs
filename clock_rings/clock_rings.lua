@@ -13,6 +13,21 @@ ring_alpha_fg=0.60 -- 0.80
 ring_alpha_bg_dummy=0.20 -- 0.80
 ring_alpha_fg_dummy=0
 
+cpu_start_angle=91
+cpu_end_angle=209
+cpu_thickness=4
+cpu_radius=ring_radius+9
+cpu_spacing=6
+
+memtemp_radius=ring_radius+18
+memtemp_thickness=22
+
+fs_radius=ring_radius+37
+fs_thickness=6
+
+dummy_radius=ring_radius+60
+dummy_thickness=2
+
 ---------------------------------------
 -- Clock variables
 ---------------------------------------
@@ -73,10 +88,10 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+9,
-		thickness=4,
-		start_angle=92,
-		end_angle=208
+		radius=cpu_radius,
+		thickness=cpu_thickness,
+		start_angle=cpu_start_angle,
+		end_angle=cpu_end_angle
 	},
 	{
 		name='cpu',
@@ -87,10 +102,10 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+15,
-		thickness=4,
-		start_angle=92,
-		end_angle=208
+		radius=cpu_radius+cpu_spacing,
+		thickness=cpu_thickness,
+		start_angle=cpu_start_angle,
+		end_angle=cpu_end_angle
 	},
 	{
 		name='cpu',
@@ -101,10 +116,10 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+21,
-		thickness=4,
-		start_angle=92,
-		end_angle=208
+		radius=cpu_radius+2*cpu_spacing,
+		thickness=cpu_thickness,
+		start_angle=cpu_start_angle,
+		end_angle=cpu_end_angle
 	},
 	{
 		name='cpu',
@@ -115,10 +130,10 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+27,
-		thickness=4,
-		start_angle=92,
-		end_angle=208
+		radius=cpu_radius+3*cpu_spacing,
+		thickness=cpu_thickness,
+		start_angle=cpu_start_angle,
+		end_angle=cpu_end_angle
 	},
 	{
 		name='memperc',
@@ -129,10 +144,10 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+18,
-		thickness=22,
+		radius=memtemp_radius,
+		thickness=memtemp_thickness,
 		start_angle=212,
-		end_angle=328
+		end_angle=329
 	},
 	{
 		name='acpitemp',
@@ -143,8 +158,8 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+18,
-		thickness=22,
+		radius=memtemp_radius,
+		thickness=memtemp_thickness,
 		start_angle=-28,
 		end_angle=88
 	},
@@ -157,8 +172,8 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+37,
-		thickness=6,
+		radius=fs_radius,
+		thickness=fs_thickness,
 		start_angle=-120,
 		end_angle=-2
 	},
@@ -171,8 +186,8 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+37,
-		thickness=6,
+		radius=fs_radius,
+		thickness=fs_thickness,
 		start_angle=2,
 		end_angle=120
 	},
@@ -185,8 +200,8 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg_dummy,
 		x=ring_x, y=ring_y,
-		radius=ring_radius+60,
-		thickness=2,
+		radius=dummy_radius,
+		thickness=dummy_thickness,
 		start_angle=73,
 		end_angle=107
 	},
@@ -199,8 +214,8 @@ rings_table = {
 		fg_colour=ring_color_fg,
 		fg_alpha=ring_alpha_fg_dummy,
 		x=ring_x+470, y=ring_y,
-		radius=ring_radius+60,
-		thickness=2,
+		radius=dummy_radius,
+		thickness=dummy_thickness,
 		start_angle=73,
 		end_angle=107
 	},
