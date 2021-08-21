@@ -85,10 +85,10 @@ ${voffset 28}${goto 20}${top name 1}${alignr 405}${top cpu 1}%
 ${goto 20}${top name 2}${alignr 405}${top cpu 2}%
 ${goto 20}${top name 3}${alignr 405}${top cpu 3}%
 ${template0}\
-${voffset 26}${alignr 540}CPU
+${voffset 23}${alignr 540}CPU
 ### FS ###
 ${template2}\
-${voffset -169}${goto 370}${template8 data /home/data 55}
+${voffset -166}${goto 370}${template8 data /home/data 55}
 ${voffset 0}${goto 370}${template8 root / 55}
 ${voffset 0}${goto 370}${template8 home /home 55}
 ${template0}\
