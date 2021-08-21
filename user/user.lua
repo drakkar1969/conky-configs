@@ -5,7 +5,7 @@ image_size=80
 image_x=0
 image_y=0
 image_alpha=1
-image_path='/home/drakkar/.config/conky/user/user.png'
+image_path=string.format('%s%s',conky_config,'.png')
 
 ---------------------------------------
 -- LUA FUNCTIONS
