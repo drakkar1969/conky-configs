@@ -109,28 +109,28 @@ ${template5}\
 ${voffset 11}${alignr 465}${time %H:%M}
 ### NET ###
 ${template0}\
-${voffset 72}${goto 375}CONNECTION
+${voffset 72}${alignr 125}NETWORK
 ${if_existing /sys/class/net/${template6}/operstate up}\
 	${template2}\
-	${voffset 14}${goto 320}Up${alignr 175}${upspeed ${template6}}
-	${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template6}}
+	${voffset 14}${goto 320}Up${alignr 125}${upspeed ${template6}}
+	${voffset 4}${goto 320}Down${alignr 125}${downspeed ${template6}}
 	${template3}\
-	${voffset 16}${goto 320}NETWORK${goto 415}${wireless_essid ${template6}}
+	${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template6}}
 	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
 ${else}\
 	${if_existing /sys/class/net/${template7}/operstate up}\
 		${template2}\
-		${voffset 14}${goto 320}Up${alignr 175}${upspeed ${template7}}
-		${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template7}}
+		${voffset 14}${goto 320}Up${alignr 125}${upspeed ${template7}}
+		${voffset 4}${goto 320}Down${alignr 125}${downspeed ${template7}}
 		${template3}\
-		${voffset 16}${goto 320}NETWORK${goto 415}LAN
+		${voffset 16}${goto 320}CONN${goto 415}LAN
 		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
 	${else}\
 		${template2}\
-		${voffset 14}${goto 320}Up${alignr 175}${upspeed none}
-		${voffset 4}${goto 320}Down${alignr 175}${downspeed none}
+		${voffset 14}${goto 320}Up${alignr 125}${upspeed none}
+		${voffset 4}${goto 320}Down${alignr 125}${downspeed none}
 		${template3}\
-		${voffset 16}${goto 320}NETWORK${goto 415}(NONE)
+		${voffset 16}${goto 320}CONN${goto 415}(NONE)
 		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr none}
 	${endif}\
 ${endif}\
