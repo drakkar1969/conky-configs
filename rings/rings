@@ -138,5 +138,5 @@ ${endif}\
 ${template0}\
 ${voffset -139}${alignr 445}BATTERY
 ${template3}\
-${alignr 410}${battery_percent}%
+${alignr 410}${battery}
 ]]
