@@ -111,19 +111,28 @@ ${voffset 9}${alignr 465}${time %H:%M}
 ${template0}\
 ${voffset 72}${goto 375}CONNECTION
 ${if_existing /sys/class/net/${template6}/operstate up}
-${template2}\
-${voffset -11}${goto 320}Up${alignr 175}${upspeed ${template6}}
-${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template6}}
-${template3}\
-${voffset 16}${goto 320}NETWORK${goto 415}${wireless_essid ${template6}}
-${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
+	${template2}\
+	${voffset -11}${goto 320}Up${alignr 175}${upspeed ${template6}}
+	${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template6}}
+	${template3}\
+	${voffset 16}${goto 320}NETWORK${goto 415}${wireless_essid ${template6}}
+	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
 ${else}
-${template2}\
-${voffset -11}${goto 320}Up${alignr 175}${upspeed ${template7}}
-${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template7}}
-${template3}\
-${voffset 16}${goto 320}NETWORK${goto 415}LAN
-${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
+	${if_existing /sys/class/net/${template7}/operstate up}
+		${template2}\
+		${voffset -36}${goto 320}Up${alignr 175}${upspeed ${template7}}
+		${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template7}}
+		${template3}\
+		${voffset 16}${goto 320}NETWORK${goto 415}LAN
+		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
+	${else}
+		${template2}\
+		${voffset -36}${goto 320}Up${alignr 175}${upspeed none}
+		${voffset 4}${goto 320}Down${alignr 175}${downspeed none}
+		${template3}\
+		${voffset 16}${goto 320}NETWORK${goto 415}(NONE)
+		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr none}
+	${endif}
 ${endif}
 ### BAT ###
 ${template0}\

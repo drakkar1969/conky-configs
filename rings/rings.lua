@@ -378,7 +378,7 @@ end
 function conky_rings()
 	if conky_window==nil then return end
 
-	local net_query=string.format('${if_existing /sys/class/net/%s/operstate up}${template6}${else}${template7}${endif}',wifi_interface)
+	local net_query=string.format('${if_existing /sys/class/net/%s/operstate up}${template6}${else}${if_existing /sys/class/net/%s/operstate up}${template7}${else}none${endif}${endif}',wifi_interface, lan_interface)
 
 	net_interface=conky_parse(net_query)
 
