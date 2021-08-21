@@ -66,8 +66,9 @@ conky.config={
 	---------------------------------------
 	-- OTHER VARIABLES
 	---------------------------------------
-	template6=[[wlp3s0]],			-- Net interface
-	template7=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
+	template6=[[wlp3s0]],			-- Wireless interface
+	template7=[[enp2s0]],			-- LAN interface
+	template8=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
 };
 
 conky.text=[[
@@ -87,9 +88,9 @@ ${template0}\
 ${voffset 26}${alignr 540}CPU
 ### FS ###
 ${template2}\
-${voffset -171}${goto 370}${template7 data /home/data 55}
-${voffset 1}${goto 370}${template7 root / 55}
-${voffset 1}${goto 370}${template7 home /home 55}
+${voffset -171}${goto 370}${template8 data /home/data 55}
+${voffset 1}${goto 370}${template8 root / 55}
+${voffset 1}${goto 370}${template8 home /home 55}
 ${template0}\
 ${voffset 22}${alignr 55}FILESYSTEM
 ### MEM ###
@@ -109,12 +110,21 @@ ${voffset 9}${alignr 465}${time %H:%M}
 ### NET ###
 ${template0}\
 ${voffset 72}${goto 375}CONNECTION
+${if_existing /sys/class/net/${template6}/operstate up}
 ${template2}\
-${voffset 14}${goto 320}Up${alignr 175}${upspeed ${template6}}
+${voffset -11}${goto 320}Up${alignr 175}${upspeed ${template6}}
 ${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template6}}
 ${template3}\
-${voffset 16}${goto 320}SSID${goto 400}${wireless_essid ${template6}}
-${voffset 4}${goto 320}LOCAL IP${goto 400}${addr ${template6}}
+${voffset 16}${goto 320}NETWORK${goto 415}${wireless_essid ${template6}}
+${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
+${else}
+${template2}\
+${voffset -11}${goto 320}Up${alignr 175}${upspeed ${template7}}
+${voffset 4}${goto 320}Down${alignr 175}${downspeed ${template7}}
+${template3}\
+${voffset 16}${goto 320}NETWORK${goto 415}LAN
+${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
+${endif}
 ### BAT ###
 ${template0}\
 ${voffset -141}${alignr 445}BATTERY

@@ -65,7 +65,9 @@ net_spacing=net_thickness+4
 net_start_angle=-180
 net_end_angle=55
 
-net_interface='wlp3s0'
+wifi_interface='wlp3s0'
+lan_interface='enp2s0'
+net_interface=wifi_interface
 -- Max download in KB
 net_max_dl=26000
 -- MAx upload in KB
@@ -375,6 +377,10 @@ end
 ---------------------------------------
 function conky_rings()
 	if conky_window==nil then return end
+
+	local net_query=string.format('${if_existing /sys/class/net/%s/operstate up}${template6}${else}${template7}${endif}',wifi_interface)
+
+	net_interface=conky_parse(net_query)
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
 
