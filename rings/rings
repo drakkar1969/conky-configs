@@ -67,9 +67,7 @@ conky.config={
 	-- OTHER VARIABLES
 	---------------------------------------
 	template6=[[wlp3s0]],			-- Net interface
-	template7=[[/home/data]],		-- Disk 1
-	template8=[[/]],				-- Disk 2
-	template9=[[/home]],			-- Disk 3
+	template7=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
 };
 
 conky.text=[[
@@ -89,9 +87,9 @@ ${template0}\
 ${voffset 26}${alignr 540}CPU
 ### FS ###
 ${template2}\
-${voffset -171}${goto 370}data${alignr 55}${fs_used ${template7}} / ${fs_size ${template7}}
-${voffset 1}${goto 370}root${alignr 55}${fs_used ${template8}} / ${fs_size ${template8}}
-${voffset 1}${goto 370}home${alignr 55}${fs_used ${template9}} / ${fs_size ${template9}}
+${voffset -171}${goto 370}${template7 data /home/data 55}
+${voffset 1}${goto 370}${template7 root / 55}
+${voffset 1}${goto 370}${template7 home /home 55}
 ${template0}\
 ${voffset 22}${alignr 55}FILESYSTEM
 ### MEM ###
