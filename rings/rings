@@ -76,10 +76,10 @@ conky.text=[[
 ${template3}\
 ${voffset 0}${goto 75}CORE TEMP${goto 170}${acpitemp}°C
 ${template1}\
-${voffset 5}${goto 95}CPU 1 ${alignr 440}${cpu cpu1}%
-${voffset 0}${goto 95}CPU 2 ${alignr 440}${cpu cpu2}%
-${voffset 0}${goto 95}CPU 3 ${alignr 440}${cpu cpu3}%
-${voffset 0}${goto 95}CPU 4 ${alignr 440}${cpu cpu4}%
+${voffset 8}${goto 95}CPU 1 ${alignr 440}${cpu cpu1}%
+${voffset -1}${goto 95}CPU 2 ${alignr 440}${cpu cpu2}%
+${voffset -1}${goto 95}CPU 3 ${alignr 440}${cpu cpu3}%
+${voffset -1}${goto 95}CPU 4 ${alignr 440}${cpu cpu4}%
 ${template2}\
 ${voffset 28}${goto 20}${top name 1}${alignr 405}${top cpu 1}%
 ${goto 20}${top name 2}${alignr 405}${top cpu 2}%
@@ -88,9 +88,9 @@ ${template0}\
 ${voffset 26}${alignr 540}CPU
 ### FS ###
 ${template2}\
-${voffset -171}${goto 370}${template8 data /home/data 55}
-${voffset 1}${goto 370}${template8 root / 55}
-${voffset 1}${goto 370}${template8 home /home 55}
+${voffset -169}${goto 370}${template8 data /home/data 55}
+${voffset 0}${goto 370}${template8 root / 55}
+${voffset 0}${goto 370}${template8 home /home 55}
 ${template0}\
 ${voffset 22}${alignr 55}FILESYSTEM
 ### MEM ###
@@ -100,43 +100,43 @@ ${voffset 2}${goto 300}${top_mem name 1}${alignr 100}${top_mem mem 1}%
 ${goto 300}${top_mem name 2}${alignr 100}${top_mem mem 2}%
 ${goto 300}${top_mem name 3}${alignr 100}${top_mem mem 3}%
 ${template3}\
-${voffset 19}${goto 325}SWAP${alignr 100}${swap} / ${swapmax}
-${voffset 4}${goto 325}RAM${alignr 100}${mem} / ${memmax}
+${voffset 18}${goto 325}SWAP${alignr 100}${swap} / ${swapmax}
+${voffset 3}${goto 325}RAM${alignr 100}${mem} / ${memmax}
 ### TIME ###
 ${template4}\
-${voffset -110}${alignr 450}${time %a %d-%m-%Y}
+${voffset -107}${alignr 450}${time %a %d-%m-%Y}
 ${template5}\
-${voffset 11}${alignr 465}${time %H:%M}
+${voffset 10}${alignr 465}${time %H:%M}
 ### NET ###
 ${template0}\
 ${voffset 72}${alignr 125}NETWORK
 ${if_existing /sys/class/net/${template6}/operstate up}\
 	${template2}\
-	${voffset 14}${goto 320}Up${alignr 125}${upspeed ${template6}}
-	${voffset 4}${goto 320}Down${alignr 125}${downspeed ${template6}}
+	${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template6}}
+	${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template6}}
 	${template3}\
 	${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template6}}
 	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
 ${else}\
 	${if_existing /sys/class/net/${template7}/operstate up}\
 		${template2}\
-		${voffset 14}${goto 320}Up${alignr 125}${upspeed ${template7}}
-		${voffset 4}${goto 320}Down${alignr 125}${downspeed ${template7}}
+		${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template7}}
+		${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template7}}
 		${template3}\
-		${voffset 16}${goto 320}CONN${goto 415}LAN
+		${voffset 18}${goto 320}CONN${goto 415}LAN
 		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
 	${else}\
 		${template2}\
-		${voffset 14}${goto 320}Up${alignr 125}${upspeed none}
-		${voffset 4}${goto 320}Down${alignr 125}${downspeed none}
+		${voffset 13}${goto 320}Up${alignr 125}${upspeed none}
+		${voffset 3}${goto 320}Down${alignr 125}${downspeed none}
 		${template3}\
-		${voffset 16}${goto 320}CONN${goto 415}(NONE)
+		${voffset 17}${goto 320}CONN${goto 415}(NONE)
 		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr none}
 	${endif}\
 ${endif}\
 ### BAT ###
 ${template0}\
-${voffset -141}${alignr 440}BATTERY
+${voffset -139}${alignr 440}BATTERY
 ${template3}\
 ${alignr 410}${battery_percent}%
 ]]

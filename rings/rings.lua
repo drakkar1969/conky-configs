@@ -14,7 +14,7 @@ cpu_x=170
 cpu_y=135
 cpu_radius=60
 cpu_thickness=10
-cpu_spacing=cpu_thickness+3
+cpu_spacing=cpu_thickness+2
 cpu_start_angle=0
 cpu_end_angle=235
 
@@ -25,7 +25,7 @@ mem_x=315
 mem_y=280
 mem_radius=55
 mem_thickness=17
-mem_spacing=mem_thickness+4
+mem_spacing=mem_thickness+3
 mem_start_angle=-180
 mem_end_angle=55
 
@@ -36,7 +36,7 @@ fs_x=360
 fs_y=115
 fs_radius=27
 fs_thickness=14
-fs_spacing=fs_thickness+4
+fs_spacing=fs_thickness+3
 fs_start_angle=125
 fs_end_angle=360
 
@@ -49,8 +49,8 @@ time_radius=20
 time_thickness_1=9
 time_thickness_2=11
 time_thickness_3=14
-time_spacing_1=time_thickness_1+5
-time_spacing_2=time_thickness_2+5
+time_spacing_1=time_thickness_1+4
+time_spacing_2=time_thickness_2+4
 time_start_angle=0
 time_end_angle=235
 
@@ -61,7 +61,7 @@ net_x=310
 net_y=440
 net_radius=27
 net_thickness=16
-net_spacing=net_thickness+4
+net_spacing=net_thickness+3
 net_start_angle=-180
 net_end_angle=55
 
@@ -81,7 +81,7 @@ bat_y=420
 bat_radius=10
 bat_thickness_1=bat_radius*2
 bat_thickness_2=12
-bat_spacing=bat_thickness_1
+bat_spacing=bat_thickness_1-1
 bat_start_angle_1=0
 bat_end_angle_1=360
 bat_start_angle_2=-55
