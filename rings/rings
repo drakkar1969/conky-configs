@@ -60,7 +60,7 @@ conky.config={
 	template1=[[${font Ubuntu:size=8}${color}]],				-- Smaller font
 	template2=[[${font Ubuntu:size=10}${color}]],				-- Small font
 	template3=[[${font Ubuntu:size=11}${color}]],				-- Medium font
-	template4=[[${font Ubuntu:size=12}${color}]],				-- Date font
+	template4=[[${font Ubuntu:size=11}${color}]],				-- Date font
 	template5=[[${font Ubuntu:semibold:size=28}${color1}]],		-- Time font
 
 	---------------------------------------
@@ -106,7 +106,7 @@ ${voffset 4}${goto 325}RAM${alignr 100}${mem} / ${memmax}
 ${template4}\
 ${voffset -110}${alignr 450}${time %a %d/%m/%Y}
 ${template5}\
-${voffset 9}${alignr 465}${time %H:%M}
+${voffset 11}${alignr 465}${time %H:%M}
 ### NET ###
 ${template0}\
 ${voffset 72}${goto 375}CONNECTION
