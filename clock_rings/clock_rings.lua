@@ -40,7 +40,9 @@ graph_alpha=0.7
 graph_thickness=2
 graph_spacing=0
 
-net_interface='wlp3s0'
+wifi_interface='wlp3s0'
+lan_interface='enp2s0'
+net_interface=wifi_interface
 -- Max download
 net_max_dl=26000
 
@@ -421,6 +423,10 @@ end
 ---------------------------------------
 function conky_clock_rings()
 	if conky_window==nil then return end
+
+	local net_query=string.format('${if_existing /sys/class/net/%s/operstate up}${template8}${else}${if_existing /sys/class/net/%s/operstate up}${template9}${else}none${endif}${endif}',wifi_interface, lan_interface)
+
+	net_interface=conky_parse(net_query)
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
 

@@ -62,7 +62,9 @@ conky.config={
 	template5=[[${font Ubuntu:size=32}${color1}]],			-- Time
 	template6=[[${font Ubuntu:light:size=20}${color}]],		-- Data
 	template7=[[${font Ubuntu:size=10}${color}]],			-- Mem/Cpu
-	template8=[[wlp3s0]]									-- Net interface
+	template8=[[wlp3s0]],									-- Wireless interface
+	template9=[[enp2s0]],									-- LAN interface
+	template0=[[${if_existing /sys/class/net/${template8}/operstate up}${downspeed ${template8}}${else}${if_existing /sys/class/net/${template9}/operstate up}${downspeed none}${else}${endif}${endif}]]
 };
 
 conky.text=[[
@@ -76,7 +78,7 @@ ${voffset 34}${alignc 271}${time %H:%M}
 ${template6}\
 ${voffset -20}${alignc -90}${time %A, %d %B %Y}
 ${template3}\
-${voffset -85}${goto 840}NET${template4}${alignr}${downspeed ${template8}}
+${voffset -85}${goto 840}NET${template4}${alignr}${template0}
 ${template2}\
 ${voffset 125}${goto 30}RAM ${alignr 770}${template3}${memperc}%
 ${template7}\
