@@ -270,8 +270,6 @@ end
 -- Function draw_ring
 ---------------------------------------
 function draw_ring(cr,pt)
-	local w,h=conky_window.width,conky_window.height
-
 	local xc,yc,ring_r,ring_w,sa,ea=pt['x'],pt['y'],pt['radius'],pt['thickness'],pt['start_angle'],pt['end_angle']
 	local bgc, bga, fgc, fga=pt['bg_colour'], pt['bg_alpha'], pt['fg_colour'], pt['fg_alpha']
 
