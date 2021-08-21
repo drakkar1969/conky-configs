@@ -69,8 +69,8 @@ conky.config={
 
 conky.text=[[
 ${template1}\
-${alignr 780}root     ${fs_used /home} / ${fs_size /home}
-${voffset -17}${goto 240}data     ${fs_used /home/data} / ${fs_size /home/data}
+${alignr 780}root      ${fs_used /home} / ${fs_size /home}
+${voffset -17}${goto 240}data      ${fs_used /home/data} / ${fs_size /home/data}
 ${template2}\
 ${voffset 40}${goto 330}CORE TEMP${offset 20}${template3}${acpitemp}°C
 ${template5}\
