@@ -104,7 +104,7 @@ ${voffset 19}${goto 325}SWAP${alignr 100}${swap} / ${swapmax}
 ${voffset 4}${goto 325}RAM${alignr 100}${mem} / ${memmax}
 ### TIME ###
 ${template4}\
-${voffset -110}${alignr 450}${time %a %d/%m/%Y}
+${voffset -110}${alignr 450}${time %a %d-%m-%Y}
 ${template5}\
 ${voffset 11}${alignr 465}${time %H:%M}
 ### NET ###
