@@ -136,7 +136,7 @@ ${else}\
 ${endif}\
 ### BAT ###
 ${template0}\
-${voffset -139}${alignr 440}BATTERY
+${voffset -139}${alignr 445}BATTERY
 ${template3}\
 ${alignr 410}${battery_percent}%
 ]]
