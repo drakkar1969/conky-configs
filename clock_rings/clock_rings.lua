@@ -69,7 +69,7 @@ net_max_dl=26000
 rings_table = {
 	{
 	-- TIME -------------------------------
-	name='time',
+		name='time',
 		arg='%S',
 		max=60,
 		bg_colour=ring_color_bg,
