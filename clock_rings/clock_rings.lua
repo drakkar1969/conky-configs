@@ -53,7 +53,7 @@ line_dotted_alpha=0.70
 ---------------------------------------
 graph_color=0x383c4a
 graph_alpha=0.7
-graph_thickness=2
+graph_thickness=1
 graph_spacing=0
 
 ---------------------------------------
