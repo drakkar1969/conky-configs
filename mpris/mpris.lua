@@ -1,6 +1,7 @@
 ---------------------------------------
 -- Variables
 ---------------------------------------
+player_name="Lollypop"
 image_size=80
 frame_padding=1
 frame_color=0x383c4a
@@ -82,18 +83,15 @@ end
 function conky_albumart()
 	if conky_window==nil then return end
 
-	local metadata = conky_parse("${exec 'playerctl metadata --player=Lollypop 2>/dev/null'}")
+	local metadata = conky_parse(string.format("${exec 'playerctl metadata --player=%s 2>/dev/null'}", player_name))
 
-	local start, finish, meta_title = metadata:find("Lollypop xesam:title[%s%c]+([%a%s%p]-)\n")
+	if metadata==nil then return end
 
-	if meta_title==nil then return end
+	local meta_title = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format \"{{ uc(title) }}\"'}", player_name))
+	local meta_artist = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format \"{{ uc(artist) }}\"'}", player_name))
+	local meta_pos = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format \"{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\"'}", player_name))
 
-	meta_title = meta_title:upper()
-
-	local meta_artist = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ uc(artist) }}\"'}")
-	local meta_pos = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\"'}")
-
-	local meta_art = conky_parse("${exec 'playerctl metadata --player=Lollypop --format \"{{ mpris:artUrl }}\"'}")
+	local meta_art = conky_parse(string.format("${exec 'playerctl metadata --player=Lollypop --format \"{{ mpris:artUrl }}\"'}", player_name))
 	meta_art = meta_art:gsub("file:%/%/","")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
