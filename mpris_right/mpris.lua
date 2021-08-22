@@ -19,7 +19,7 @@ text_table = {
 	title = {
 		text="title",
 		font=text_font,
-		font_size=24,
+		font_size=22,
 		color=0x383c4a,
 		alpha=1,
 		x=text_x, y=text_y
@@ -27,7 +27,7 @@ text_table = {
 	artist = {
 		text="artist",
 		font=text_font,
-		font_size=18,
+		font_size=16,
 		color=0x21232b,
 		alpha=1,
 		x=text_x, y=text_y+28
