@@ -43,7 +43,8 @@ clock_show_seconds=false
 ---------------------------------------
 line_solid_width=2
 line_dotted_width=1
-line_color=0x383c4a
+line_solid_color=0x383c4a
+line_dotted_color=0x383c4a
 line_solid_alpha=ring_alpha_bg_dummy
 line_dotted_alpha=0.70
 
@@ -375,7 +376,7 @@ function draw_solid_line(cr,pt)
 
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_SQUARE)
 	cairo_set_line_width(cr,line_solid_width)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_color,line_solid_alpha))
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_solid_color,line_solid_alpha))
 	cairo_stroke(cr)
 end
 
@@ -391,7 +392,7 @@ function draw_dotted_line(cr,pt)
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND)
 	cairo_set_dash(cr,{1,3},2,0)
 	cairo_set_line_width(cr,line_dotted_width)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_color,line_dotted_alpha))
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_dotted_color,line_dotted_alpha))
 	cairo_stroke(cr)
 end
 
