@@ -65,7 +65,7 @@ net_spacing=net_thickness+3
 net_start_angle=-180
 net_end_angle=55
 
-net_interface='interface'
+net_interface='wlp3s0'
 -- Max download in KB
 net_max_dl=26000
 -- MAx upload in KB
@@ -339,10 +339,6 @@ end
 function get_conky_string(name,arg)
 	local str=''
 	local value=0
-
-	if arg == net_interface then
-		arg = conky_parse('${if_existing /sys/class/net/${template0}/operstate up}${template0}${else}${if_existing /sys/class/net/${template1}/operstate up}${template1}${else}none${endif}${endif}')
-	end
 
 	str=string.format('${%s %s}',name,arg)
 	str=conky_parse(str)

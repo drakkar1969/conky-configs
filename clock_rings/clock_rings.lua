@@ -55,7 +55,10 @@ graph_alpha=0.7
 graph_thickness=2
 graph_spacing=0
 
-net_interface='interface'
+---------------------------------------
+-- NET variables
+---------------------------------------
+net_interface='wlp3s0'
 -- Max download
 net_max_dl=26000
 
@@ -276,10 +279,6 @@ end
 function get_conky_string(name,arg)
 	local str=''
 	local value=0
-
-	if arg == net_interface then
-		arg = conky_parse('${if_existing /sys/class/net/${template0}/operstate up}${template0}${else}${if_existing /sys/class/net/${template1}/operstate up}${template1}${else}none${endif}${endif}')
-	end
 
 	str=string.format('${%s %s}',name,arg)
 	str=conky_parse(str)
