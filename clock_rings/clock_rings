@@ -76,7 +76,7 @@ ${voffset -17}${goto 240}${template2 data /home/data}
 ${template4}\
 ${voffset 40}${goto 330}CORE TEMP${offset 20}${template5}${acpitemp}°C
 ${template7}\
-${voffset 34}${alignc 271}${time %H:%M}
+${voffset 34}${alignc 271}${time %H %M}
 ${template8}\
 ${voffset -20}${alignc -90}${time %A, %d %B %Y}
 ${template5}\
