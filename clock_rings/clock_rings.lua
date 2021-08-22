@@ -64,7 +64,8 @@ net_max_dl=26000
 ---------------------------------------
 rings_table = {
 	{
-		name='time',
+	-- TIME -------------------------------
+	name='time',
 		arg='%S',
 		max=60,
 		bg_colour=ring_color_bg,
@@ -77,6 +78,7 @@ rings_table = {
 		start_angle=0,
 		end_angle=360
 	},
+	-- CPU --------------------------------
 	{
 		name='cpu',
 		arg='cpu1',
@@ -133,6 +135,7 @@ rings_table = {
 		start_angle=cpu_start_angle,
 		end_angle=cpu_end_angle
 	},
+	-- MEM --------------------------------
 	{
 		name='memperc',
 		arg='',
@@ -147,6 +150,7 @@ rings_table = {
 		start_angle=212,
 		end_angle=329
 	},
+	-- TEMP -------------------------------
 	{
 		name='acpitemp',
 		arg='',
@@ -161,6 +165,7 @@ rings_table = {
 		start_angle=-28,
 		end_angle=88
 	},
+	-- FS ---------------------------------
 	{
 		name='fs_used_perc',
 		arg='/',
@@ -189,6 +194,7 @@ rings_table = {
 		start_angle=2,
 		end_angle=120
 	},
+	-- DUMMY ------------------------------
 	{
 		name='cpu', -- dummy (used for arc)
 		arg='',
