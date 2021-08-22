@@ -55,87 +55,87 @@ conky.config={
 	---------------------------------------
 	default_color='21232b',
 	color1='383c4a',
-	template0=[[${font Ubuntu:size=16}${color1}]],				-- Title font
-	template1=[[${font Ubuntu:size=8}${color}]],				-- Smaller font
-	template2=[[${font Ubuntu:size=10}${color}]],				-- Small font
-	template3=[[${font Ubuntu:size=11}${color}]],				-- Medium font
-	template4=[[${font Ubuntu:size=11}${color}]],				-- Date font
-	template5=[[${font Ubuntu:semibold:size=28}${color1}]],		-- Time font
+	template3=[[${font Ubuntu:size=16}${color1}]],				-- Title font
+	template4=[[${font Ubuntu:size=8}${color}]],				-- Smaller font
+	template5=[[${font Ubuntu:size=10}${color}]],				-- Small font
+	template6=[[${font Ubuntu:size=11}${color}]],				-- Medium font
+	template7=[[${font Ubuntu:size=11}${color}]],				-- Date font
+	template8=[[${font Ubuntu:semibold:size=28}${color1}]],		-- Time font
 
 	---------------------------------------
-	-- OTHER VARIABLES
+	-- NETWORK VARIABLES
 	---------------------------------------
-	template6=[[wlp3s0]],			-- Wireless interface
-	template7=[[enp2s0]],			-- LAN interface
-	template8=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
+	template0=[[wlp3s0]],			-- Wireless interface
+	template1=[[enp2s0]],			-- LAN interface
+	template2=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
 };
 
 conky.text=[[
 ### CPU ###
-${template3}\
+${template6}\
 ${voffset 0}${goto 75}CORE TEMP${goto 170}${acpitemp}°C
-${template1}\
+${template4}\
 ${voffset 8}${goto 95}CPU 1 ${alignr 440}${cpu cpu1}%
 ${voffset -1}${goto 95}CPU 2 ${alignr 440}${cpu cpu2}%
 ${voffset -1}${goto 95}CPU 3 ${alignr 440}${cpu cpu3}%
 ${voffset -1}${goto 95}CPU 4 ${alignr 440}${cpu cpu4}%
-${template2}\
+${template5}\
 ${voffset 28}${goto 20}${top name 1}${alignr 405}${top cpu 1}%
 ${goto 20}${top name 2}${alignr 405}${top cpu 2}%
 ${goto 20}${top name 3}${alignr 405}${top cpu 3}%
-${template0}\
+${template3}\
 ${voffset 23}${alignr 540}CPU
 ### FS ###
-${template2}\
-${voffset -166}${goto 370}${template8 data /home/data 55}
-${voffset 0}${goto 370}${template8 root / 55}
-${voffset 0}${goto 370}${template8 home /home 55}
-${template0}\
+${template5}\
+${voffset -166}${goto 370}${template2 data /home/data 55}
+${voffset 0}${goto 370}${template2 root / 55}
+${voffset 0}${goto 370}${template2 home /home 55}
+${template3}\
 ${voffset 22}${alignr 55}FILESYSTEM
 ### MEM ###
 ${voffset 85}${alignr 100}MEMORY
-${template2}\
+${template5}\
 ${voffset 2}${goto 300}${top_mem name 1}${alignr 100}${top_mem mem 1}%
 ${goto 300}${top_mem name 2}${alignr 100}${top_mem mem 2}%
 ${goto 300}${top_mem name 3}${alignr 100}${top_mem mem 3}%
-${template3}\
+${template6}\
 ${voffset 18}${goto 325}SWAP${alignr 100}${swap} / ${swapmax}
 ${voffset 3}${goto 325}RAM${alignr 100}${mem} / ${memmax}
 ### TIME ###
-${template4}\
+${template7}\
 ${voffset -107}${alignr 450}${time %a %d-%m-%Y}
-${template5}\
+${template8}\
 ${voffset 10}${alignr 465}${time %H:%M}
 ### NET ###
-${template0}\
+${template3}\
 ${voffset 72}${alignr 125}NETWORK
-${if_existing /sys/class/net/${template6}/operstate up}\
-	${template2}\
-	${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template6}}
-	${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template6}}
-	${template3}\
-	${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template6}}
-	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template6}}
+${if_existing /sys/class/net/${template0}/operstate up}\
+	${template5}\
+	${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template0}}
+	${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template0}}
+	${template6}\
+	${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template0}}
+	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template0}}
 ${else}\
-	${if_existing /sys/class/net/${template7}/operstate up}\
-		${template2}\
-		${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template7}}
-		${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template7}}
-		${template3}\
+	${if_existing /sys/class/net/${template1}/operstate up}\
+		${template5}\
+		${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template1}}
+		${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template1}}
+		${template6}\
 		${voffset 18}${goto 320}CONN${goto 415}LAN
-		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template7}}
+		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template1}}
 	${else}\
-		${template2}\
+		${template5}\
 		${voffset 13}${goto 320}Up${alignr 125}${upspeed none}
 		${voffset 3}${goto 320}Down${alignr 125}${downspeed none}
-		${template3}\
+		${template6}\
 		${voffset 17}${goto 320}CONN${goto 415}(NONE)
 		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr none}
 	${endif}\
 ${endif}\
 ### BAT ###
-${template0}\
-${voffset -139}${alignr 445}BATTERY
 ${template3}\
+${voffset -139}${alignr 445}BATTERY
+${template6}\
 ${alignr 410}${battery}
 ]]

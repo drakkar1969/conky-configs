@@ -55,9 +55,7 @@ graph_alpha=0.7
 graph_thickness=2
 graph_spacing=0
 
-wifi_interface='wlp3s0'
-lan_interface='enp2s0'
-net_interface=wifi_interface
+net_interface='interface'
 -- Max download
 net_max_dl=26000
 
@@ -267,21 +265,36 @@ function rgb_to_r_g_b(colour,alpha)
 end
 
 ---------------------------------------
+-- Function get_conky_string
+---------------------------------------
+function get_conky_string(name,arg)
+	local str=''
+	local value=0
+
+	if arg == net_interface then
+		arg = conky_parse('${if_existing /sys/class/net/${template0}/operstate up}${template0}${else}${if_existing /sys/class/net/${template1}/operstate up}${template1}${else}none${endif}${endif}')
+	end
+
+	str=string.format('${%s %s}',name,arg)
+	str=conky_parse(str)
+
+	value=tonumber(str)
+	if value == nil then value = 0 end
+
+	return(value)
+end
+
+---------------------------------------
 -- Function draw_ring
 ---------------------------------------
 function draw_ring(cr,pt)
 	local xc,yc,ring_r,ring_w,sa,ea=pt['x'],pt['y'],pt['radius'],pt['thickness'],pt['start_angle'],pt['end_angle']
 	local bgc, bga, fgc, fga=pt['bg_colour'], pt['bg_alpha'], pt['fg_colour'], pt['fg_alpha']
 
-	local str=''
-	local value=0
+	local value=get_conky_string(pt['name'],pt['arg'])
 
-	str=string.format('${%s %s}',pt['name'],pt['arg'])
-	str=conky_parse(str)
-
-	value=tonumber(str)
-	if value == nil then value = 0 end
-	pct=value/pt['max']
+	local pct=value/pt['max']
+	pct=(pct > 1 and 1 or pct)
 
 	local angle_0=sa*(2*math.pi/360)-math.pi/2
 	local angle_f=ea*(2*math.pi/360)-math.pi/2
@@ -389,14 +402,7 @@ function draw_graph(cr,pt)
 
 	local num_bars=w/(thickness+spacing)
 
-	local str=''
-	local value=0
-
-	str=string.format('${%s %s}',pt['name'],pt['arg'])
-	str=conky_parse(str)
-
-	value=tonumber(str)
-	if value == nil then value = 0 end
+	local value=get_conky_string(pt['name'],pt['arg'])
 
 	for i = 1, num_bars do
 		if data[i+1] == nil then data[i+1]=0 end
@@ -436,10 +442,6 @@ end
 ---------------------------------------
 function conky_clock_rings()
 	if conky_window==nil then return end
-
-	local net_query=string.format('${if_existing /sys/class/net/%s/operstate up}${template8}${else}${if_existing /sys/class/net/%s/operstate up}${template9}${else}none${endif}${endif}',wifi_interface, lan_interface)
-
-	net_interface=conky_parse(net_query)
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
 
