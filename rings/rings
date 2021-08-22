@@ -117,6 +117,6 @@ ${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template0}}
 ### BAT ###
 ${template3}\
 ${voffset -139}${alignr 445}BATTERY
-${template6}\
+${template5}\
 ${voffset -1}${alignr 410}${battery}
 ]]
