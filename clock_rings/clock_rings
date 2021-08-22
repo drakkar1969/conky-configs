@@ -67,12 +67,13 @@ conky.config={
 	---------------------------------------
 	template0=[[wlp3s0]],									-- Wireless interface
 	template1=[[enp2s0]],									-- LAN interface
+	template2=[[\1      ${fs_used \2} / ${fs_size \2}]],
 };
 
 conky.text=[[
 ${template3}\
-${alignr 780}root      ${fs_used /home} / ${fs_size /home}
-${voffset -17}${goto 240}data      ${fs_used /home/data} / ${fs_size /home/data}
+${alignr 780}${template2 home /home}
+${voffset -17}${goto 240}${template2 data /home/data}
 ${template4}\
 ${voffset 40}${goto 330}CORE TEMP${offset 20}${template5}${acpitemp}°C
 ${template7}\
