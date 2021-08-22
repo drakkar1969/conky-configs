@@ -67,7 +67,6 @@ conky.config={
 	---------------------------------------
 	template0=[[wlp3s0]],									-- Wireless interface
 	template1=[[enp2s0]],									-- LAN interface
-	template2=[[${if_existing /sys/class/net/${template0}/operstate up}${downspeed ${template0}}${else}${if_existing /sys/class/net/${template1}/operstate up}${downspeed ${template0}}${else}${downspeed none}${endif}${endif}]],
 };
 
 conky.text=[[
@@ -81,7 +80,15 @@ ${voffset 34}${alignc 271}${time %H:%M}
 ${template8}\
 ${voffset -20}${alignc -90}${time %A, %d %B %Y}
 ${template5}\
-${voffset -85}${goto 840}NET${template6}${alignr}${template2}
+${if_existing /sys/class/net/${template0}/operstate up}\
+	${voffset -85}${goto 840}NET${template6}${alignr}${downspeed ${template0}}
+${else}\
+	${if_existing /sys/class/net/${template1}/operstate up}\
+		${voffset -85}${goto 840}NET${template6}${alignr}${downspeed ${template1}}
+	${else}\
+		${voffset -85}${goto 840}NET${template6}${alignr}${downspeed none}
+	${endif}\
+${endif}\
 ${template4}\
 ${voffset 125}${goto 30}RAM ${alignr 770}${template5}${memperc}%
 ${template9}\
