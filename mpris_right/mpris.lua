@@ -59,7 +59,7 @@ end
 -- Function draw_frame
 ---------------------------------------
 function draw_frame(cr)
-	cairo_rectangle(cr, conky_window.width-(2*frame_padding+image_size), 0, image_size+2*frame_padding, image_size+2*frame_padding)
+	cairo_rectangle(cr, conky_window.width-(image_size+2*frame_padding), 0, image_size+2*frame_padding, image_size+2*frame_padding)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(frame_color,frame_alpha))
 	cairo_fill(cr)
 end
@@ -83,7 +83,7 @@ function draw_imlib2_image(cr, file)
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
-	imlib_render_image_on_drawable(conky_window.width-(frame_padding+image_size), frame_padding)
+	imlib_render_image_on_drawable(conky_window.width-(image_size+frame_padding), frame_padding)
 	imlib_free_image()
 end
 
