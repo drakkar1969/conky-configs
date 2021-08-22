@@ -422,7 +422,7 @@ function draw_graph(cr,pt)
 
 	for i = 1, num_bars do
 		-- Check that log of data[i] will not be negative
-		if data[1] < 1 then data[i]=1 end
+		if data[i] < 1 then data[i]=1 end
 
 		-- Transform to log scale
 		bar_h=(math.log10(data[i])/math.log10(max))*h
