@@ -91,10 +91,10 @@ end
 -- Function draw_text
 ---------------------------------------
 function draw_text(cr,pt)
-	text=pt['text']
-	font,fs=pt['font'],pt['font_size']
-	color,alpha=pt['color'],pt['alpha']
-	x,y=pt['x'],pt['y']
+	local text=pt['text']
+	local font,fs=pt['font'],pt['font_size']
+	local color,alpha=pt['color'],pt['alpha']
+	local x,y=pt['x'],pt['y']
 
 	local extents=cairo_text_extents_t:create()
 	cairo_select_font_face (cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
