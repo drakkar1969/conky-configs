@@ -113,7 +113,7 @@ function conky_albumart()
 	-- Get metadata
 	local metadata = conky_parse(string.format("${exec 'playerctl metadata --player=%s 2>/dev/null'}", player_name))
 
-	if metadata==nil then return end
+	if (metadata==nil or metadata=="") then return end
 
 	text_table['title']['text'] = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format \"{{ uc(title) }}\"'}", player_name))
 	text_table['artist']['text'] = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format \"{{ uc(artist) }}\"'}", player_name))
