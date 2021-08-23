@@ -249,8 +249,8 @@ rings_table = {
 	},
 	{
 		name='time',
-		arg='%w',
-		max=6,
+		arg='%u',
+		max=7,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
 		fg_colour=color_fg,
