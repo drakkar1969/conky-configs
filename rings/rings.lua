@@ -40,6 +40,10 @@ fs_spacing=fs_thickness+3
 fs_start_angle=125
 fs_end_angle=360
 
+fs1_id="/home/data"
+fs2_id="/"
+fs3_id="/home"
+
 ---------------------------------------
 -- TIME variables
 ---------------------------------------
@@ -178,7 +182,7 @@ rings_table = {
 	-- FS --------------------------------
 	{
 		name='fs_used_perc',
-		arg='/home',
+		arg=fs3_id,
 		max=100,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
@@ -192,7 +196,7 @@ rings_table = {
 	},
 	{
 		name='fs_used_perc',
-		arg='/',
+		arg=fs2_id,
 		max=100,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
@@ -206,7 +210,7 @@ rings_table = {
 	},
 	{
 		name='fs_used_perc',
-		arg='/home/data',
+		arg=fs1_id,
 		max=100,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
