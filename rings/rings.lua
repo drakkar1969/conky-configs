@@ -51,8 +51,8 @@ time_thickness_2=11
 time_thickness_3=14
 time_spacing_1=time_thickness_1+4
 time_spacing_2=time_thickness_2+4
-time_start_angle=0
-time_end_angle=235
+time_start_angle=-55
+time_end_angle=180
 
 ---------------------------------------
 -- NET variables

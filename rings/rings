@@ -101,13 +101,13 @@ ${template6}\
 ${voffset 18}${goto 325}SWAP${alignr 100}${swap} / ${swapmax}
 ${voffset 3}${goto 325}RAM${alignr 100}${mem} / ${memmax}
 ### TIME ###
-${template7}\
-${voffset -107}${alignr 450}${time %a %d-%m-%Y}
 ${template8}\
-${voffset 7}${alignr 465}${time %H:%M}
+${voffset -63}${alignr 465}${time %H:%M}
+${template7}\
+${voffset -17}${alignr 450}${time %a %d-%m-%Y}
 ### NET ###
 ${template3}\
-${voffset 70}${alignr 125}NETWORK
+${voffset 44}${alignr 125}NETWORK
 ${template5}\
 ${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template0}}
 ${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template0}}
