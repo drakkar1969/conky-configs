@@ -36,8 +36,8 @@ text_table = {
 		text="status",
 		font=text_font,
 		font_size=13,
-		color=0x4d5366,
-		alpha=1,
+		color=0x383c4a,
+		alpha=0.7,
 		x=text_x, y=text_y+53
 	}
 }
