@@ -44,7 +44,7 @@ fs_end_angle=360
 -- TIME variables
 ---------------------------------------
 time_x=160
-time_y=315
+time_y=310
 time_radius=20
 time_thickness_1=9
 time_thickness_2=11
@@ -74,8 +74,8 @@ net_max_ul=1500
 ---------------------------------------
 -- BAT variables
 ---------------------------------------
-bat_x=200
-bat_y=420
+bat_x=205
+bat_y=415
 bat_radius=10
 bat_thickness_1=bat_radius*2
 bat_thickness_2=12
