@@ -231,6 +231,9 @@ rings_table = {
 
 lines_solid_table = {
 	{
+		color=line_solid_color,
+		alpha=line_solid_alpha,
+		w=line_solid_width,
 		xs=ring_x+ring_radius+46, ys=ring_y,
 		xe=980, ye=ring_y
 	},
@@ -238,10 +241,16 @@ lines_solid_table = {
 
 lines_dotted_table = {
 	{
+		color=line_dotted_color,
+		alpha=line_dotted_alpha,
+		w=line_dotted_width,
 		xs=30, ys=295,
 		xe=211, ye=295
 	},
 	{
+		color=line_dotted_color,
+		alpha=line_dotted_alpha,
+		w=line_dotted_width,
 		xs=300, ys=269,
 		xe=481, ye=269
 	},
@@ -271,7 +280,7 @@ require 'cairo'
 -- Function rgb_to_r_g_b
 ---------------------------------------
 function rgb_to_r_g_b(color,alpha)
-	return(((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha)
+	return ((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha
 end
 
 ---------------------------------------
@@ -365,8 +374,8 @@ function draw_solid_line(cr,pt)
 	cairo_line_to(cr,pt.xe,pt.ye)
 
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_SQUARE)
-	cairo_set_line_width(cr,line_solid_width)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_solid_color,line_solid_alpha))
+	cairo_set_line_width(cr,pt.w)
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
 	cairo_stroke(cr)
 end
 
@@ -379,8 +388,8 @@ function draw_dotted_line(cr,pt)
 
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND)
 	cairo_set_dash(cr,{1,3},2,0)
-	cairo_set_line_width(cr,line_dotted_width)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(line_dotted_color,line_dotted_alpha))
+	cairo_set_line_width(cr,pt.w)
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
 	cairo_stroke(cr)
 end
 
