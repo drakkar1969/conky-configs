@@ -234,7 +234,7 @@ rings_table = {
 	-- TIME --------------------------------
 	{
 		name='time',
-		arg='%M',
+		arg='%S',
 		max=60,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
@@ -249,8 +249,8 @@ rings_table = {
 	},
 	{
 		name='time',
-		arg='%H',
-		max=24,
+		arg='%M',
+		max=60,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
 		fg_colour=color_fg,
@@ -264,8 +264,8 @@ rings_table = {
 	},
 	{
 		name='time',
-		arg='%u',
-		max=7,
+		arg='%H',
+		max=24,
 		bg_colour=color_bg,
 		bg_alpha=alpha_bg,
 		fg_colour=color_fg,
