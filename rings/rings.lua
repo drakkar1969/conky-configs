@@ -106,7 +106,8 @@ rings_table = {
 		radius=cpu_radius,
 		thickness=cpu_thickness,
 		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle
+		end_angle=cpu_end_angle,
+		neg=false
 	},
 	{
 		name='cpu',
@@ -120,7 +121,8 @@ rings_table = {
 		radius=cpu_radius+cpu_spacing,
 		thickness=cpu_thickness,
 		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle
+		end_angle=cpu_end_angle,
+		neg=false
 	},
 	{
 		name='cpu',
@@ -134,7 +136,8 @@ rings_table = {
 		radius=cpu_radius+2*cpu_spacing,
 		thickness=cpu_thickness,
 		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle
+		end_angle=cpu_end_angle,
+		neg=false
 	},
 	{
 		name='cpu',
@@ -148,7 +151,8 @@ rings_table = {
 		radius=cpu_radius+3*cpu_spacing,
 		thickness=cpu_thickness,
 		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle
+		end_angle=cpu_end_angle,
+		neg=false
 	},
 	-- MEM --------------------------------
 	{
@@ -163,7 +167,8 @@ rings_table = {
 		radius=mem_radius,
 		thickness=mem_thickness,
 		start_angle=mem_start_angle,
-		end_angle=mem_end_angle
+		end_angle=mem_end_angle,
+		neg=false
 	},
 	{
 		name='memperc',
@@ -177,7 +182,8 @@ rings_table = {
 		radius=mem_radius+mem_spacing,
 		thickness=mem_thickness,
 		start_angle=mem_start_angle,
-		end_angle=mem_end_angle
+		end_angle=mem_end_angle,
+		neg=false
 	},
 	-- FS --------------------------------
 	{
@@ -192,7 +198,8 @@ rings_table = {
 		radius=fs_radius,
 		thickness=fs_thickness,
 		start_angle=fs_start_angle,
-		end_angle=fs_end_angle
+		end_angle=fs_end_angle,
+		neg=true
 	},
 	{
 		name='fs_used_perc',
@@ -206,7 +213,8 @@ rings_table = {
 		radius=fs_radius+fs_spacing,
 		thickness=fs_thickness,
 		start_angle=fs_start_angle,
-		end_angle=fs_end_angle
+		end_angle=fs_end_angle,
+		neg=true
 	},
 	{
 		name='fs_used_perc',
@@ -220,7 +228,8 @@ rings_table = {
 		radius=fs_radius+2*fs_spacing,
 		thickness=fs_thickness,
 		start_angle=fs_start_angle,
-		end_angle=fs_end_angle
+		end_angle=fs_end_angle,
+		neg=true
 	},
 	-- TIME --------------------------------
 	{
@@ -235,7 +244,8 @@ rings_table = {
 		radius=time_radius,
 		thickness=time_thickness_1,
 		start_angle=time_start_angle,
-		end_angle=time_end_angle
+		end_angle=time_end_angle,
+		neg=true
 	},
 	{
 		name='time',
@@ -249,7 +259,8 @@ rings_table = {
 		radius=time_radius+time_spacing_1,
 		thickness=time_thickness_2,
 		start_angle=time_start_angle,
-		end_angle=time_end_angle
+		end_angle=time_end_angle,
+		neg=true
 	},
 	{
 		name='time',
@@ -263,7 +274,8 @@ rings_table = {
 		radius=time_radius+time_spacing_1+time_spacing_2,
 		thickness=time_thickness_3,
 		start_angle=time_start_angle,
-		end_angle=time_end_angle
+		end_angle=time_end_angle,
+		neg=true
 	},
 	-- NET --------------------------------
 	upspeed = {
@@ -278,7 +290,8 @@ rings_table = {
 		radius=net_radius,
 		thickness=net_thickness,
 		start_angle=net_start_angle,
-		end_angle=net_end_angle
+		end_angle=net_end_angle,
+		neg=false
 	},
 	downspeed = {
 		name='downspeedf',
@@ -292,7 +305,8 @@ rings_table = {
 		radius=net_radius+net_spacing,
 		thickness=net_thickness,
 		start_angle=net_start_angle,
-		end_angle=net_end_angle
+		end_angle=net_end_angle,
+		neg=false
 	},
 	-- BAT --------------------------------
 	{
@@ -307,7 +321,8 @@ rings_table = {
 		radius=bat_radius,
 		thickness=bat_thickness_1,
 		start_angle=bat_start_angle_1,
-		end_angle=bat_end_angle_1
+		end_angle=bat_end_angle_1,
+		neg=true
 	},
 	{
 		name='battery_percent',
@@ -321,7 +336,8 @@ rings_table = {
 		radius=bat_radius+bat_spacing,
 		thickness=bat_thickness_2,
 		start_angle=bat_start_angle_2,
-		end_angle=bat_end_angle_2
+		end_angle=bat_end_angle_2,
+		neg=true
 	},
 }
 
@@ -359,6 +375,7 @@ end
 function draw_ring(cr,pt)
 	local xc,yc,ring_r,ring_w,sa,ea=pt['x'],pt['y'],pt['radius'],pt['thickness'],pt['start_angle'],pt['end_angle']
 	local bgc, bga, fgc, fga=pt['bg_colour'], pt['bg_alpha'], pt['fg_colour'], pt['fg_alpha']
+	local neg=pt['neg']
 
 	local value=get_conky_string(pt['name'],pt['arg'])
 
@@ -376,7 +393,11 @@ function draw_ring(cr,pt)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
-	cairo_arc(cr,xc,yc,ring_r,angle_0,angle_0+t_arc)
+	if neg == true then
+		cairo_arc_negative(cr,xc,yc,ring_r,angle_f,angle_f-t_arc)
+	else
+		cairo_arc(cr,xc,yc,ring_r,angle_0,angle_0+t_arc)
+	end
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(fgc,fga))
 	cairo_stroke(cr)
 end
