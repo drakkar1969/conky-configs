@@ -58,8 +58,8 @@ conky.config={
 };
 
 conky.text=[[
-${template1}\
-${voffset 13}${goto 100}${exec "id -un"}
-${template2}\
-${voffset -5}${goto 100}${exec "cat /etc/os-release | grep PRETTY_NAME | sed 's/PRETTY_NAME=//' | tr -d \""}
+	${template1}\
+	${voffset 13}${goto 100}${exec "id -un"}
+	${template2}\
+	${voffset -5}${goto 100}${exec "cat /etc/os-release | grep PRETTY_NAME | sed 's/PRETTY_NAME=//' | tr -d \""}
 ]]

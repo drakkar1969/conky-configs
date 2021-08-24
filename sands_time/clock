@@ -53,7 +53,7 @@ conky.config={
 };
 
 conky.text=[[
-${voffset 50}${goto 700}${font ${template1}:size=260}${time %H:%M}
-${goto 450}${voffset -415}${font ${template1}:size=80}${time %d}
-${voffset -135}${alignr 1500}${font ${template1}:size=26}${time %B}
+	${voffset 50}${goto 700}${font ${template1}:size=260}${time %H:%M}
+	${goto 450}${voffset -415}${font ${template1}:size=80}${time %d}
+	${voffset -135}${alignr 1500}${font ${template1}:size=26}${time %B}
 ]]
