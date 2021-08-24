@@ -65,7 +65,9 @@ conky.config={
 	---------------------------------------
 	-- NETWORK VARIABLES
 	---------------------------------------
+	if_up_strictness='address',
 	template0=[[wlp3s0]],			-- Wireless interface
+	template1=[[enp2s0]],			-- LAN interface
 	template2=[[\1${alignr \3}${fs_used \2} / ${fs_size \2}]],
 };
 
@@ -109,11 +111,27 @@ ${voffset -17}${alignr 450}${time %a %d-%m-%Y}
 ${template3}\
 ${voffset 49}${alignr 125}NETWORK
 ${template5}\
-${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template0}}
-${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template0}}
-${template6}\
-${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template0}}
-${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template0}}
+${if_up ${template1}}\
+	${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template1}}
+	${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template1}}
+	${template6}\
+	${voffset 16}${goto 320}CONN${goto 415}LAN
+	${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template1}}
+${else}\
+	${if_up ${template0}}\
+		${voffset 13}${goto 320}Up${alignr 125}${upspeed ${template0}}
+		${voffset 3}${goto 320}Down${alignr 125}${downspeed ${template0}}
+		${template6}\
+		${voffset 16}${goto 320}CONN${goto 415}${wireless_essid ${template0}}
+		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr ${template0}}
+	${else}\
+		${voffset 13}${goto 320}Up${alignr 125}${upspeed none}
+		${voffset 3}${goto 320}Down${alignr 125}${downspeed none}
+		${template6}\
+		${voffset 16}${goto 320}CONN${goto 415}(NONE)
+		${voffset 4}${goto 320}LOCAL IP${goto 415}${addr none}
+	${endif}\
+${endif}\
 ### BAT ###
 ${template3}\
 ${voffset -144}${alignr 440}BATTERY

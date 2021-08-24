@@ -65,7 +65,9 @@ conky.config={
 	---------------------------------------
 	-- NETWORK VARIABLES
 	---------------------------------------
+	if_up_strictness='address',
 	template0=[[wlp3s0]],									-- Wireless interface
+	template1=[[enp2s0]],									-- LAN interface
 	template2=[[\1      ${fs_used \2} / ${fs_size \2}]],
 };
 
@@ -80,7 +82,15 @@ ${voffset 34}${alignc 271}${time %H %M}
 ${template8}\
 ${voffset -20}${alignc -90}${time %A, %d %B %Y}
 ${template5}\
-${voffset -85}${goto 840}NET${template6}${alignr}${downspeed ${template0}}
+${if_up ${template1}}\
+	${voffset -85}${goto 840}NET${template6}${alignr}${downspeed ${template1}}
+${else}\
+	${if_up ${template0}}\
+		${voffset -85}${goto 840}NET${template6}${alignr}${downspeed ${template0}}
+	${else}\
+		${voffset -85}${goto 840}NET${template6}${alignr}${downspeed none}
+	${endif}\
+${endif}\
 ${template4}\
 ${voffset 125}${goto 30}RAM ${alignr 770}${template5}${memperc}%
 ${template9}\
