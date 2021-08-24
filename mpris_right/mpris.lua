@@ -114,9 +114,9 @@ function conky_albumart()
 
 	local s,f,meta_art
 
-	s,f,text_table['title']['text']=metadata:find("xesam:title(.-)\n")
-	s,f,text_table['artist']['text']=metadata:find("xesam:artist(.-)\n")
-	s,f,text_table['pos']['text']=metadata:find("xesam:pos(.-)\n")
+	s,f,text_table.title.text=metadata:find("xesam:title(.-)\n")
+	s,f,text_table.artist.text=metadata:find("xesam:artist(.-)\n")
+	s,f,text_table.pos.text=metadata:find("xesam:pos(.-)\n")
 	s,f,meta_art=metadata:find("xesam:albumArtfile://%s*(.-)\n")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
@@ -127,9 +127,9 @@ function conky_albumart()
 	draw_imlib2_image(cr,meta_art)
 
 	-- Draw text
-	draw_text(cr,text_table['title'])
-	draw_text(cr,text_table['artist'])
-	draw_text(cr,text_table['pos'])
+	draw_text(cr,text_table.title)
+	draw_text(cr,text_table.artist)
+	draw_text(cr,text_table.pos)
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
