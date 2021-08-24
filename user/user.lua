@@ -5,7 +5,7 @@ image_size=80
 image_x=0
 image_y=0
 image_alpha=1
-image_path=string.format('%s%s',conky_config,'.png')
+image_path=string.gsub(conky_config,'user.conf','user.png')
 
 ---------------------------------------
 -- LUA FUNCTIONS
