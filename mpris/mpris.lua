@@ -51,16 +51,16 @@ require 'imlib2'
 ---------------------------------------
 -- Function rgb_to_r_g_b
 ---------------------------------------
-function rgb_to_r_g_b(colour,alpha)
-	return ((colour/0x10000)%0x100)/255.,((colour/0x100)%0x100)/255.,(colour%0x100)/255.,alpha
+function rgb_to_r_g_b(color,alpha)
+	return ((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha
 end
 
 ---------------------------------------
 -- Function draw_frame
 ---------------------------------------
 function draw_frame(cr)
-	cairo_rectangle(cr, 0, 0, image_size+2*frame_padding, image_size+2*frame_padding)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(frame_color,frame_alpha))
+	cairo_rectangle(cr,0,0,image_size+2*frame_padding,image_size+2*frame_padding)
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(frame_color,frame_alpha))
 	cairo_fill(cr)
 end
 
@@ -68,22 +68,22 @@ end
 -- Function draw_imlib2_image
 ---------------------------------------
 function draw_imlib2_image(cr, file)
-	local image = imlib_load_image(file)
-	if image==nil then return end
+	local image=imlib_load_image(file)
+	if image == nil then return end
 
 	draw_frame(cr)
 
 	imlib_context_set_image(image)
 
-	local width = imlib_image_get_width()
-	local height = imlib_image_get_height()
+	local width=imlib_image_get_width()
+	local height=imlib_image_get_height()
 
-	local scaled = imlib_create_cropped_scaled_image (0, 0, width, height, image_size, image_size)
+	local scaled=imlib_create_cropped_scaled_image(0,0,width,height,image_size,image_size)
 
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
-	imlib_render_image_on_drawable(frame_padding, frame_padding)
+	imlib_render_image_on_drawable(frame_padding,frame_padding)
 	imlib_free_image()
 end
 
@@ -91,16 +91,11 @@ end
 -- Function draw_text
 ---------------------------------------
 function draw_text(cr,pt)
-	local text=pt['text']
-	local font,fs=pt['font'],pt['font_size']
-	local color,alpha=pt['color'],pt['alpha']
-	local x,y=pt['x'],pt['y']
-
-	cairo_select_font_face (cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size (cr, fs)
-	cairo_set_source_rgba (cr, rgb_to_r_g_b(color, alpha))
-	cairo_move_to (cr, x, y)
-	cairo_show_text (cr, text)
+	cairo_select_font_face (cr,pt.font,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size (cr,pt.font_size)
+	cairo_set_source_rgba (cr,rgb_to_r_g_b(pt.color,pt.alpha))
+	cairo_move_to (cr,pt.x,pt.y)
+	cairo_show_text (cr,pt.text)
 	cairo_stroke (cr)
 end
 
@@ -111,28 +106,28 @@ function conky_albumart()
 	if conky_window==nil then return end
 
 	-- Get metadata
-	local metadata = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"xesam:title{{ uc(title) }}\nxesam:artist{{ uc(artist) }}\nxesam:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nxesam:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
+	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"xesam:title{{ uc(title) }}\nxesam:artist{{ uc(artist) }}\nxesam:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nxesam:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
 
-	if (metadata==nil or metadata=="") then return end
+	if (metadata == nil or metadata == "") then return end
 
 	local s,f,meta_art
 
-	s,f,text_table['title']['text'] = metadata:find("xesam:title(.-)\n")
-	s,f,text_table['artist']['text'] = metadata:find("xesam:artist(.-)\n")
-	s,f,text_table['pos']['text'] = metadata:find("xesam:pos(.-)\n")
-	s,f,meta_art = metadata:find("xesam:albumArtfile://%s*(.-)\n")
+	s,f,text_table['title']['text']=metadata:find("xesam:title(.-)\n")
+	s,f,text_table['artist']['text']=metadata:find("xesam:artist(.-)\n")
+	s,f,text_table['pos']['text']=metadata:find("xesam:pos(.-)\n")
+	s,f,meta_art=metadata:find("xesam:albumArtfile://%s*(.-)\n")
 
-	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
+	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
 
 	local cr=cairo_create(cs)
 
 	-- Draw cover with frame
-	draw_imlib2_image(cr, meta_art)
+	draw_imlib2_image(cr,meta_art)
 
 	-- Draw text
-	draw_text(cr, text_table['title'])
-	draw_text(cr, text_table['artist'])
-	draw_text(cr, text_table['pos'])
+	draw_text(cr,text_table['title'])
+	draw_text(cr,text_table['artist'])
+	draw_text(cr,text_table['pos'])
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
