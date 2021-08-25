@@ -53,8 +53,8 @@ time_radius=20
 time_width_1=9
 time_width_2=11
 time_width_3=14
-time_spacing_1=time_width_1+4
-time_spacing_2=time_width_2+4
+time_spacing_2=(time_width_1+time_width_2)/2+3
+time_spacing_3=(time_width_2+time_width_3)/2+3
 time_start_angle=-55
 time_end_angle=180
 
@@ -83,7 +83,7 @@ bat_y=415
 bat_radius=10
 bat_width_1=bat_radius*2
 bat_width_2=12
-bat_spacing=bat_width_1-1
+bat_spacing_2=(bat_width_1+bat_width_2)/2+3
 bat_start_angle_1=0
 bat_end_angle_1=360
 bat_start_angle_2=-55
@@ -256,7 +256,7 @@ rings_table = {
 		fg_color=color_fg,
 		fg_alpha=alpha_fg,
 		x=time_x, y=time_y,
-		radius=time_radius+time_spacing_1,
+		radius=time_radius+time_spacing_2,
 		width=time_width_2,
 		start_angle=time_start_angle,
 		end_angle=time_end_angle,
@@ -271,7 +271,7 @@ rings_table = {
 		fg_color=color_fg,
 		fg_alpha=alpha_fg,
 		x=time_x, y=time_y,
-		radius=time_radius+time_spacing_1+time_spacing_2,
+		radius=time_radius+time_spacing_2+time_spacing_3,
 		width=time_width_3,
 		start_angle=time_start_angle,
 		end_angle=time_end_angle,
@@ -333,7 +333,7 @@ rings_table = {
 		fg_color=color_fg,
 		fg_alpha=alpha_fg,
 		x=bat_x, y=bat_y,
-		radius=bat_radius+bat_spacing,
+		radius=bat_radius+bat_spacing_2,
 		width=bat_width_2,
 		start_angle=bat_start_angle_2,
 		end_angle=bat_end_angle_2,
