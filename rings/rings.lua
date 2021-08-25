@@ -84,8 +84,8 @@ bat_radius=10
 bat_width_1=bat_radius*2
 bat_width_2=12
 bat_spacing_2=(bat_width_1+bat_width_2)/2+3
-bat_start_angle_1=0
-bat_end_angle_1=360
+bat_start_angle_1=-180
+bat_end_angle_1=180
 bat_start_angle_2=-55
 bat_end_angle_2=180
 
