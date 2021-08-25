@@ -350,7 +350,7 @@ require 'cairo'
 -- Function rgb_to_r_g_b
 ---------------------------------------
 function rgb_to_r_g_b(color,alpha)
-	return((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha
+	return ((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha
 end
 
 ---------------------------------------
@@ -406,7 +406,7 @@ function conky_rings()
 	rings_table.upspeed.arg=net_interface
 	rings_table.downspeed.arg=net_interface
 
-	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual, conky_window.width,conky_window.height)
+	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
 
 	local cr=cairo_create(cs)
 
