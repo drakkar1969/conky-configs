@@ -326,6 +326,19 @@ end
 -- Function draw_clock_hands
 ---------------------------------------
 function draw_clock_hands(cr,xc,yc)
+	function draw_angle_line(cr,xs,ys,radius,angle,w,color,alpha)
+		local xe=xs+radius*math.sin(angle)
+		local ye=ys-radius*math.cos(angle)
+
+		cairo_move_to(cr,xs,ys)
+		cairo_line_to(cr,xe,ye)
+
+		cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND)
+		cairo_set_line_width(cr,w)
+		cairo_set_source_rgba(cr,rgb_to_r_g_b(color,alpha))
+		cairo_stroke(cr)
+	end
+
 	local secs=os.date("%S")
 	local mins=os.date("%M")
 	local hours=os.date("%I")
@@ -335,34 +348,14 @@ function draw_clock_hands(cr,xc,yc)
 	local hours_arc=(2*math.pi/12)*hours+mins_arc/12
 
 	-- Draw hour hand
-	local xh=xc+0.7*clock_r*math.sin(hours_arc)
-	local yh=yc-0.7*clock_r*math.cos(hours_arc)
-	cairo_move_to(cr,xc,yc)
-	cairo_line_to(cr,xh,yh)
-
-	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND)
-	cairo_set_line_width(cr,5)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(clock_color,clock_alpha))
-	cairo_stroke(cr)
+	draw_angle_line(cr,xc,yc,0.7*clock_r,hours_arc,5,clock_color,clock_alpha)
 
 	-- Draw minute hand
-	local xm=xc+clock_r*math.sin(mins_arc)
-	local ym=yc-clock_r*math.cos(mins_arc)
-	cairo_move_to(cr,xc,yc)
-	cairo_line_to(cr,xm,ym)
-
-	cairo_set_line_width(cr,3)
-	cairo_stroke(cr)
+	draw_angle_line(cr,xc,yc,clock_r,mins_arc,3,clock_color,clock_alpha)
 
 	-- Draw seconds hand
 	if clock_show_seconds then
-		local xs=xc+clock_r*math.sin(secs_arc)
-		local ys=yc-clock_r*math.cos(secs_arc)
-		cairo_move_to(cr,xc,yc)
-		cairo_line_to(cr,xs,ys)
-
-		cairo_set_line_width(cr,1)
-		cairo_stroke(cr)
+		draw_angle_line(cr,xc,yc,clock_r,secs_arc,1,clock_color,clock_alpha)
 	end
 end
 
