@@ -390,19 +390,17 @@ end
 -- Function draw_graph
 ---------------------------------------
 function draw_graph(cr,pt)
-	local data=pt.data
-
 	-- Get number of bars
 	local n_bars=pt.w/(pt.bar_w+pt.bar_gap)
 
 	-- Update graph data
 	for i=1, n_bars do
-		if data[i+1] == nil then data[i+1]=0 end
+		if pt.data[i+1] == nil then pt.data[i+1]=0 end
 
-		data[i]=data[i+1]
+		pt.data[i]=pt.data[i+1]
 
 		if i == n_bars then
-			data[n_bars]=get_conky_string(pt.name,pt.arg)
+			pt.data[n_bars]=get_conky_string(pt.name,pt.arg)
 		end
 	end
 
@@ -411,10 +409,10 @@ function draw_graph(cr,pt)
 	-- Draw graph bars
 	for i=1, n_bars do
 		-- Check that log of data[i] will not be negative
-		if data[i] < 1 then data[i]=1 end
+		if pt.data[i] < 1 then pt.data[i]=1 end
 
 		-- Transform to log scale
-		bar_h=(math.log10(data[i])/math.log10(pt.max))*pt.h
+		bar_h=(math.log10(pt.data[i])/math.log10(pt.max))*pt.h
 
 		-- Check limits of bar height
 		if bar_h < 0 then bar_h=0 end
