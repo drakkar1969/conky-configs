@@ -3,6 +3,8 @@
 ---------------------------------------
 player_name="Lollypop"
 
+align_r=false
+
 image_size=80
 frame_padding=1
 frame_color=0x383c4a
@@ -59,7 +61,11 @@ end
 -- Function draw_frame
 ---------------------------------------
 function draw_frame(cr)
-	cairo_rectangle(cr,0,0,image_size+2*frame_padding,image_size+2*frame_padding)
+	if align_r then
+		cairo_rectangle(cr, conky_window.width-(image_size+2*frame_padding), 0, image_size+2*frame_padding,image_size+2*frame_padding)
+	else
+		cairo_rectangle(cr,0,0,image_size+2*frame_padding,image_size+2*frame_padding)
+	end
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(frame_color,frame_alpha))
 	cairo_fill(cr)
 end
@@ -83,7 +89,11 @@ function draw_imlib2_image(cr, file)
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
-	imlib_render_image_on_drawable(frame_padding,frame_padding)
+	if align_r then
+		imlib_render_image_on_drawable(conky_window.width-(image_size+frame_padding),frame_padding)
+	else
+		imlib_render_image_on_drawable(frame_padding,frame_padding)
+	end
 	imlib_free_image()
 end
 
@@ -94,7 +104,13 @@ function draw_text(cr,pt)
 	cairo_select_font_face (cr,pt.font,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size (cr,pt.font_size)
 	cairo_set_source_rgba (cr,rgb_to_r_g_b(pt.color,pt.alpha))
-	cairo_move_to (cr,pt.x,pt.y)
+	if align_r then
+		local extents=cairo_text_extents_t:create()
+		cairo_text_extents(cr,pt.text,extents)
+		cairo_move_to (cr,conky_window.width-pt.x-extents.width,pt.y)
+	else
+		cairo_move_to (cr,pt.x,pt.y)
+	end
 	cairo_show_text (cr,pt.text)
 	cairo_stroke (cr)
 end
@@ -102,8 +118,12 @@ end
 ---------------------------------------
 -- Function conky_albumart
 ---------------------------------------
-function conky_albumart()
+function conky_albumart(align)
 	if conky_window==nil then return end
+
+	if align == 'right' then
+		align_r=true
+	end
 
 	-- Get metadata
 	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"xesam:title{{ uc(title) }}\nxesam:artist{{ uc(artist) }}\nxesam:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nxesam:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))

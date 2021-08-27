@@ -18,4 +18,3 @@ conky -d -c $CONKYFOLDER/rings/rings.conf
 
 # MPRIS
 conky -d -c $CONKYFOLDER/mpris/mpris.conf
-# conky -d -c $CONKYFOLDER/mpris_right/mpris.conf
