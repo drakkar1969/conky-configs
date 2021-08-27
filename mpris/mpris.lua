@@ -73,7 +73,7 @@ end
 ---------------------------------------
 -- Function draw_imlib2_image
 ---------------------------------------
-function draw_imlib2_image(cr, file)
+function draw_imlib2_image(cr,file)
 	local image=imlib_load_image(file)
 	if image == nil then return end
 
@@ -101,18 +101,18 @@ end
 -- Function draw_text
 ---------------------------------------
 function draw_text(cr,pt)
-	cairo_select_font_face (cr,pt.font,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size (cr,pt.font_size)
-	cairo_set_source_rgba (cr,rgb_to_r_g_b(pt.color,pt.alpha))
+	cairo_select_font_face(cr,pt.font,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr,pt.font_size)
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
 	if align_r then
 		local extents=cairo_text_extents_t:create()
 		cairo_text_extents(cr,pt.text,extents)
-		cairo_move_to (cr,conky_window.width-pt.x-extents.width,pt.y)
+		cairo_move_to(cr,conky_window.width-pt.x-extents.width,pt.y)
 	else
-		cairo_move_to (cr,pt.x,pt.y)
+		cairo_move_to(cr,pt.x,pt.y)
 	end
-	cairo_show_text (cr,pt.text)
-	cairo_stroke (cr)
+	cairo_show_text(cr,pt.text)
+	cairo_stroke(cr)
 end
 
 ---------------------------------------
