@@ -267,7 +267,8 @@ graphs_table = {
 		w=432, h=26,
 		bar_w=graph_bar_width,
 		bar_gap=graph_bar_gap,
-		data={}
+		data={},
+		log=true
 	}
 }
 
@@ -408,11 +409,13 @@ function draw_graph(cr,pt)
 
 	-- Draw graph bars
 	for i=1, n_bars do
-		-- Check that log of data[i] will not be negative
-		if pt.data[i] < 1 then pt.data[i]=1 end
-
 		-- Transform to log scale
-		bar_h=(math.log10(pt.data[i])/math.log10(pt.max))*pt.h
+		if pt.log then
+			if pt.data[i] < 1 then pt.data[i]=1 end
+			bar_h=(math.log10(pt.data[i])/math.log10(pt.max))*pt.h
+		else
+			bar_h=(pt.data[i]/pt.max)*pt.h
+		end
 
 		-- Check limits of bar height
 		if bar_h < 0 then bar_h=0 end
