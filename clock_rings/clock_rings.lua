@@ -392,22 +392,23 @@ end
 function draw_graph(cr,pt)
 	local data=pt.data
 
+	-- Get number of bars
 	local n_bars=pt.w/(pt.bar_w+pt.bar_gap)
 
-	local value=get_conky_string(pt.name,pt.arg)
-
+	-- Update graph data
 	for i=1, n_bars do
 		if data[i+1] == nil then data[i+1]=0 end
 
 		data[i]=data[i+1]
 
 		if i == n_bars then
-			data[n_bars]=value
+			data[n_bars]=get_conky_string(pt.name,pt.arg)
 		end
 	end
 
 	local bar_h
 
+	-- Draw graph bars
 	for i=1, n_bars do
 		-- Check that log of data[i] will not be negative
 		if data[i] < 1 then data[i]=1 end
@@ -422,7 +423,7 @@ function draw_graph(cr,pt)
 		-- Draw bar only if at least 1 full pixel height
 		if bar_h >= 1 then
 			cairo_move_to(cr,pt.x+(pt.bar_w/2)+((i-1)*(pt.bar_w+pt.bar_gap)),pt.y)
-			cairo_line_to(cr,pt.x+(pt.bar_w/2)+((i-1)*(pt.bar_w+pt.bar_gap)),pt.y-bar_h)
+			cairo_rel_line_to(cr,0,-bar_h)
 
 			cairo_set_line_width(cr,pt.bar_w)
 			cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
