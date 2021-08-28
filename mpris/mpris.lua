@@ -69,12 +69,9 @@ end
 ---------------------------------------
 function draw_frame(cr,pt)
 	local frame_size=pt.size+2*pt.pad
+	local frame_x=(align_r and (conky_window.width-frame_size) or 0)
 
-	if align_r then
-		cairo_rectangle(cr,conky_window.width-frame_size,0,frame_size,frame_size)
-	else
-		cairo_rectangle(cr,0,0,frame_size,frame_size)
-	end
+	cairo_rectangle(cr,frame_x,0,frame_size,frame_size)
 
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
 	cairo_fill(cr)
@@ -97,11 +94,9 @@ function draw_imlib2_image(cr,pt)
 
 	imlib_context_set_image(scaled)
 
-	if align_r then
-		imlib_render_image_on_drawable(conky_window.width-(pt.size+pt.pad),pt.pad)
-	else
-		imlib_render_image_on_drawable(pt.pad,pt.pad)
-	end
+	local image_x=(align_r and (conky_window.width-(pt.size+pt.pad)) or pt.pad)
+
+	imlib_render_image_on_drawable(image_x,pt.pad)
 
 	imlib_free_image()
 end
@@ -114,14 +109,15 @@ function draw_text(cr,pt)
 	cairo_set_font_size(cr,pt.font_size)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
 
+	local text_x=pt.x
+
 	if align_r then
 		local extents=cairo_text_extents_t:create()
 		cairo_text_extents(cr,pt.tag,extents)
-		cairo_move_to(cr,conky_window.width-pt.x-extents.width,pt.y)
-	else
-		cairo_move_to(cr,pt.x,pt.y)
+		text_x=conky_window.width-pt.x-extents.width
 	end
 
+	cairo_move_to(cr,text_x,pt.y)
 	cairo_show_text(cr,pt.tag)
 	cairo_stroke(cr)
 end
