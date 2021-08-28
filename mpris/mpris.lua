@@ -43,7 +43,10 @@ tags_table = {
 		x=0, y=text_y+83
 	},
 	cover = {
-		text=""
+		text="",
+		x=0,y=0,
+		size=cover_size,
+		pad=frame_padding
 	}
 }
 
@@ -77,27 +80,24 @@ end
 ---------------------------------------
 -- Function draw_imlib2_image
 ---------------------------------------
-function draw_imlib2_image(cr,file)
-	local image=imlib_load_image(file)
+function draw_imlib2_image(cr,pt)
+	local image=imlib_load_image(pt.text)
 	if image == nil then return end
 
 	draw_frame(cr)
 
 	imlib_context_set_image(image)
 
-	local width=imlib_image_get_width()
-	local height=imlib_image_get_height()
-
-	local scaled=imlib_create_cropped_scaled_image(0,0,width,height,cover_size,cover_size)
+	local scaled=imlib_create_cropped_scaled_image(0,0,imlib_image_get_width(),imlib_image_get_height(),pt.size,pt.size)
 
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
 
 	if align_r then
-		imlib_render_image_on_drawable(conky_window.width-(cover_size+frame_padding),frame_padding)
+		imlib_render_image_on_drawable(conky_window.width-(pt.size+pt.pad),pt.pad)
 	else
-		imlib_render_image_on_drawable(frame_padding,frame_padding)
+		imlib_render_image_on_drawable(pt.pad,pt.pad)
 	end
 
 	imlib_free_image()
@@ -155,7 +155,7 @@ function conky_albumart()
 	local cr=cairo_create(cs)
 
 	-- Draw cover with frame
-	draw_imlib2_image(cr,tags_table.cover.text)
+	draw_imlib2_image(cr,tags_table.cover)
 
 	-- Draw text
 	draw_text(cr,tags_table.title)
