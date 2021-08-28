@@ -39,7 +39,7 @@ tags_table = {
 		font=tag_font,
 		font_size=13,
 		color=0x383c4a,
-		alpha=0.7,
+		alpha=0.75,
 		x=0, y=tag_y+83
 	},
 	cover = {
