@@ -66,6 +66,7 @@ function draw_frame(cr)
 	else
 		cairo_rectangle(cr,0,0,image_size+2*frame_padding,image_size+2*frame_padding)
 	end
+
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(frame_color,frame_alpha))
 	cairo_fill(cr)
 end
@@ -89,11 +90,13 @@ function draw_imlib2_image(cr,file)
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
+
 	if align_r then
 		imlib_render_image_on_drawable(conky_window.width-(image_size+frame_padding),frame_padding)
 	else
 		imlib_render_image_on_drawable(frame_padding,frame_padding)
 	end
+
 	imlib_free_image()
 end
 
@@ -104,6 +107,7 @@ function draw_text(cr,pt)
 	cairo_select_font_face(cr,pt.font,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size(cr,pt.font_size)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
+
 	if align_r then
 		local extents=cairo_text_extents_t:create()
 		cairo_text_extents(cr,pt.text,extents)
@@ -111,6 +115,7 @@ function draw_text(cr,pt)
 	else
 		cairo_move_to(cr,pt.x,pt.y)
 	end
+
 	cairo_show_text(cr,pt.text)
 	cairo_stroke(cr)
 end
