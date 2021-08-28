@@ -24,7 +24,7 @@ tags_table = {
 		font_size=22,
 		color=0x383c4a,
 		alpha=1,
-		x=tag_x, y=tag_y+25
+		x=tag_x, y=tag_y+53
 	},
 	artist = {
 		tag="artist",
@@ -32,7 +32,7 @@ tags_table = {
 		font_size=16,
 		color=0x21232b,
 		alpha=1,
-		x=tag_x, y=tag_y+53
+		x=tag_x, y=tag_y+21
 	},
 	status = {
 		tag="status",
