@@ -5,13 +5,13 @@ player_name="Lollypop"
 
 align_r=false
 
-image_size=80
+cover_size=80
 frame_padding=1
 frame_color=0x383c4a
 frame_alpha=1
 
 text_font="Ubuntu"
-text_x=image_size+2*frame_padding+20
+text_x=cover_size+2*frame_padding+20
 text_y=0
 
 ---------------------------------------
@@ -62,9 +62,9 @@ end
 ---------------------------------------
 function draw_frame(cr)
 	if align_r then
-		cairo_rectangle(cr, conky_window.width-(image_size+2*frame_padding), 0, image_size+2*frame_padding,image_size+2*frame_padding)
+		cairo_rectangle(cr, conky_window.width-(cover_size+2*frame_padding), 0, cover_size+2*frame_padding,cover_size+2*frame_padding)
 	else
-		cairo_rectangle(cr,0,0,image_size+2*frame_padding,image_size+2*frame_padding)
+		cairo_rectangle(cr,0,0,cover_size+2*frame_padding,cover_size+2*frame_padding)
 	end
 
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(frame_color,frame_alpha))
@@ -85,14 +85,14 @@ function draw_imlib2_image(cr,file)
 	local width=imlib_image_get_width()
 	local height=imlib_image_get_height()
 
-	local scaled=imlib_create_cropped_scaled_image(0,0,width,height,image_size,image_size)
+	local scaled=imlib_create_cropped_scaled_image(0,0,width,height,cover_size,cover_size)
 
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
 
 	if align_r then
-		imlib_render_image_on_drawable(conky_window.width-(image_size+frame_padding),frame_padding)
+		imlib_render_image_on_drawable(conky_window.width-(cover_size+frame_padding),frame_padding)
 	else
 		imlib_render_image_on_drawable(frame_padding,frame_padding)
 	end
