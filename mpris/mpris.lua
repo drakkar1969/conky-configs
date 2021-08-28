@@ -78,9 +78,9 @@ function draw_frame(cr,pt)
 end
 
 ---------------------------------------
--- Function draw_imlib2_image
+-- Function draw_cover
 ---------------------------------------
-function draw_imlib2_image(cr,pt)
+function draw_cover(cr,pt)
 	local image=imlib_load_image(pt.tag)
 	if image == nil then return end
 
@@ -154,7 +154,7 @@ function conky_albumart()
 	local cr=cairo_create(cs)
 
 	-- Draw cover with frame
-	draw_imlib2_image(cr,tags_table.cover)
+	draw_cover(cr,tags_table.cover)
 
 	-- Draw text
 	draw_text(cr,tags_table.title)
