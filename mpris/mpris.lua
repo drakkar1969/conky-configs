@@ -116,14 +116,19 @@ function draw_text(cr,pt)
 end
 
 ---------------------------------------
--- Function conky_albumart
+-- Function conky_set_align
 ---------------------------------------
-function conky_albumart(align)
-	if conky_window==nil then return end
-
+function conky_set_align(align)
 	if align == 'right' then
 		align_r=true
 	end
+end
+
+---------------------------------------
+-- Function conky_albumart
+---------------------------------------
+function conky_albumart()
+	if conky_window==nil then return end
 
 	-- Get metadata
 	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"xesam:title{{ uc(title) }}\nxesam:artist{{ uc(artist) }}\nxesam:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nxesam:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
