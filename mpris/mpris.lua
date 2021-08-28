@@ -5,7 +5,7 @@ player_name="Lollypop"
 
 align_r=false
 
-cover_size=80
+cover_size=60
 frame_padding=1
 frame_color=0x383c4a
 frame_alpha=1
@@ -24,7 +24,7 @@ text_table = {
 		font_size=22,
 		color=0x383c4a,
 		alpha=1,
-		x=text_x, y=text_y+23
+		x=text_x, y=text_y+25
 	},
 	artist = {
 		text="artist",
@@ -32,7 +32,7 @@ text_table = {
 		font_size=16,
 		color=0x21232b,
 		alpha=1,
-		x=text_x, y=text_y+51
+		x=text_x, y=text_y+53
 	},
 	pos = {
 		text="status",
@@ -40,7 +40,7 @@ text_table = {
 		font_size=13,
 		color=0x383c4a,
 		alpha=0.7,
-		x=text_x, y=text_y+76
+		x=0, y=text_y+83
 	}
 }
 
