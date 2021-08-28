@@ -17,7 +17,7 @@ text_y=0
 ---------------------------------------
 -- Text table
 ---------------------------------------
-text_table = {
+tags_table = {
 	title = {
 		text="title",
 		font=text_font,
@@ -41,6 +41,9 @@ text_table = {
 		color=0x383c4a,
 		alpha=0.7,
 		x=0, y=text_y+83
+	},
+	cover = {
+		text=""
 	}
 }
 
@@ -136,28 +139,28 @@ function conky_albumart()
 	if conky_window==nil then return end
 
 	-- Get metadata
-	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"parse:title{{ uc(title) }}\nparse:artist{{ uc(artist) }}\nparse:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nparse:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
+	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"parse:title{{ uc(title) }}\nparse:artist{{ uc(artist) }}\nparse:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nparse:cover{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
 
 	if (metadata == nil or metadata == "") then return end
 
-	local s,f,meta_art
+	local s,f
 
-	s,f,text_table.title.text=metadata:find("parse:title(.-)\n")
-	s,f,text_table.artist.text=metadata:find("parse:artist(.-)\n")
-	s,f,text_table.pos.text=metadata:find("parse:pos(.-)\n")
-	s,f,meta_art=metadata:find("parse:albumArtfile://%s*(.-)\n")
+	s,f,tags_table.title.text=metadata:find("parse:title(.-)\n")
+	s,f,tags_table.artist.text=metadata:find("parse:artist(.-)\n")
+	s,f,tags_table.pos.text=metadata:find("parse:pos(.-)\n")
+	s,f,tags_table.cover.text=metadata:find("parse:coverfile://(.-)\n")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
 
 	local cr=cairo_create(cs)
 
 	-- Draw cover with frame
-	draw_imlib2_image(cr,meta_art)
+	draw_imlib2_image(cr,tags_table.cover.text)
 
 	-- Draw text
-	draw_text(cr,text_table.title)
-	draw_text(cr,text_table.artist)
-	draw_text(cr,text_table.pos)
+	draw_text(cr,tags_table.title)
+	draw_text(cr,tags_table.artist)
+	draw_text(cr,tags_table.pos)
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
