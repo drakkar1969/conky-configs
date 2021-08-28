@@ -11,7 +11,7 @@ frame_color=0x383c4a
 frame_alpha=1
 
 tag_font="Ubuntu"
-tag_x=cover_size+2*frame_padding+20
+tag_x=cover_size+2*frame_padding+15
 tag_y=0
 
 ---------------------------------------
