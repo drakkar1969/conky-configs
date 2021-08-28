@@ -136,16 +136,16 @@ function conky_albumart()
 	if conky_window==nil then return end
 
 	-- Get metadata
-	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"xesam:title{{ uc(title) }}\nxesam:artist{{ uc(artist) }}\nxesam:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nxesam:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
+	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"parse:title{{ uc(title) }}\nparse:artist{{ uc(artist) }}\nparse:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nparse:albumArt{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
 
 	if (metadata == nil or metadata == "") then return end
 
 	local s,f,meta_art
 
-	s,f,text_table.title.text=metadata:find("xesam:title(.-)\n")
-	s,f,text_table.artist.text=metadata:find("xesam:artist(.-)\n")
-	s,f,text_table.pos.text=metadata:find("xesam:pos(.-)\n")
-	s,f,meta_art=metadata:find("xesam:albumArtfile://%s*(.-)\n")
+	s,f,text_table.title.text=metadata:find("parse:title(.-)\n")
+	s,f,text_table.artist.text=metadata:find("parse:artist(.-)\n")
+	s,f,text_table.pos.text=metadata:find("parse:pos(.-)\n")
+	s,f,meta_art=metadata:find("parse:albumArtfile://%s*(.-)\n")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
 
