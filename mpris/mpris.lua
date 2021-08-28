@@ -44,7 +44,6 @@ tags_table = {
 	},
 	cover = {
 		tag="",
-		x=0,y=0,
 		size=cover_size,
 		frame = {
 			pad=frame_padding,
