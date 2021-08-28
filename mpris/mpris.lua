@@ -68,10 +68,12 @@ end
 -- Function draw_frame
 ---------------------------------------
 function draw_frame(cr,pt)
+	local frame_size=pt.size+2*pt.pad
+
 	if align_r then
-		cairo_rectangle(cr, conky_window.width-(pt.size+2*pt.pad), 0, pt.size+2*pt.pad,pt.size+2*pt.pad)
+		cairo_rectangle(cr,conky_window.width-frame_size,0,frame_size,frame_size)
 	else
-		cairo_rectangle(cr,0,0,pt.size+2*pt.pad,pt.size+2*pt.pad)
+		cairo_rectangle(cr,0,0,frame_size,frame_size)
 	end
 
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
