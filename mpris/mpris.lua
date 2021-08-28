@@ -12,7 +12,7 @@ frame_alpha=1
 
 text_font="Ubuntu"
 text_x=image_size+2*frame_padding+20
-text_y=23
+text_y=0
 
 ---------------------------------------
 -- Text table
@@ -24,7 +24,7 @@ text_table = {
 		font_size=22,
 		color=0x383c4a,
 		alpha=1,
-		x=text_x, y=text_y
+		x=text_x, y=text_y+23
 	},
 	artist = {
 		text="artist",
@@ -32,7 +32,7 @@ text_table = {
 		font_size=16,
 		color=0x21232b,
 		alpha=1,
-		x=text_x, y=text_y+28
+		x=text_x, y=text_y+51
 	},
 	pos = {
 		text="status",
@@ -40,7 +40,7 @@ text_table = {
 		font_size=13,
 		color=0x383c4a,
 		alpha=0.7,
-		x=text_x, y=text_y+53
+		x=text_x, y=text_y+76
 	}
 }
 
