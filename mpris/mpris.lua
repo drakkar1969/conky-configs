@@ -10,40 +10,40 @@ frame_padding=1
 frame_color=0x383c4a
 frame_alpha=1
 
-text_font="Ubuntu"
-text_x=cover_size+2*frame_padding+20
-text_y=0
+tag_font="Ubuntu"
+tag_x=cover_size+2*frame_padding+20
+tag_y=0
 
 ---------------------------------------
--- Text table
+-- Tag table
 ---------------------------------------
 tags_table = {
 	title = {
-		text="title",
-		font=text_font,
+		tag="title",
+		font=tag_font,
 		font_size=22,
 		color=0x383c4a,
 		alpha=1,
-		x=text_x, y=text_y+25
+		x=tag_x, y=tag_y+25
 	},
 	artist = {
-		text="artist",
-		font=text_font,
+		tag="artist",
+		font=tag_font,
 		font_size=16,
 		color=0x21232b,
 		alpha=1,
-		x=text_x, y=text_y+53
+		x=tag_x, y=tag_y+53
 	},
 	pos = {
-		text="status",
-		font=text_font,
+		tag="status",
+		font=tag_font,
 		font_size=13,
 		color=0x383c4a,
 		alpha=0.7,
-		x=0, y=text_y+83
+		x=0, y=tag_y+83
 	},
 	cover = {
-		text="",
+		tag="",
 		x=0,y=0,
 		size=cover_size,
 		frame = {
@@ -85,7 +85,7 @@ end
 -- Function draw_imlib2_image
 ---------------------------------------
 function draw_imlib2_image(cr,pt)
-	local image=imlib_load_image(pt.text)
+	local image=imlib_load_image(pt.tag)
 	if image == nil then return end
 
 	draw_frame(cr,pt)
@@ -117,13 +117,13 @@ function draw_text(cr,pt)
 
 	if align_r then
 		local extents=cairo_text_extents_t:create()
-		cairo_text_extents(cr,pt.text,extents)
+		cairo_text_extents(cr,pt.tag,extents)
 		cairo_move_to(cr,conky_window.width-pt.x-extents.width,pt.y)
 	else
 		cairo_move_to(cr,pt.x,pt.y)
 	end
 
-	cairo_show_text(cr,pt.text)
+	cairo_show_text(cr,pt.tag)
 	cairo_stroke(cr)
 end
 
@@ -149,10 +149,10 @@ function conky_albumart()
 
 	local s,f
 
-	s,f,tags_table.title.text=metadata:find("parse:title(.-)\n")
-	s,f,tags_table.artist.text=metadata:find("parse:artist(.-)\n")
-	s,f,tags_table.pos.text=metadata:find("parse:pos(.-)\n")
-	s,f,tags_table.cover.text=metadata:find("parse:coverfile://(.-)\n")
+	s,f,tags_table.title.tag=metadata:find("parse:title(.-)\n")
+	s,f,tags_table.artist.tag=metadata:find("parse:artist(.-)\n")
+	s,f,tags_table.pos.tag=metadata:find("parse:pos(.-)\n")
+	s,f,tags_table.cover.tag=metadata:find("parse:coverfile://(.-)\n")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
 
