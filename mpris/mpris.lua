@@ -34,7 +34,7 @@ tags_table = {
 		alpha=1,
 		x=tag_x, y=tag_y+53
 	},
-	pos = {
+	status = {
 		tag="status",
 		font=tag_font,
 		font_size=13,
@@ -138,7 +138,7 @@ function conky_albumart()
 	if conky_window==nil then return end
 
 	-- Get metadata
-	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"parse:title{{ uc(title) }}\nparse:artist{{ uc(artist) }}\nparse:pos{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nparse:cover{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
+	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"parse:title{{ uc(title) }}\nparse:artist{{ uc(artist) }}\nparse:status{{ uc(status) }}: {{ duration(position) }} | {{ duration(mpris:length) }}\nparse:cover{{ mpris:artUrl }}\n\" 2>/dev/null'}", player_name))
 
 	if (metadata == nil or metadata == "") then return end
 
@@ -146,7 +146,7 @@ function conky_albumart()
 
 	s,f,tags_table.title.tag=metadata:find("parse:title(.-)\n")
 	s,f,tags_table.artist.tag=metadata:find("parse:artist(.-)\n")
-	s,f,tags_table.pos.tag=metadata:find("parse:pos(.-)\n")
+	s,f,tags_table.status.tag=metadata:find("parse:status(.-)\n")
 	s,f,tags_table.cover.tag=metadata:find("parse:coverfile://(.-)\n")
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
@@ -159,7 +159,7 @@ function conky_albumart()
 	-- Draw text
 	draw_text(cr,tags_table.title)
 	draw_text(cr,tags_table.artist)
-	draw_text(cr,tags_table.pos)
+	draw_text(cr,tags_table.status)
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
