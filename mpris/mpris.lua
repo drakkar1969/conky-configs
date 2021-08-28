@@ -46,7 +46,11 @@ tags_table = {
 		text="",
 		x=0,y=0,
 		size=cover_size,
-		pad=frame_padding
+		frame = {
+			pad=frame_padding,
+			color=frame_color,
+			alpha=frame_alpha
+		}
 	}
 }
 
@@ -66,14 +70,14 @@ end
 ---------------------------------------
 -- Function draw_frame
 ---------------------------------------
-function draw_frame(cr)
+function draw_frame(cr,pt)
 	if align_r then
-		cairo_rectangle(cr, conky_window.width-(cover_size+2*frame_padding), 0, cover_size+2*frame_padding,cover_size+2*frame_padding)
+		cairo_rectangle(cr, conky_window.width-(pt.size+2*pt.frame.pad), 0, pt.size+2*pt.frame.pad,pt.size+2*pt.frame.pad)
 	else
-		cairo_rectangle(cr,0,0,cover_size+2*frame_padding,cover_size+2*frame_padding)
+		cairo_rectangle(cr,0,0,pt.size+2*pt.frame.pad,pt.size+2*pt.frame.pad)
 	end
 
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(frame_color,frame_alpha))
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.frame.color,pt.frame.alpha))
 	cairo_fill(cr)
 end
 
@@ -84,7 +88,7 @@ function draw_imlib2_image(cr,pt)
 	local image=imlib_load_image(pt.text)
 	if image == nil then return end
 
-	draw_frame(cr)
+	draw_frame(cr,pt)
 
 	imlib_context_set_image(image)
 
@@ -95,9 +99,9 @@ function draw_imlib2_image(cr,pt)
 	imlib_context_set_image(scaled)
 
 	if align_r then
-		imlib_render_image_on_drawable(conky_window.width-(pt.size+pt.pad),pt.pad)
+		imlib_render_image_on_drawable(conky_window.width-(pt.size+pt.frame.pad),pt.frame.pad)
 	else
-		imlib_render_image_on_drawable(pt.pad,pt.pad)
+		imlib_render_image_on_drawable(pt.frame.pad,pt.frame.pad)
 	end
 
 	imlib_free_image()
