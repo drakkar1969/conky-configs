@@ -30,7 +30,7 @@ frame_alpha=1
 
 -- Tags
 tag_font="Ubuntu"
-tag_fs_title=23
+tag_fs_title=24
 tag_fs_artist=17
 tag_color_title=0x383c4a
 tag_color_artist=0x21232b
