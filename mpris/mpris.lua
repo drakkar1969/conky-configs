@@ -33,8 +33,8 @@ cover = {
 }
 
 -- Tags
-tag_x=cover.size+2*gap_x
-tag_y=header_y+gap_y
+tag_x=cover.x+cover.size+2*gap_x
+tag_y=cover.y
 
 -- Lines
 line_color=main_color
@@ -45,7 +45,7 @@ status_icon = {
 	file="",
 	size=11,
 	alpha=0.7,
-	x=0,
+	x=cover.x,
 	y=cover.y+cover.size+gap_y
 }
 
@@ -102,8 +102,8 @@ line_table = {
 		color=line_color,
 		alpha=line_alpha,
 		w=2,
-		xs=cover.size+gap_x, ys=cover.y,
-		xe=cover.size+gap_x, ye=cover.y+cover.size
+		xs=cover.x+cover.size+gap_x, ys=cover.y,
+		xe=cover.x+cover.size+gap_x, ye=cover.y+cover.size
 	}
 }
 
