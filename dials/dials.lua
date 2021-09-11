@@ -148,13 +148,12 @@ function draw_dial(cr,pt)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(text_color_perc,text_alpha_perc))
 
 	local extents=cairo_text_extents_t:create()
-	cairo_text_extents(cr,value..pt.suffix,extents)
+	local value_text=value..pt.suffix
 
-	local text_x=dial_x-(extents.width/2)
-	local text_y=dial_init_y+(extents.height/2)
+	cairo_text_extents(cr,value_text,extents)
 
-	cairo_move_to(cr,text_x,text_y)
-	cairo_show_text(cr,value..pt.suffix)
+	cairo_move_to(cr,dial_x-(extents.width/2),dial_init_y+(extents.height/2))
+	cairo_show_text(cr,value_text)
 	cairo_stroke(cr)
 
 	-- Draw label text
@@ -163,10 +162,8 @@ function draw_dial(cr,pt)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(text_color_label,text_alpha_label))
 
 	cairo_text_extents(cr,pt.label,extents)
-	text_x=dial_x-(extents.width/2)
-	text_y=label_y+extents.height
 
-	cairo_move_to(cr,text_x,text_y)
+	cairo_move_to(cr,dial_x-(extents.width/2),label_y+extents.height)
 	cairo_show_text(cr,pt.label)
 	cairo_stroke(cr)
 end
