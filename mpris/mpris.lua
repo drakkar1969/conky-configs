@@ -51,8 +51,8 @@ line_y_v=header_y+gap_y
 line_width_v=2
 line_height_v=cover.size+2*cover.padding
 
--- Glyph
-status_glyph = {
+-- Status icon
+status_icon = {
 	file="",
 	size=11,
 	alpha=0.7,
@@ -60,14 +60,14 @@ status_glyph = {
 	y=cover.y+cover.size+2*cover.padding+gap_y
 }
 
-glyph_play=string.gsub(conky_config,'mpris.conf','glyphs/play.png')
-glyph_pause=string.gsub(conky_config,'mpris.conf','glyphs/pause.png')
+icon_play=string.gsub(conky_config,'mpris.conf','icons/play.png')
+icon_pause=string.gsub(conky_config,'mpris.conf','icons/pause.png')
 
 -- Bar
 bar_w=200
 bar_h=5
-bar_x=status_glyph.size+gap_x
-bar_y=status_glyph.y+(status_glyph.size-bar_h)/2
+bar_x=status_icon.size+gap_x
+bar_y=status_icon.y+(status_icon.size-bar_h)/2
 bar_color_bg=0x383c4a
 bar_color_fg=0x383c4a
 bar_alpha_bg=0.2
@@ -223,16 +223,16 @@ function draw_line(cr,pt)
 end
 
 ---------------------------------------
--- Function draw_glyph
+-- Function draw_icon
 ---------------------------------------
-function draw_glyph(cr,pt)
+function draw_icon(cr,pt)
 	cairo_save(cr)
 
 	local cs=cairo_image_surface_create_from_png(pt.file)
 
-	local glyph_x=(align_r and (conky_window.width-(pt.x+pt.size)) or pt.x)
+	local icon_x=(align_r and (conky_window.width-(pt.x+pt.size)) or pt.x)
 
-	cairo_set_source_surface(cr,cs,glyph_x,pt.y)
+	cairo_set_source_surface(cr,cs,icon_x,pt.y)
 	cairo_paint_with_alpha(cr,pt.alpha)
 
 	cairo_restore(cr)
@@ -292,12 +292,12 @@ function conky_albumart()
 	s,f,text_table.title.text=metadata:find("tag:title(.-)\n")
 	s,f,text_table.artist.text=metadata:find("tag:artist(.-)\n")
 
-	-- Get status glyph
+	-- Get status icon
 	local status
 
 	s,f,status=metadata:find("tag:status(.-)\n")
 
-	status_glyph.file=((status == "PAUSED") and glyph_pause or glyph_play)
+	status_icon.file=((status == "PAUSED") and icon_pause or icon_play)
 
 	-- Get position/length
 	local pos,len
@@ -326,8 +326,8 @@ function conky_albumart()
 		draw_line(cr,line_table[i])
 	end
 
-	-- Draw status glyph
-	draw_glyph(cr,status_glyph)
+	-- Draw status icon
+	draw_icon(cr,status_icon)
 
 	-- Draw progressbar
 	draw_bar(cr,bar_table.pos)
