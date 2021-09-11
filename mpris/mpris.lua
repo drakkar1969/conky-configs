@@ -106,7 +106,7 @@ line_table = {
 		alpha=line_alpha,
 		w=2,
 		xs=cover.x+cover.size+gap_x, ys=cover.y,
-		xe=cover.x+cover.size+gap_x, ye=cover.y+cover.size
+		xr=0, yr=cover.size
 	}
 }
 
@@ -196,14 +196,13 @@ function draw_cover(cr,pt)
 end
 
 ---------------------------------------
--- Function draw_line
+-- Function draw_rel_line
 ---------------------------------------
-function draw_line(cr,pt)
+function draw_rel_line(cr,pt)
 	local line_xs=(align_r and (conky_window.width-pt.xs) or pt.xs)
-	local line_xe=(align_r and (conky_window.width-pt.xe) or pt.xe)
 
 	cairo_move_to(cr,line_xs,pt.ys)
-	cairo_line_to(cr,line_xe,pt.ye)
+	cairo_rel_line_to(cr,pt.xr,pt.yr)
 
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_BUTT)
 	cairo_set_line_width(cr,pt.w)
@@ -312,7 +311,7 @@ function conky_albumart()
 
 	-- Draw lines
 	for i in pairs(line_table) do
-		draw_line(cr,line_table[i])
+		draw_rel_line(cr,line_table[i])
 	end
 
 	-- Draw status icon
