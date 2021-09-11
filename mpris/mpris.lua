@@ -53,8 +53,6 @@ icon_play=string.gsub(conky_config,'mpris.conf','icons/play.png')
 icon_pause=string.gsub(conky_config,'mpris.conf','icons/pause.png')
 
 -- Bar
-bar_w=200
-bar_h=5
 bar_color_bg=main_color
 bar_color_fg=main_color
 bar_alpha_bg=0.2
@@ -104,8 +102,8 @@ line_table = {
 		color=line_color,
 		alpha=line_alpha,
 		w=2,
-		xs=cover.size+2*cover.padding+gap_x, ys=header_y+gap_y,
-		xe=cover.size+2*cover.padding+gap_x, ye=header_y+gap_y+cover.size+2*cover.padding
+		xs=cover.size+2*cover.padding+gap_x, ys=cover.y,
+		xe=cover.size+2*cover.padding+gap_x, ye=cover.y+cover.size+2*cover.padding
 	}
 }
 
@@ -115,9 +113,9 @@ line_table = {
 bar_table = {
 	pos = {
 		pct=0,
-		x=status_icon.size+gap_x,
+		x=status_icon.x+status_icon.size+gap_x,
 		y=status_icon.y+(status_icon.size-bar_h)/2,
-		w=bar_w, h=bar_h,
+		w=200, h=5,
 		color_bg=bar_color_bg,
 		alpha_bg=bar_alpha_bg,
 		color_fg=bar_color_fg,
