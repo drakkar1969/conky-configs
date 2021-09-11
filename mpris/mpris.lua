@@ -21,12 +21,15 @@ header_x=1
 header_y=20
 
 -- Cover
-cover_size=60
-frame_x=0
-frame_y=header_y+gap_y
-frame_padding=1
-frame_color=0x383c4a
-frame_alpha=1
+cover = {
+	file="",
+	size=60,
+	padding=1,
+	frame_color=0x383c4a,
+	frame_alpha=1,
+	x=0,
+	y=header_y+gap_y
+}
 
 -- Tags
 tag_font="Ubuntu"
@@ -35,7 +38,7 @@ tag_fs_artist=17
 tag_color_title=0x383c4a
 tag_color_artist=0x21232b
 tag_alpha=1
-tag_x=cover_size+2*frame_padding+2*gap_x
+tag_x=cover.size+2*cover.padding+2*gap_x
 tag_y=header_y+gap_y
 tag_offset_title=54
 tag_offset_artist=20
@@ -43,24 +46,28 @@ tag_offset_artist=20
 -- Lines
 line_color=0x383c4a
 line_alpha=0.25
-line_x_v=cover_size+2*frame_padding+gap_x
+line_x_v=cover.size+2*cover.padding+gap_x
 line_y_v=header_y+gap_y
 line_width_v=2
-line_height_v=cover_size+2*frame_padding
+line_height_v=cover.size+2*cover.padding
 
 -- Glyph
-glyph_size=11
-glyph_x=0
-glyph_y=frame_y+cover_size+2*frame_padding+gap_y
-glyph_alpha=0.7
+status_glyph = {
+	file="",
+	size=11,
+	alpha=0.7,
+	x=0,
+	y=cover.y+cover.size+2*cover.padding+gap_y
+}
+
 glyph_play=string.gsub(conky_config,'mpris.conf','glyphs/play.png')
 glyph_pause=string.gsub(conky_config,'mpris.conf','glyphs/pause.png')
 
 -- Bar
 bar_w=200
 bar_h=5
-bar_x=glyph_size+gap_x
-bar_y=glyph_y+(glyph_size-bar_h)/2
+bar_x=status_glyph.size+gap_x
+bar_y=status_glyph.y+(status_glyph.size-bar_h)/2
 bar_color_bg=0x383c4a
 bar_color_fg=0x383c4a
 bar_alpha_bg=0.2
@@ -100,28 +107,6 @@ text_table = {
 		alpha=tag_alpha,
 		x=tag_x, y=tag_y+tag_offset_artist
 	},
-}
-
----------------------------------------
--- Image table
----------------------------------------
-image_table = {
-	cover = {
-		file="",
-		size=cover_size,
-		pad=frame_padding,
-		color=frame_color,
-		alpha=frame_alpha,
-		x=frame_x, y=frame_y
-	},
-	glyph = {
-		file="",
-		size=glyph_size,
-		pad=0,
-		color=0,
-		alpha=glyph_alpha,
-		x=glyph_x, y=glyph_y
-	}
 }
 
 ---------------------------------------
@@ -194,12 +179,12 @@ end
 ---------------------------------------
 function draw_cover(cr,pt)
 	-- Draw frame
-	local frame_size=pt.size+2*pt.pad
+	local frame_size=pt.size+2*pt.padding
 	local frame_x=(align_r and (conky_window.width-(pt.x+frame_size)) or pt.x)
 
 	cairo_rectangle(cr,frame_x,pt.y,frame_size,frame_size)
 
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.color,pt.alpha))
+	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.frame_color,pt.frame_alpha))
 	cairo_fill(cr)
 
 	-- Draw cover
@@ -214,9 +199,9 @@ function draw_cover(cr,pt)
 
 	imlib_context_set_image(scaled)
 
-	local image_x=(align_r and (conky_window.width-(pt.x+pt.pad+pt.size)) or (pt.x+pt.pad))
+	local image_x=(align_r and (conky_window.width-(pt.x+pt.padding+pt.size)) or (pt.x+pt.padding))
 
-	imlib_render_image_on_drawable(image_x,pt.y+pt.pad)
+	imlib_render_image_on_drawable(image_x,pt.y+pt.padding)
 
 	imlib_free_image()
 end
@@ -301,7 +286,7 @@ function conky_albumart()
 	local s,f
 
 	-- Get cover file
-	s,f,image_table.cover.file=metadata:find("tag:coverfile://(.-)\n")
+	s,f,cover.file=metadata:find("tag:coverfile://(.-)\n")
 
 	-- Get tags
 	s,f,text_table.title.text=metadata:find("tag:title(.-)\n")
@@ -312,7 +297,7 @@ function conky_albumart()
 
 	s,f,status=metadata:find("tag:status(.-)\n")
 
-	image_table.glyph.file=((status == "PAUSED") and glyph_pause or glyph_play)
+	status_glyph.file=((status == "PAUSED") and glyph_pause or glyph_play)
 
 	-- Get position/length
 	local pos,len
@@ -330,7 +315,7 @@ function conky_albumart()
 	draw_text(cr,text_table.header)
 
 	-- Draw cover with frame
-	draw_cover(cr,image_table.cover)
+	draw_cover(cr,cover)
 
 	-- Draw tags
 	draw_text(cr,text_table.title)
@@ -342,7 +327,7 @@ function conky_albumart()
 	end
 
 	-- Draw status glyph
-	draw_glyph(cr,image_table.glyph)
+	draw_glyph(cr,status_glyph)
 
 	-- Draw progressbar
 	draw_bar(cr,bar_table.pos)
