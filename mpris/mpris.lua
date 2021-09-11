@@ -37,6 +37,8 @@ tag_color_artist=0x21232b
 tag_alpha=1
 tag_x=cover_size+2*frame_padding+2*gap_x
 tag_y=header_y+gap_y
+tag_offset_title=54
+tag_offset_artist=20
 
 -- Lines
 line_color=0x383c4a
@@ -86,7 +88,7 @@ text_table = {
 		italic=false,
 		color=tag_color_title,
 		alpha=tag_alpha,
-		x=tag_x, y=tag_y+54
+		x=tag_x, y=tag_y+tag_offset_title
 	},
 	artist = {
 		text="artist",
@@ -96,7 +98,7 @@ text_table = {
 		italic=false,
 		color=tag_color_artist,
 		alpha=tag_alpha,
-		x=tag_x, y=tag_y+20
+		x=tag_x, y=tag_y+tag_offset_artist
 	},
 }
 
