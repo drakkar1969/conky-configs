@@ -8,6 +8,11 @@ player_name="Lollypop"
 -- Alignment
 align_r=false
 
+-- Font/colors
+main_font="Ubuntu"
+main_color=0x383c4a
+hilight_color=0x21232b
+
 -- Gaps
 gap_x=14
 gap_y=14
@@ -21,19 +26,18 @@ cover = {
 	file="",
 	size=60,
 	padding=1,
-	frame_color=0x383c4a,
+	frame_color=main_color,
 	frame_alpha=1,
 	x=0,
 	y=header_y+gap_y
 }
 
 -- Tags
-tag_font="Ubuntu"
 tag_x=cover.size+2*cover.padding+2*gap_x
 tag_y=header_y+gap_y
 
 -- Lines
-line_color=0x383c4a
+line_color=main_color
 line_alpha=0.25
 
 -- Status icon
@@ -51,8 +55,8 @@ icon_pause=string.gsub(conky_config,'mpris.conf','icons/pause.png')
 -- Bar
 bar_w=200
 bar_h=5
-bar_color_bg=0x383c4a
-bar_color_fg=0x383c4a
+bar_color_bg=main_color
+bar_color_fg=main_color
 bar_alpha_bg=0.2
 bar_alpha_fg=0.6
 
@@ -62,31 +66,31 @@ bar_alpha_fg=0.6
 text_table = {
 	header = {
 		text="NOW PLAYING",
-		font="Ubuntu",
+		font=main_font,
 		font_size=15,
 		bold=false,
 		italic=false,
-		color=0x383c4a,
+		color=main_color,
 		alpha=0.55,
 		x=header_x, y=header_y
 	},
 	title = {
 		text="title",
-		font=tag_font,
+		font=main_font,
 		font_size=24,
 		bold=false,
 		italic=false,
-		color=0x383c4a,
+		color=main_color,
 		alpha=1,
 		x=tag_x, y=tag_y+54
 	},
 	artist = {
 		text="artist",
-		font=tag_font,
+		font=main_font,
 		font_size=17,
 		bold=false,
 		italic=false,
-		color=0x21232b,
+		color=hilight_color,
 		alpha=1,
 		x=tag_x, y=tag_y+20
 	},
