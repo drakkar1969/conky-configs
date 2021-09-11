@@ -260,40 +260,40 @@ function conky_albumart()
 
 	-- Get metadata
 	local meta_format=[[
-	tag:cover {{ mpris:artUrl }}
-	tag:title{{ uc(title) }}
-	tag:artist{{ uc(artist) }}
-	tag:status{{ uc(status) }}
-	tag:pos{{ position }}
-	tag:len{{ mpris:length }}
+	{{ mpris:artUrl }}
+	{{ uc(title) }}
+	{{ uc(artist) }}
+	{{ uc(status) }}
+	{{ position }}
+	{{ mpris:length }}
+	]]
+
+	local parse_mask=[[
+	file://(.-)
+	(.-)
+	(.-)
+	(.-)
+	(.-)
+	(.-)
 	]]
 
 	local metadata=conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"%s\" 2>/dev/null'}", player_name, meta_format))
 
 	if (metadata == nil or metadata == "") then return end
 
-	local s,f
+	local s,f,albumart,title,artist,status,pos,len=metadata:find(parse_mask)
 
 	-- Get cover file
-	s,f,cover.file=metadata:find("tag:cover file://(.-)\n")
+	cover.file=albumart
 
 	-- Get tags
-	s,f,text_table.title.text=metadata:find("tag:title(.-)\n")
-	s,f,text_table.artist.text=metadata:find("tag:artist(.-)\n")
+	text_table.title.text=title
+	text_table.artist.text=artist
 
 	-- Get status icon
-	local status
-
-	s,f,status=metadata:find("tag:status(.-)\n")
-
 	status_icon.file=((status == "PAUSED") and icon_pause or icon_play)
 
 	-- Get position/length
-	local pos,len
-
-	s,f,pos=metadata:find("tag:pos(.-)\n")
-	s,f,len=metadata:find("tag:len(.-)\n")
-
 	bar_table.pos.pct=tonumber(pos)/tonumber(len)
 
 	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
