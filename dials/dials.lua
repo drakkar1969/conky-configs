@@ -11,7 +11,7 @@ dial_radius=50
 dial_width=10
 dial_start_angle=0
 dial_end_angle=360
-dial_gap=60
+dial_spacing=2*dial_radius+60
 
 dial_x=0
 dial_y=dial_radius+10
@@ -118,7 +118,7 @@ function draw_dial(cr,pt)
 	local angle_f=dial_end_angle*(2*math.pi/360)-math.pi/2
 	local t_arc=pct*(angle_f-angle_0)
 
-	local draw_x=conky_window.width/2+dial_x+pt.index*(2*dial_radius+dial_gap)
+	local draw_x=conky_window.width/2+dial_x+pt.index*dial_spacing
 
 	-- Draw background fill
 	cairo_arc(cr,draw_x,dial_y,dial_radius+dial_width/2-1,angle_0,angle_f)
@@ -172,15 +172,8 @@ function conky_set_coords()
 	-- Get dial count
 	for i in pairs(dials_table) do dial_count=dial_count+1 end
 
-	local left_count=math.floor(dial_count/2)
-
-	-- If dial count is even
-	if dial_count%2 == 0 then
-		dial_x=(((left_count-1)*(dial_radius*2+dial_gap))+dial_radius+dial_gap/2)*-1
-	-- If dial count is odd
-	else
-		dial_x=(left_count*(dial_radius*2+dial_gap))*-1
-	end
+	-- Calculate initial x position
+	dial_x=-(dial_count/2-0.5)*dial_spacing
 end
 ---------------------------------------
 -- Function conky_dials
