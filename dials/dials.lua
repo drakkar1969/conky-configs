@@ -25,7 +25,7 @@ text_color_perc=0x383c4a
 text_color_label=0x21232b
 text_alpha_perc=1
 text_alpha_label=1
-label_gap=12
+label_y=dial_init_y+dial_radius+(dial_width/2)+12
 
 ---------------------------------------
 -- NET variables
@@ -164,7 +164,7 @@ function draw_dial(cr,pt)
 
 	cairo_text_extents(cr,pt.label,extents)
 	text_x=dial_x-(extents.width/2)
-	text_y=dial_init_y+dial_radius+(dial_width/2)+label_gap+extents.height
+	text_y=label_y+extents.height
 
 	cairo_move_to(cr,text_x,text_y)
 	cairo_show_text(cr,pt.label)
