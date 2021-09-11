@@ -190,7 +190,6 @@ function draw_cover(cr,pt)
 
 	imlib_context_set_image(scaled)
 
-
 	imlib_render_image_on_drawable(image_x,pt.y+pt.padding)
 
 	imlib_free_image()
