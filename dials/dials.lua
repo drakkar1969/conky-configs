@@ -11,7 +11,7 @@ dial_radius=50
 dial_width=10
 dial_start_angle=-180
 dial_end_angle=180
-dial_spacing=2*dial_radius+60
+dial_spacing=2*dial_radius+dial_width/2+50
 
 dial_init_x=0
 dial_init_y=dial_radius+10
