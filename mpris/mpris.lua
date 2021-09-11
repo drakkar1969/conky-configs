@@ -260,7 +260,7 @@ function conky_albumart()
 
 	-- Get metadata
 	local meta_format=[[
-	tag:cover{{ mpris:artUrl }}
+	tag:cover {{ mpris:artUrl }}
 	tag:title{{ uc(title) }}
 	tag:artist{{ uc(artist) }}
 	tag:status{{ uc(status) }}
@@ -275,7 +275,7 @@ function conky_albumart()
 	local s,f
 
 	-- Get cover file
-	s,f,cover.file=metadata:find("tag:coverfile://(.-)\n")
+	s,f,cover.file=metadata:find("tag:cover file://(.-)\n")
 
 	-- Get tags
 	s,f,text_table.title.text=metadata:find("tag:title(.-)\n")
