@@ -57,6 +57,8 @@ bar_color_bg=main_color
 bar_color_fg=main_color
 bar_alpha_bg=0.2
 bar_alpha_fg=0.6
+bar_w=200
+bar_h=5
 
 ---------------------------------------
 -- Text table
@@ -115,7 +117,7 @@ bar_table = {
 		pct=0,
 		x=status_icon.x+status_icon.size+gap_x,
 		y=status_icon.y+(status_icon.size-bar_h)/2,
-		w=200, h=5,
+		w=bar_w, h=bar_h,
 		color_bg=bar_color_bg,
 		alpha_bg=bar_alpha_bg,
 		color_fg=bar_color_fg,
