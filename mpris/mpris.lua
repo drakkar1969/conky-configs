@@ -24,16 +24,16 @@ header_y=20
 -- Cover
 cover = {
 	file="",
-	size=60,
+	size=62,
 	padding=1,
-	frame_color=main_color,
-	frame_alpha=1,
 	x=0,
-	y=header_y+gap_y
+	y=header_y+gap_y,
+	frame_color=main_color,
+	frame_alpha=1
 }
 
 -- Tags
-tag_x=cover.size+2*cover.padding+2*gap_x
+tag_x=cover.size+2*gap_x
 tag_y=header_y+gap_y
 
 -- Lines
@@ -46,7 +46,7 @@ status_icon = {
 	size=11,
 	alpha=0.7,
 	x=0,
-	y=cover.y+cover.size+2*cover.padding+gap_y
+	y=cover.y+cover.size+gap_y
 }
 
 icon_play=string.gsub(conky_config,'mpris.conf','icons/play.png')
@@ -102,8 +102,8 @@ line_table = {
 		color=line_color,
 		alpha=line_alpha,
 		w=2,
-		xs=cover.size+2*cover.padding+gap_x, ys=cover.y,
-		xe=cover.size+2*cover.padding+gap_x, ye=cover.y+cover.size+2*cover.padding
+		xs=cover.size+gap_x, ys=cover.y,
+		xe=cover.size+gap_x, ye=cover.y+cover.size
 	}
 }
 
@@ -165,10 +165,9 @@ end
 ---------------------------------------
 function draw_cover(cr,pt)
 	-- Draw frame
-	local frame_size=pt.size+2*pt.padding
-	local frame_x=(align_r and (conky_window.width-(pt.x+frame_size)) or pt.x)
+	local frame_x=(align_r and (conky_window.width-(pt.x+pt.size)) or pt.x)
 
-	cairo_rectangle(cr,frame_x,pt.y,frame_size,frame_size)
+	cairo_rectangle(cr,frame_x,pt.y,pt.size,pt.size)
 
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.frame_color,pt.frame_alpha))
 	cairo_fill(cr)
@@ -179,13 +178,15 @@ function draw_cover(cr,pt)
 
 	imlib_context_set_image(image)
 
-	local scaled=imlib_create_cropped_scaled_image(0,0,imlib_image_get_width(),imlib_image_get_height(),pt.size,pt.size)
+	local image_size=pt.size-2*pt.padding
+	local image_x=(align_r and (conky_window.width-(pt.x+pt.padding+image_size)) or (pt.x+pt.padding))
+
+	local scaled=imlib_create_cropped_scaled_image(0,0,imlib_image_get_width(),imlib_image_get_height(),image_size,image_size)
 
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
 
-	local image_x=(align_r and (conky_window.width-(pt.x+pt.padding+pt.size)) or (pt.x+pt.padding))
 
 	imlib_render_image_on_drawable(image_x,pt.y+pt.padding)
 
