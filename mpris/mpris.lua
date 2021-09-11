@@ -51,6 +51,7 @@ status_icon = {
 
 icon_play=string.gsub(conky_config,'mpris.conf','icons/play.png')
 icon_pause=string.gsub(conky_config,'mpris.conf','icons/pause.png')
+icon_stop=string.gsub(conky_config,'mpris.conf','icons/stop.png')
 
 -- Bar
 bar_color_bg=main_color
@@ -291,7 +292,7 @@ function conky_albumart()
 	text_table.artist.text=artist
 
 	-- Get status icon
-	status_icon.file=((status == "PAUSED") and icon_pause or icon_play)
+	status_icon.file=((status == "PAUSED") and icon_pause or ((status == "PLAYING") and icon_play or icon_stop))
 
 	-- Get position/length
 	bar_table.pos.pct=tonumber(pos)/tonumber(len)
