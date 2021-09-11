@@ -13,10 +13,6 @@ gap_x=14
 gap_y=14
 
 -- Header
-header_font="Ubuntu"
-header_fs=15
-header_color=0x383c4a
-header_alpha=0.55
 header_x=1
 header_y=20
 
@@ -33,23 +29,12 @@ cover = {
 
 -- Tags
 tag_font="Ubuntu"
-tag_fs_title=24
-tag_fs_artist=17
-tag_color_title=0x383c4a
-tag_color_artist=0x21232b
-tag_alpha=1
 tag_x=cover.size+2*cover.padding+2*gap_x
 tag_y=header_y+gap_y
-tag_offset_title=54
-tag_offset_artist=20
 
 -- Lines
 line_color=0x383c4a
 line_alpha=0.25
-line_x_v=cover.size+2*cover.padding+gap_x
-line_y_v=header_y+gap_y
-line_width_v=2
-line_height_v=cover.size+2*cover.padding
 
 -- Status icon
 status_icon = {
@@ -66,8 +51,6 @@ icon_pause=string.gsub(conky_config,'mpris.conf','icons/pause.png')
 -- Bar
 bar_w=200
 bar_h=5
-bar_x=status_icon.size+gap_x
-bar_y=status_icon.y+(status_icon.size-bar_h)/2
 bar_color_bg=0x383c4a
 bar_color_fg=0x383c4a
 bar_alpha_bg=0.2
@@ -79,33 +62,33 @@ bar_alpha_fg=0.6
 text_table = {
 	header = {
 		text="NOW PLAYING",
-		font=header_font,
-		font_size=header_fs,
+		font="Ubuntu",
+		font_size=15,
 		bold=false,
 		italic=false,
-		color=header_color,
-		alpha=header_alpha,
+		color=0x383c4a,
+		alpha=0.55,
 		x=header_x, y=header_y
 	},
 	title = {
 		text="title",
 		font=tag_font,
-		font_size=tag_fs_title,
+		font_size=24,
 		bold=false,
 		italic=false,
-		color=tag_color_title,
-		alpha=tag_alpha,
-		x=tag_x, y=tag_y+tag_offset_title
+		color=0x383c4a,
+		alpha=1,
+		x=tag_x, y=tag_y+54
 	},
 	artist = {
 		text="artist",
 		font=tag_font,
-		font_size=tag_fs_artist,
+		font_size=17,
 		bold=false,
 		italic=false,
-		color=tag_color_artist,
-		alpha=tag_alpha,
-		x=tag_x, y=tag_y+tag_offset_artist
+		color=0x21232b,
+		alpha=1,
+		x=tag_x, y=tag_y+20
 	},
 }
 
@@ -116,9 +99,9 @@ line_table = {
 	{
 		color=line_color,
 		alpha=line_alpha,
-		w=line_width_v,
-		xs=line_x_v, ys=line_y_v,
-		xe=line_x_v, ye=line_y_v+line_height_v
+		w=2,
+		xs=cover.size+2*cover.padding+gap_x, ys=header_y+gap_y,
+		xe=cover.size+2*cover.padding+gap_x, ye=header_y+gap_y+cover.size+2*cover.padding
 	}
 }
 
@@ -128,7 +111,8 @@ line_table = {
 bar_table = {
 	pos = {
 		pct=0,
-		x=bar_x, y=bar_y,
+		x=status_icon.size+gap_x,
+		y=status_icon.y+(status_icon.size-bar_h)/2,
 		w=bar_w, h=bar_h,
 		color_bg=bar_color_bg,
 		alpha_bg=bar_alpha_bg,
