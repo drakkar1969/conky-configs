@@ -13,8 +13,8 @@ dial_start_angle=-180
 dial_end_angle=180
 dial_spacing=2*dial_radius+60
 
-dial_x=0
-dial_y=dial_radius+10
+dial_init_x=0
+dial_init_y=dial_radius+10
 dial_count=0
 
 text_font_perc="Ubuntu"
@@ -41,42 +41,48 @@ dials_table = {
 		label='Core Temp',
 		suffix='°C',
 		name='acpitemp',
-		arg=''
+		arg='',
+		x=0, y=dial_init_y
 	},
 	cpu = {
 		index=1,
 		label='CPU',
 		suffix='%',
 		name='cpu',
-		arg='cpu0'
+		arg='cpu0',
+		x=0, y=dial_init_y
 	},
 	ram = {
 		index=2,
 		label='Memory',
 		suffix='%',
 		name='memperc',
-		arg=''
+		arg='',
+		x=0, y=dial_init_y
 	},
 	home = {
 		index=3,
 		label='Home',
 		suffix='%',
 		name='fs_used_perc',
-		arg='/home'
+		arg='/home',
+		x=0, y=dial_init_y
 	},
 	data = {
 		index=4,
 		label='Data',
 		suffix='%',
 		name='fs_used_perc',
-		arg='/home/data'
+		arg='/home/data',
+		x=0, y=dial_init_y
 	},
 	battery = {
 		index=5,
 		label='Battery',
 		suffix='%',
 		name='battery_percent',
-		arg=''
+		arg='',
+		x=0, y=dial_init_y
 	},
 }
 
@@ -118,21 +124,21 @@ function draw_dial(cr,pt)
 	local angle_f=dial_end_angle*(2*math.pi/360)-math.pi/2
 	local t_arc=pct*(angle_f-angle_0)
 
-	local draw_x=conky_window.width/2+dial_x+pt.index*dial_spacing
+	local dial_x=conky_window.width/2+pt.x
 
 	-- Draw background fill
-	cairo_arc(cr,draw_x,dial_y,dial_radius+dial_width/2-1,angle_0,angle_f)
+	cairo_arc(cr,dial_x,dial_init_y,dial_radius+dial_width/2-1,angle_0,angle_f)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(dial_color_fill,dial_alpha_fill))
 	cairo_fill(cr)
 
 	-- Draw background ring
-	cairo_arc(cr,draw_x,dial_y,dial_radius,angle_0,angle_f)
+	cairo_arc(cr,dial_x,dial_init_y,dial_radius,angle_0,angle_f)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(dial_color_bg,dial_alpha_bg))
 	cairo_set_line_width(cr,dial_width)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
-	cairo_arc(cr,draw_x,dial_y,dial_radius,angle_0,angle_0+t_arc)
+	cairo_arc(cr,dial_x,dial_init_y,dial_radius,angle_0,angle_0+t_arc)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(dial_color_fg,dial_alpha_fg))
 	cairo_stroke(cr)
 
@@ -144,8 +150,8 @@ function draw_dial(cr,pt)
 	local extents=cairo_text_extents_t:create()
 	cairo_text_extents(cr,value..pt.suffix,extents)
 
-	local text_x=draw_x-(extents.width/2)
-	local text_y=dial_y+(extents.height/2)
+	local text_x=dial_x-(extents.width/2)
+	local text_y=dial_init_y+(extents.height/2)
 
 	cairo_move_to(cr,text_x,text_y)
 	cairo_show_text(cr,value..pt.suffix)
@@ -157,8 +163,8 @@ function draw_dial(cr,pt)
 	cairo_set_source_rgba(cr,rgb_to_r_g_b(text_color_label,text_alpha_label))
 
 	cairo_text_extents(cr,pt.label,extents)
-	text_x=draw_x-(extents.width/2)
-	text_y=dial_y+dial_radius+(dial_width/2)+label_gap+extents.height
+	text_x=dial_x-(extents.width/2)
+	text_y=dial_init_y+dial_radius+(dial_width/2)+label_gap+extents.height
 
 	cairo_move_to(cr,text_x,text_y)
 	cairo_show_text(cr,pt.label)
@@ -172,8 +178,14 @@ function conky_set_coords()
 	-- Get dial count
 	for i in pairs(dials_table) do dial_count=dial_count+1 end
 
-	-- Calculate initial x position
-	dial_x=-(dial_count/2-0.5)*dial_spacing
+	-- Calculate initial x offset
+	dial_init_x=-(dial_count/2-0.5)*dial_spacing
+
+	-- Calculate x offset of individual rings
+	for i in pairs(dials_table) do
+		dials_table[i].x=dial_init_x+dials_table[i].index*dial_spacing
+	end
+
 end
 ---------------------------------------
 -- Function conky_dials
