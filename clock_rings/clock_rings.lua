@@ -231,14 +231,6 @@ rings_table = {
 
 lines_table = {
 	{
-		color = line_solid_color,
-		alpha = line_solid_alpha,
-		w = line_solid_width,
-		xs = ring_x + ring_radius+46, ys = ring_y,
-		xe = 980, ye = ring_y,
-		dot=false
-	},
-	{
 		color = line_dotted_color,
 		alpha = line_dotted_alpha,
 		w = line_dotted_width,
@@ -253,6 +245,14 @@ lines_table = {
 		xs = 300, ys = 269,
 		xe = 481, ye = 269,
 		dot=true
+	},
+	{
+		color = line_solid_color,
+		alpha = line_solid_alpha,
+		w = line_solid_width,
+		xs = ring_x + ring_radius+46, ys = ring_y,
+		xe = 980, ye = ring_y,
+		dot=false
 	},
 }
 
@@ -353,6 +353,8 @@ end
 -- Function draw_line
 ---------------------------------------
 function draw_line(cr, pt)
+	cairo_save(cr)
+
 	cairo_move_to(cr, pt.xs, pt.ys)
 	cairo_line_to(cr, pt.xe, pt.ye)
 
@@ -360,13 +362,13 @@ function draw_line(cr, pt)
 
 	if pt.dot then
 		cairo_set_dash(cr, {1,3}, 2, 0)
-	else
-		cairo_set_dash(cr, {}, 0, 0)
 	end
 
 	cairo_set_line_width(cr, pt.w)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 	cairo_stroke(cr)
+
+	cairo_restore(cr)
 end
 
 ---------------------------------------
