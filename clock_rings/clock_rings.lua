@@ -8,9 +8,9 @@ ring_spacing = 4
 
 ring_color_bg = 0x383c4a
 ring_color_fg = 0x383c4a
-ring_alpha_bg = 0.20 -- 0.30
-ring_alpha_fg = 0.60 -- 0.80
-ring_alpha_bg_dummy = 0.20 -- 0.80
+ring_alpha_bg = 0.20
+ring_alpha_fg = 0.60
+ring_alpha_bg_dummy = 0.20
 ring_alpha_fg_dummy = 0
 
 cpu_start_angle = 91
@@ -67,8 +67,8 @@ net_max_dl = 26000
 -- Settings table
 ---------------------------------------
 rings_table = {
-	{
 	-- TIME -------------------------------
+	{
 		name = 'time',
 		arg = '%S',
 		max = 60,
@@ -200,7 +200,7 @@ rings_table = {
 	},
 	-- DUMMY ------------------------------
 	{
-		name = 'cpu', -- dummy (used for arc)
+		name = 'cpu', -- dummy (used for arc around graph)
 		arg = '',
 		max = 1,
 		bg_color = ring_color_bg,
@@ -214,7 +214,7 @@ rings_table = {
 		end_angle = 107
 	},
 	{
-		name = 'cpu', -- dummy (used for arc)
+		name = 'cpu', -- dummy (used for arc around graph)
 		arg = '',
 		max = 1,
 		bg_color = ring_color_bg,
