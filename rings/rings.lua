@@ -1,93 +1,93 @@
 ---------------------------------------
 -- Ring variables
 ---------------------------------------
-color_bg=0x383c4a
-color_fg=0x383c4a
-alpha_bg=0.2
-alpha_fg=0.6
-alpha_fg_dummy=0
+color_bg = 0x383c4a
+color_fg = 0x383c4a
+alpha_bg = 0.2
+alpha_fg = 0.6
+alpha_fg_dummy = 0
 
 ---------------------------------------
 -- CPU variables
 ---------------------------------------
-cpu_x=180
-cpu_y=135
-cpu_radius=60
-cpu_width=10
-cpu_spacing=cpu_width+2
-cpu_start_angle=0
-cpu_end_angle=235
+cpu_x = 180
+cpu_y = 135
+cpu_radius = 60
+cpu_width = 10
+cpu_spacing = cpu_width + 2
+cpu_start_angle = 0
+cpu_end_angle = 235
 
 ---------------------------------------
 -- MEM variables
 ---------------------------------------
-mem_x=325
-mem_y=280
-mem_radius=55
-mem_width=17
-mem_spacing=mem_width+3
-mem_start_angle=-180
-mem_end_angle=55
+mem_x = 325
+mem_y = 280
+mem_radius = 55
+mem_width = 17
+mem_spacing = mem_width + 3
+mem_start_angle = -180
+mem_end_angle = 55
 
 ---------------------------------------
 -- FS variables
 ---------------------------------------
-fs_x=370
-fs_y=115
-fs_radius=27
-fs_width=14
-fs_spacing=fs_width+3
-fs_start_angle=125
-fs_end_angle=360
+fs_x = 370
+fs_y = 115
+fs_radius = 27
+fs_width = 14
+fs_spacing = fs_width + 3
+fs_start_angle = 125
+fs_end_angle = 360
 
-fs1_id="/home/data"
-fs2_id="/"
-fs3_id="/home"
+fs1_id = "/home/data"
+fs2_id = "/"
+fs3_id = "/home"
 
 ---------------------------------------
 -- TIME variables
 ---------------------------------------
-time_x=170
-time_y=310
-time_radius=20
-time_width_1=9
-time_width_2=11
-time_width_3=14
-time_spacing_2=(time_width_1+time_width_2)/2+3
-time_spacing_3=(time_width_2+time_width_3)/2+3
-time_start_angle=-55
-time_end_angle=180
+time_x = 170
+time_y = 310
+time_radius = 20
+time_width_1 = 9
+time_width_2 = 11
+time_width_3 = 14
+time_spacing_2 = (time_width_1 + time_width_2)/2 + 3
+time_spacing_3 = (time_width_2 + time_width_3)/2 + 3
+time_start_angle = -55
+time_end_angle = 180
 
 ---------------------------------------
 -- NET variables
 ---------------------------------------
-net_x=320
-net_y=440
-net_radius=27
-net_width=16
-net_spacing=net_width+3
-net_start_angle=-180
-net_end_angle=55
+net_x = 320
+net_y = 440
+net_radius = 27
+net_width = 16
+net_spacing = net_width + 3
+net_start_angle = -180
+net_end_angle = 55
 
-net_interface='wlp3s0'
+net_interface = 'wlp3s0'
 -- Max download in KB
-net_max_dl=26000
+net_max_dl = 26000
 -- MAx upload in KB
-net_max_ul=1500
+net_max_ul = 1500
 
 ---------------------------------------
 -- BAT variables
 ---------------------------------------
-bat_x=215
-bat_y=415
-bat_radius=10
-bat_width_1=bat_radius*2
-bat_width_2=12
-bat_spacing_2=(bat_width_1+bat_width_2)/2+3
-bat_start_angle_1=-180
-bat_end_angle_1=180
-bat_start_angle_2=-55
-bat_end_angle_2=180
+bat_x = 215
+bat_y = 415
+bat_radius = 10
+bat_width_1 = bat_radius*2
+bat_width_2 = 12
+bat_spacing_2 = (bat_width_1 + bat_width_2)/2 + 3
+bat_start_angle_1 = -180
+bat_end_angle_1 = 180
+bat_start_angle_2 = -55
+bat_end_angle_2 = 180
 
 ---------------------------------------
 -- Settings table
@@ -95,249 +95,249 @@ bat_end_angle_2=180
 rings_table = {
 	-- CPU --------------------------------
 	{
-		name='cpu',
-		arg='cpu4',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=cpu_x, y=cpu_y,
-		radius=cpu_radius,
-		width=cpu_width,
-		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle,
-		neg=false
+		name = 'cpu',
+		arg = 'cpu4',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = cpu_x, y = cpu_y,
+		radius = cpu_radius,
+		width = cpu_width,
+		start_angle = cpu_start_angle,
+		end_angle = cpu_end_angle,
+		neg = false
 	},
 	{
-		name='cpu',
-		arg='cpu3',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=cpu_x, y=cpu_y,
-		radius=cpu_radius+cpu_spacing,
-		width=cpu_width,
-		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle,
-		neg=false
+		name = 'cpu',
+		arg = 'cpu3',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = cpu_x, y = cpu_y,
+		radius = cpu_radius + cpu_spacing,
+		width = cpu_width,
+		start_angle = cpu_start_angle,
+		end_angle = cpu_end_angle,
+		neg = false
 	},
 	{
-		name='cpu',
-		arg='cpu2',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=cpu_x, y=cpu_y,
-		radius=cpu_radius+2*cpu_spacing,
-		width=cpu_width,
-		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle,
-		neg=false
+		name = 'cpu',
+		arg = 'cpu2',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = cpu_x, y = cpu_y,
+		radius = cpu_radius + 2*cpu_spacing,
+		width = cpu_width,
+		start_angle = cpu_start_angle,
+		end_angle = cpu_end_angle,
+		neg = false
 	},
 	{
-		name='cpu',
-		arg='cpu1',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=cpu_x, y=cpu_y,
-		radius=cpu_radius+3*cpu_spacing,
-		width=cpu_width,
-		start_angle=cpu_start_angle,
-		end_angle=cpu_end_angle,
-		neg=false
+		name = 'cpu',
+		arg = 'cpu1',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = cpu_x, y = cpu_y,
+		radius = cpu_radius + 3*cpu_spacing,
+		width = cpu_width,
+		start_angle = cpu_start_angle,
+		end_angle = cpu_end_angle,
+		neg = false
 	},
 	-- MEM --------------------------------
 	{
-		name='swapperc',
-		arg='',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=mem_x, y=mem_y,
-		radius=mem_radius,
-		width=mem_width,
-		start_angle=mem_start_angle,
-		end_angle=mem_end_angle,
-		neg=false
+		name = 'swapperc',
+		arg = '',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = mem_x, y = mem_y,
+		radius = mem_radius,
+		width = mem_width,
+		start_angle = mem_start_angle,
+		end_angle = mem_end_angle,
+		neg = false
 	},
 	{
-		name='memperc',
-		arg='',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=mem_x, y=mem_y,
-		radius=mem_radius+mem_spacing,
-		width=mem_width,
-		start_angle=mem_start_angle,
-		end_angle=mem_end_angle,
-		neg=false
+		name = 'memperc',
+		arg = '',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = mem_x, y = mem_y,
+		radius = mem_radius + mem_spacing,
+		width = mem_width,
+		start_angle = mem_start_angle,
+		end_angle = mem_end_angle,
+		neg = false
 	},
 	-- FS --------------------------------
 	{
-		name='fs_used_perc',
-		arg=fs3_id,
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=fs_x, y=fs_y,
-		radius=fs_radius,
-		width=fs_width,
-		start_angle=fs_start_angle,
-		end_angle=fs_end_angle,
-		neg=true
+		name = 'fs_used_perc',
+		arg = fs3_id,
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = fs_x, y = fs_y,
+		radius = fs_radius,
+		width = fs_width,
+		start_angle = fs_start_angle,
+		end_angle = fs_end_angle,
+		neg = true
 	},
 	{
-		name='fs_used_perc',
-		arg=fs2_id,
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=fs_x, y=fs_y,
-		radius=fs_radius+fs_spacing,
-		width=fs_width,
-		start_angle=fs_start_angle,
-		end_angle=fs_end_angle,
-		neg=true
+		name = 'fs_used_perc',
+		arg = fs2_id,
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = fs_x, y = fs_y,
+		radius = fs_radius + fs_spacing,
+		width = fs_width,
+		start_angle = fs_start_angle,
+		end_angle = fs_end_angle,
+		neg = true
 	},
 	{
-		name='fs_used_perc',
-		arg=fs1_id,
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=fs_x, y=fs_y,
-		radius=fs_radius+2*fs_spacing,
-		width=fs_width,
-		start_angle=fs_start_angle,
-		end_angle=fs_end_angle,
-		neg=true
+		name = 'fs_used_perc',
+		arg = fs1_id,
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = fs_x, y = fs_y,
+		radius = fs_radius + 2*fs_spacing,
+		width = fs_width,
+		start_angle = fs_start_angle,
+		end_angle = fs_end_angle,
+		neg = true
 	},
 	-- TIME --------------------------------
 	{
-		name='time',
-		arg='%S',
-		max=60,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=time_x, y=time_y,
-		radius=time_radius,
-		width=time_width_1,
-		start_angle=time_start_angle,
-		end_angle=time_end_angle,
-		neg=true
+		name = 'time',
+		arg = '%S',
+		max = 60,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = time_x, y = time_y,
+		radius = time_radius,
+		width = time_width_1,
+		start_angle = time_start_angle,
+		end_angle = time_end_angle,
+		neg = true
 	},
 	{
-		name='time',
-		arg='%M',
-		max=60,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=time_x, y=time_y,
-		radius=time_radius+time_spacing_2,
-		width=time_width_2,
-		start_angle=time_start_angle,
-		end_angle=time_end_angle,
-		neg=true
+		name = 'time',
+		arg = '%M',
+		max = 60,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = time_x, y = time_y,
+		radius = time_radius + time_spacing_2,
+		width = time_width_2,
+		start_angle = time_start_angle,
+		end_angle = time_end_angle,
+		neg = true
 	},
 	{
-		name='time',
-		arg='%H',
-		max=24,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=time_x, y=time_y,
-		radius=time_radius+time_spacing_2+time_spacing_3,
-		width=time_width_3,
-		start_angle=time_start_angle,
-		end_angle=time_end_angle,
-		neg=true
+		name = 'time',
+		arg = '%H',
+		max = 24,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = time_x, y = time_y,
+		radius = time_radius + time_spacing_2 + time_spacing_3,
+		width = time_width_3,
+		start_angle = time_start_angle,
+		end_angle = time_end_angle,
+		neg = true
 	},
 	-- NET --------------------------------
 	upspeed = {
-		name='upspeedf',
-		arg=net_interface,
-		max=net_max_ul,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=net_x, y=net_y,
-		radius=net_radius,
-		width=net_width,
-		start_angle=net_start_angle,
-		end_angle=net_end_angle,
-		neg=false
+		name = 'upspeedf',
+		arg = net_interface,
+		max = net_max_ul,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = net_x, y = net_y,
+		radius = net_radius,
+		width = net_width,
+		start_angle = net_start_angle,
+		end_angle = net_end_angle,
+		neg = false
 	},
 	downspeed = {
-		name='downspeedf',
-		arg=net_interface,
-		max=net_max_dl,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=net_x, y=net_y,
-		radius=net_radius+net_spacing,
-		width=net_width,
-		start_angle=net_start_angle,
-		end_angle=net_end_angle,
-		neg=false
+		name = 'downspeedf',
+		arg = net_interface,
+		max = net_max_dl,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = net_x, y = net_y,
+		radius = net_radius + net_spacing,
+		width = net_width,
+		start_angle = net_start_angle,
+		end_angle = net_end_angle,
+		neg = false
 	},
 	-- BAT --------------------------------
 	{
-		name='battery_percent',
-		arg='',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg_dummy,
-		x=bat_x, y=bat_y,
-		radius=bat_radius,
-		width=bat_width_1,
-		start_angle=bat_start_angle_1,
-		end_angle=bat_end_angle_1,
-		neg=true
+		name = 'battery_percent',
+		arg = '',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg_dummy,
+		x = bat_x, y = bat_y,
+		radius = bat_radius,
+		width = bat_width_1,
+		start_angle = bat_start_angle_1,
+		end_angle = bat_end_angle_1,
+		neg = true
 	},
 	{
-		name='battery_percent',
-		arg='',
-		max=100,
-		bg_color=color_bg,
-		bg_alpha=alpha_bg,
-		fg_color=color_fg,
-		fg_alpha=alpha_fg,
-		x=bat_x, y=bat_y,
-		radius=bat_radius+bat_spacing_2,
-		width=bat_width_2,
-		start_angle=bat_start_angle_2,
-		end_angle=bat_end_angle_2,
-		neg=true
+		name = 'battery_percent',
+		arg = '',
+		max = 100,
+		bg_color = color_bg,
+		bg_alpha = alpha_bg,
+		fg_color = color_fg,
+		fg_alpha = alpha_fg,
+		x = bat_x, y = bat_y,
+		radius = bat_radius + bat_spacing_2,
+		width = bat_width_2,
+		start_angle = bat_start_angle_2,
+		end_angle = bat_end_angle_2,
+		neg = true
 	},
 }
 
@@ -349,19 +349,19 @@ require 'cairo'
 ---------------------------------------
 -- Function rgb_to_r_g_b
 ---------------------------------------
-function rgb_to_r_g_b(color,alpha)
-	return ((color/0x10000)%0x100)/255.,((color/0x100)%0x100)/255.,(color%0x100)/255.,alpha
+function rgb_to_r_g_b(color, alpha)
+	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
 end
 
 ---------------------------------------
 -- Function get_conky_string
 ---------------------------------------
-function get_conky_string(name,arg)
-	local str=string.format('${%s %s}',name,arg)
-	str=conky_parse(str)
+function get_conky_string(name, arg)
+	local str = string.format('${%s %s}', name, arg)
+	str = conky_parse(str)
 
-	local value=tonumber(str)
-	if value == nil then value=0 end
+	local value = tonumber(str)
+	if value == nil then value = 0 end
 
 	return(value)
 end
@@ -369,29 +369,29 @@ end
 ---------------------------------------
 -- Function draw_ring
 ---------------------------------------
-function draw_ring(cr,pt)
-	local value=get_conky_string(pt.name,pt.arg)
+function draw_ring(cr, pt)
+	local value = get_conky_string(pt.name, pt.arg)
 
-	local pct=value/pt.max
-	pct=(pct > 1 and 1 or pct)
+	local pct = value/pt.max
+	pct = (pct > 1 and 1 or pct)
 
-	local angle_0=pt.start_angle*(2*math.pi/360)-math.pi/2
-	local angle_f=pt.end_angle*(2*math.pi/360)-math.pi/2
-	local t_arc=pct*(angle_f-angle_0)
+	local angle_0 = pt.start_angle*(2*math.pi/360) - math.pi/2
+	local angle_f = pt.end_angle*(2*math.pi/360) - math.pi/2
+	local t_arc = pct*(angle_f - angle_0)
 
 	-- Draw background ring
-	cairo_arc(cr,pt.x,pt.y,pt.radius,angle_0,angle_f)
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.bg_color,pt.bg_alpha))
-	cairo_set_line_width(cr,pt.width)
+	cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_f)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.bg_color, pt.bg_alpha))
+	cairo_set_line_width(cr, pt.width)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
 	if pt.neg == true then
-		cairo_arc_negative(cr,pt.x,pt.y,pt.radius,angle_f,angle_f-t_arc)
+		cairo_arc_negative(cr, pt.x, pt.y, pt.radius, angle_f, angle_f - t_arc)
 	else
-		cairo_arc(cr,pt.x,pt.y,pt.radius,angle_0,angle_0+t_arc)
+		cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_0 + t_arc)
 	end
-	cairo_set_source_rgba(cr,rgb_to_r_g_b(pt.fg_color,pt.fg_alpha))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.fg_color, pt.fg_alpha))
 	cairo_stroke(cr)
 end
 
@@ -399,19 +399,19 @@ end
 -- Function conky_rings
 ---------------------------------------
 function conky_rings()
-	if conky_window==nil then return end
+	if conky_window == nil then return end
 
 	net_interface=conky_parse("${if_up ${template1}}${template1}${else}${if_up ${template0}}${template0}${else}none${endif}${endif}")
 
-	rings_table.upspeed.arg=net_interface
-	rings_table.downspeed.arg=net_interface
+	rings_table.upspeed.arg = net_interface
+	rings_table.downspeed.arg = net_interface
 
-	local cs=cairo_xlib_surface_create(conky_window.display,conky_window.drawable,conky_window.visual,conky_window.width,conky_window.height)
+	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
-	local cr=cairo_create(cs)
+	local cr = cairo_create(cs)
 
 	for i in pairs(rings_table) do
-		draw_ring(cr,rings_table[i])
+		draw_ring(cr, rings_table[i])
 	end
 
 	cairo_destroy(cr)
