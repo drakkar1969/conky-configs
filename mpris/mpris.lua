@@ -259,7 +259,7 @@ end
 function conky_albumart()
 	if conky_window == nil then return end
 
-	-- Get metadata
+	-- Metadata format
 	local meta_format = [[
 	{{ mpris:artUrl }}
 	{{ uc(title) }}
@@ -278,7 +278,10 @@ function conky_albumart()
 	(.-)
 	]]
 
-	local metadata = conky_parse(string.format("${exec 'playerctl metadata --player=%s --format=\"%s\" 2>/dev/null'}", player_name, meta_format))
+	-- Read metadata
+	local handle = io.popen(string.format("playerctl metadata --player=%s --format='%s' 2>/dev/null", player_name, meta_format))
+	local metadata = handle:read("*a")
+	handle:close()
 
 	if (metadata == nil or metadata == "") then return end
 
