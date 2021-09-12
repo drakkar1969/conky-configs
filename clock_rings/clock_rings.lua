@@ -229,30 +229,30 @@ rings_table = {
 	},
 }
 
-lines_solid_table = {
+lines_table = {
 	{
 		color = line_solid_color,
 		alpha = line_solid_alpha,
 		w = line_solid_width,
 		xs = ring_x + ring_radius+46, ys = ring_y,
-		xe = 980, ye = ring_y
+		xe = 980, ye = ring_y,
+		dot=false
 	},
-}
-
-lines_dotted_table = {
 	{
 		color = line_dotted_color,
 		alpha = line_dotted_alpha,
 		w = line_dotted_width,
 		xs = 30, ys = 295,
-		xe = 211, ye = 295
+		xe = 211, ye = 295,
+		dot=true
 	},
 	{
 		color = line_dotted_color,
 		alpha = line_dotted_alpha,
 		w = line_dotted_width,
 		xs = 300, ys = 269,
-		xe = 481, ye = 269
+		xe = 481, ye = 269,
+		dot=true
 	},
 }
 
@@ -361,27 +361,20 @@ function draw_clock_hands(cr, xc, yc)
 end
 
 ---------------------------------------
--- Function draw_solid_line
+-- Function draw_line
 ---------------------------------------
-function draw_solid_line(cr, pt)
-	cairo_move_to(cr, pt.xs, pt.ys)
-	cairo_line_to(cr, pt.xe, pt.ye)
-
-	cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE)
-	cairo_set_line_width(cr, pt.w)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
-	cairo_stroke(cr)
-end
-
----------------------------------------
--- Function draw_dotted_line
----------------------------------------
-function draw_dotted_line(cr, pt)
+function draw_line(cr, pt)
 	cairo_move_to(cr, pt.xs, pt.ys)
 	cairo_line_to(cr, pt.xe, pt.ye)
 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
-	cairo_set_dash(cr, {1,3}, 2, 0)
+
+	if pt.dot then
+		cairo_set_dash(cr, {1,3}, 2, 0)
+	else
+		cairo_set_dash(cr, {}, 0, 0)
+	end
+
 	cairo_set_line_width(cr, pt.w)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 	cairo_stroke(cr)
@@ -460,14 +453,9 @@ function conky_clock_rings()
 		draw_graph(cr, graphs_table[i])
 	end
 
-	-- Draw solid lines
-	for i in pairs(lines_solid_table) do
-		draw_solid_line(cr, lines_solid_table[i])
-	end
-
-	-- Draw dotted lines
-	for i in pairs(lines_dotted_table) do
-		draw_dotted_line(cr, lines_dotted_table[i])
+	-- Draw lines
+	for i in pairs(lines_table) do
+		draw_line(cr, lines_table[i])
 	end
 
 	cairo_destroy(cr)
