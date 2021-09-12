@@ -389,9 +389,13 @@ function draw_graph(cr, pt)
 		end
 	end
 
+	-- Draw graph bars
 	local bar_h
 
-	-- Draw graph bars
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+	cairo_set_line_width(cr, pt.bar_w)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
+
 	for i = 1, n_bars do
 		-- Transform to log scale
 		if pt.log_scale then
@@ -409,10 +413,6 @@ function draw_graph(cr, pt)
 		if bar_h >= 1 then
 			cairo_move_to(cr, pt.x + (pt.bar_w/2) + ((i-1)*(pt.bar_w + pt.bar_gap)), pt.y)
 			cairo_rel_line_to(cr, 0, -bar_h)
-
-			cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
-			cairo_set_line_width(cr, pt.bar_w)
-			cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 			cairo_stroke(cr)
 		end
 	end
