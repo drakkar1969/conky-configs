@@ -293,7 +293,11 @@ function conky_albumart()
 	status_icon.file = ((status == "PAUSED") and icon_pause or ((status == "PLAYING") and icon_play or icon_stop))
 
 	-- Get position/length
-	bar_table.pos.pct = tonumber(pos)/tonumber(len)
+	if (pos == nil or len == nil or len == 0) then
+		bar_table.pos.pct = 0
+	else
+		bar_table.pos.pct = tonumber(pos)/tonumber(len)
+	end
 
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
