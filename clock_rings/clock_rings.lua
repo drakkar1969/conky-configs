@@ -399,7 +399,6 @@ function draw_graph(cr, pt)
 	for i = 1, n_bars do
 		-- Transform to log scale
 		if pt.log_scale then
-			if pt.data[i] < 1 then pt.data[i] = 1 end
 			bar_h = (math.log10(pt.data[i])/math.log10(pt.max))*pt.h
 		else
 			bar_h = (pt.data[i]/pt.max)*pt.h
