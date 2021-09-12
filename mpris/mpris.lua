@@ -176,6 +176,8 @@ function draw_cover(cr, pt)
 	cairo_fill(cr)
 
 	-- Draw cover
+	if (pt.file == nil or pt.file == "") then return end
+
 	local image = imlib_load_image(pt.file)
 	if image == nil then return end
 
