@@ -1,7 +1,7 @@
 ---------------------------------------
 -- Ring variables
 ---------------------------------------
-ring_attr = {
+rings_attr = {
 	bgc = 0x383c4a,
 	bga = 0.2,
 	fgc = 0x383c4a,
@@ -35,7 +35,8 @@ for i = 1, cpu_rings.n do
 		width = cpu_rings.w,
 		start_angle = cpu_rings.sa,
 		end_angle = cpu_rings.ea,
-		neg = cpu_rings.neg
+		neg = cpu_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -64,7 +65,8 @@ for i in pairs(mem_rings.vars) do
 		width = mem_rings.w,
 		start_angle = mem_rings.sa,
 		end_angle = mem_rings.ea,
-		neg = mem_rings.neg
+		neg = mem_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -93,7 +95,8 @@ for i in pairs(fs_rings.paths) do
 		width = fs_rings.w,
 		start_angle = fs_rings.sa,
 		end_angle = fs_rings.ea,
-		neg = fs_rings.neg
+		neg = fs_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -105,7 +108,7 @@ time_rings = {
 	r = 20, w = { 9, 11, 14 },
 	gap = 3,
 	sa = -55, ea = 180,
-	neg = true
+	neg = true,
 
 	vars = {
 		{ arg = '%S', max = 60 },
@@ -129,7 +132,8 @@ for i in pairs(time_rings.vars) do
 		width = time_rings.w[i],
 		start_angle = time_rings.sa,
 		end_angle = time_rings.ea,
-		neg = time_rings.neg
+		neg = time_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -141,10 +145,10 @@ net_rings = {
 	r = 27, w = 16,
 	gap = 3,
 	sa = -180, ea = 55,
-	neg = false
+	neg = false,
 
 	-- Max values in KB/s
-	net_vars = {
+	vars = {
 		{ name = 'upspeedf', max = 1500 },
 		{ name = 'downspeedf', max = 1500 },
 	}
@@ -165,7 +169,8 @@ for i in pairs(net_rings.vars) do
 		width = net_rings.w,
 		start_angle = net_rings.sa,
 		end_angle = net_rings.ea,
-		neg = net_rings.neg
+		neg = net_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -177,9 +182,9 @@ bat_rings = {
 	r = 10, w = { 20, 12 },
 	gap = 3,
 	sa = { -180, -55 }, ea = { 180, 180 },
-	neg = true
+	neg = true,
 
-	bat_vars = {
+	vars = {
 		{ name = 'goto', arg = 0 },
 		{ name = 'battery_percent', arg = '' },
 	}
@@ -201,7 +206,8 @@ for i in pairs(bat_rings.vars) do
 		width = bat_rings.w[i],
 		start_angle = bat_rings.sa[i],
 		end_angle = bat_rings.ea[i],
-		neg = bat_rings.neg
+		neg = bat_rings.neg,
+		attr = rings_attr
 	}
 end
 
@@ -245,7 +251,7 @@ function draw_ring(cr, pt)
 
 	-- Draw background ring
 	cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_f)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(ring_attr.bgc, ring_attr.bga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bgc, pt.attr.bga))
 	cairo_set_line_width(cr, pt.width)
 	cairo_stroke(cr)
 
@@ -255,7 +261,7 @@ function draw_ring(cr, pt)
 	else
 		cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_0 + t_arc)
 	end
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(ring_attr.fgc, ring_attr.fga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fgc, pt.attr.fga))
 	cairo_stroke(cr)
 end
 
