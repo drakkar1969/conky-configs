@@ -273,15 +273,13 @@ function conky_rings()
 
 	net_interface=conky_parse("${if_up ${template1}}${template1}${else}${if_up ${template0}}${template0}${else}none${endif}${endif}")
 
-	-- rings_table.upspeed.arg = net_interface
-	-- rings_table.downspeed.arg = net_interface
-
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 	local cr = cairo_create(cs)
 
-	for i in pairs(rings_table) do
-		draw_ring(cr, rings_table[i])
+	for id, ring in pairs(rings_table) do
+		if id:find('net') then ring.arg = net_interface end
+		draw_ring(cr, ring)
 	end
 
 	cairo_destroy(cr)
