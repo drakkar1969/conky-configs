@@ -18,7 +18,7 @@ function get_ring_geom(i, gt)
 	ot.sa = ((type(gt.sa) == 'table') and gt.sa[i] or gt.sa)
 	ot.ea = ((type(gt.ea) == 'table') and gt.ea[i] or gt.ea)
 
-	ot.neg = gt.neg
+	ot.ccw = gt.ccw
 
 	return(ot)
 end
@@ -43,7 +43,7 @@ cpu_rings = {
 	r = 60, w = 10,
 	gap = 2,
 	sa = 0, ea = 235,
-	neg = false,
+	ccw = false,
 
 	n = 4
 }
@@ -66,7 +66,7 @@ mem_rings = {
 	r = 55, w = 17,
 	gap = 3,
 	sa = -180, ea = 55,
-	neg = false,
+	ccw = false,
 
 	vars = { 'swapperc', 'memperc' }
 }
@@ -89,7 +89,7 @@ fs_rings = {
 	r = 27, w = 14,
 	gap = 3,
 	sa = 125, ea = 360,
-	neg = true,
+	ccw = true,
 
 	paths = { '/home', '/', '/home/data' }
 }
@@ -112,7 +112,7 @@ time_rings = {
 	r = 20, w = { 9, 11, 14 },
 	gap = 3,
 	sa = -55, ea = 180,
-	neg = true,
+	ccw = true,
 
 	vars = {
 		{ arg = '%S', max = 60 },
@@ -139,7 +139,7 @@ net_rings = {
 	r = 27, w = 16,
 	gap = 3,
 	sa = -180, ea = 55,
-	neg = false,
+	ccw = false,
 
 	-- Max values in KB/s
 	vars = {
@@ -168,7 +168,7 @@ bat_rings = {
 	r = 10, w = { 20, 12 },
 	gap = 3,
 	sa = { -180, -55 }, ea = { 180, 180 },
-	neg = true,
+	ccw = true,
 
 	vars = {
 		{ name = 'goto', arg = 0 },
@@ -232,7 +232,7 @@ function draw_ring(cr, pt)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
-	if pt.geom.neg == true then
+	if pt.geom.ccw == true then
 		cairo_arc_negative(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_f, angle_f - t_arc)
 	else
 		cairo_arc(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_0 + t_arc)
