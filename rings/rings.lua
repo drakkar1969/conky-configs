@@ -24,17 +24,17 @@ cpu_rings = {
 }
 
 for i = 1, cpu_rings.n do
-	local r = cpu_rings.r + (cpu_rings.n - i)*(cpu_rings.w + cpu_rings.gap)
+	local ri = cpu_rings.r + (cpu_rings.n - i)*(cpu_rings.w + cpu_rings.gap)
 
 	rings_table['cpu'..i] = {
 		name = 'cpu',
 		arg = 'cpu'..i,
 		max = 100,
 		x = cpu_rings.x, y = cpu_rings.y,
-		radius = r,
-		width = cpu_rings.w,
-		start_angle = cpu_rings.sa,
-		end_angle = cpu_rings.ea,
+		r = ri,
+		w = cpu_rings.w,
+		sa = cpu_rings.sa,
+		ea = cpu_rings.ea,
 		neg = cpu_rings.neg,
 		attr = rings_attr
 	}
@@ -54,17 +54,17 @@ mem_rings = {
 }
 
 for i in pairs(mem_rings.vars) do
-	local r = mem_rings.r + (i - 1)*(mem_rings.w + mem_rings.gap)
+	local ri = mem_rings.r + (i - 1)*(mem_rings.w + mem_rings.gap)
 
 	rings_table['mem'..i] = {
 		name = mem_rings.vars[i],
 		arg = '',
 		max = 100,
 		x = mem_rings.x, y = mem_rings.y,
-		radius = r,
-		width = mem_rings.w,
-		start_angle = mem_rings.sa,
-		end_angle = mem_rings.ea,
+		r = ri,
+		w = mem_rings.w,
+		sa = mem_rings.sa,
+		ea = mem_rings.ea,
 		neg = mem_rings.neg,
 		attr = rings_attr
 	}
@@ -84,17 +84,17 @@ fs_rings = {
 }
 
 for i in pairs(fs_rings.paths) do
-	local r = fs_rings.r + (i - 1)*(fs_rings.w + fs_rings.gap)
+	local ri = fs_rings.r + (i - 1)*(fs_rings.w + fs_rings.gap)
 
 	rings_table['fs'..i] = {
 		name = 'fs_used_perc',
 		arg = fs_rings.paths[i],
 		max = 100,
 		x = fs_rings.x, y = fs_rings.y,
-		radius = r,
-		width = fs_rings.w,
-		start_angle = fs_rings.sa,
-		end_angle = fs_rings.ea,
+		r = ri,
+		w = fs_rings.w,
+		sa = fs_rings.sa,
+		ea = fs_rings.ea,
 		neg = fs_rings.neg,
 		attr = rings_attr
 	}
@@ -118,9 +118,9 @@ time_rings = {
 }
 
 for i in pairs(time_rings.vars) do
-	local r = time_rings.r
+	local ri = time_rings.r
 	for j = 2, i do
-		r = r + (time_rings.w[j] + time_rings.w[j-1])/2 + time_rings.gap
+		ri = ri + (time_rings.w[j] + time_rings.w[j-1])/2 + time_rings.gap
 	end
 
 	rings_table['time'..i] = {
@@ -128,10 +128,10 @@ for i in pairs(time_rings.vars) do
 		arg = time_rings.vars[i].arg,
 		max = time_rings.vars[i].max,
 		x = time_rings.x, y = time_rings.y,
-		radius = r,
-		width = time_rings.w[i],
-		start_angle = time_rings.sa,
-		end_angle = time_rings.ea,
+		r = ri,
+		w = time_rings.w[i],
+		sa = time_rings.sa,
+		ea = time_rings.ea,
 		neg = time_rings.neg,
 		attr = rings_attr
 	}
@@ -158,17 +158,17 @@ net_rings = {
 net_interface = 'wlp3s0'
 
 for i in pairs(net_rings.vars) do
-	local r = net_rings.r + (i - 1)*(net_rings.w + net_rings.gap)
+	local ri = net_rings.r + (i - 1)*(net_rings.w + net_rings.gap)
 
 	rings_table['net'..i] = {
 		name = net_rings.vars[i].name,
 		arg = net_interface,
 		max = net_rings.vars[i].max,
 		x = net_rings.x, y = net_rings.y,
-		radius = r,
-		width = net_rings.w,
-		start_angle = net_rings.sa,
-		end_angle = net_rings.ea,
+		r = ri,
+		w = net_rings.w,
+		sa = net_rings.sa,
+		ea = net_rings.ea,
 		neg = net_rings.neg,
 		attr = rings_attr
 	}
@@ -192,9 +192,9 @@ bat_rings = {
 
 
 for i in pairs(bat_rings.vars) do
-	local r = bat_rings.r
+	local ri = bat_rings.r
 	for j = 2, i do
-		r = r + (bat_rings.w[j] + bat_rings.w[j-1])/2 + bat_rings.gap
+		ri = ri + (bat_rings.w[j] + bat_rings.w[j-1])/2 + bat_rings.gap
 	end
 
 	rings_table['bat'..i] = {
@@ -202,10 +202,10 @@ for i in pairs(bat_rings.vars) do
 		arg = bat_rings.vars[i].arg,
 		max = 100,
 		x = bat_rings.x, y = bat_rings.y,
-		radius = r,
-		width = bat_rings.w[i],
-		start_angle = bat_rings.sa[i],
-		end_angle = bat_rings.ea[i],
+		r = ri,
+		w = bat_rings.w[i],
+		sa = bat_rings.sa[i],
+		ea = bat_rings.ea[i],
 		neg = bat_rings.neg,
 		attr = rings_attr
 	}
@@ -245,21 +245,21 @@ function draw_ring(cr, pt)
 	local pct = value/pt.max
 	pct = (pct > 1 and 1 or pct)
 
-	local angle_0 = pt.start_angle*(2*math.pi/360) - math.pi/2
-	local angle_f = pt.end_angle*(2*math.pi/360) - math.pi/2
+	local angle_0 = pt.sa*(2*math.pi/360) - math.pi/2
+	local angle_f = pt.ea*(2*math.pi/360) - math.pi/2
 	local t_arc = pct*(angle_f - angle_0)
 
 	-- Draw background ring
-	cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_f)
+	cairo_arc(cr, pt.x, pt.y, pt.r, angle_0, angle_f)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bgc, pt.attr.bga))
-	cairo_set_line_width(cr, pt.width)
+	cairo_set_line_width(cr, pt.w)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
 	if pt.neg == true then
-		cairo_arc_negative(cr, pt.x, pt.y, pt.radius, angle_f, angle_f - t_arc)
+		cairo_arc_negative(cr, pt.x, pt.y, pt.r, angle_f, angle_f - t_arc)
 	else
-		cairo_arc(cr, pt.x, pt.y, pt.radius, angle_0, angle_0 + t_arc)
+		cairo_arc(cr, pt.x, pt.y, pt.r, angle_0, angle_0 + t_arc)
 	end
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fgc, pt.attr.fga))
 	cairo_stroke(cr)
