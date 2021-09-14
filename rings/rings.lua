@@ -247,7 +247,7 @@ end
 function conky_rings()
 	if conky_window == nil then return end
 
-	net_interface=conky_parse("${if_up ${template1}}${template1}${else}${if_up ${template0}}${template0}${else}none${endif}${endif}")
+	net_interface=conky_parse('${if_up ${template1}}${template1}${else}${if_up ${template0}}${template0}${else}none${endif}${endif}')
 
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
