@@ -17,13 +17,14 @@ cpu_rings = {
 	x = 180, y = 135,
 	r = 60, w = 10,
 	gap = 2,
-	sa = 0, ea = 235
+	sa = 0, ea = 235,
+	neg = false,
+
+	n = 4
 }
 
-cpu_n = 4
-
-for i = 1, cpu_n do
-	local r = cpu_rings.r + (cpu_n - i)*(cpu_rings.w + cpu_rings.gap)
+for i = 1, cpu_rings.n do
+	local r = cpu_rings.r + (cpu_rings.n - i)*(cpu_rings.w + cpu_rings.gap)
 
 	rings_table['cpu'..i] = {
 		name = 'cpu',
@@ -34,7 +35,7 @@ for i = 1, cpu_n do
 		width = cpu_rings.w,
 		start_angle = cpu_rings.sa,
 		end_angle = cpu_rings.ea,
-		neg = false
+		neg = cpu_rings.neg
 	}
 end
 
@@ -45,16 +46,17 @@ mem_rings = {
 	x = 325, y = 280,
 	r = 55, w = 17,
 	gap = 3,
-	sa = -180, ea = 55
+	sa = -180, ea = 55,
+	neg = false,
+
+	vars = { 'swapperc', 'memperc' }
 }
 
-mem_vars = { 'swapperc', 'memperc' }
-
-for i in pairs(mem_vars) do
+for i in pairs(mem_rings.vars) do
 	local r = mem_rings.r + (i - 1)*(mem_rings.w + mem_rings.gap)
 
 	rings_table['mem'..i] = {
-		name = mem_vars[i],
+		name = mem_rings.vars[i],
 		arg = '',
 		max = 100,
 		x = mem_rings.x, y = mem_rings.y,
@@ -62,7 +64,7 @@ for i in pairs(mem_vars) do
 		width = mem_rings.w,
 		start_angle = mem_rings.sa,
 		end_angle = mem_rings.ea,
-		neg = false
+		neg = mem_rings.neg
 	}
 end
 
@@ -73,24 +75,25 @@ fs_rings = {
 	x = 370, y = 115,
 	r = 27, w = 14,
 	gap = 3,
-	sa = 125, ea = 360
+	sa = 125, ea = 360,
+	neg = true,
+
+	paths = { '/home', '/', '/home/data' }
 }
 
-fs_paths = { '/home', '/', '/home/data' }
-
-for i in pairs(fs_paths) do
+for i in pairs(fs_rings.paths) do
 	local r = fs_rings.r + (i - 1)*(fs_rings.w + fs_rings.gap)
 
 	rings_table['fs'..i] = {
 		name = 'fs_used_perc',
-		arg = fs_paths[i],
+		arg = fs_rings.paths[i],
 		max = 100,
 		x = fs_rings.x, y = fs_rings.y,
 		radius = r,
 		width = fs_rings.w,
 		start_angle = fs_rings.sa,
 		end_angle = fs_rings.ea,
-		neg = true
+		neg = fs_rings.neg
 	}
 end
 
@@ -101,16 +104,17 @@ time_rings = {
 	x = 170, y = 310,
 	r = 20, w = { 9, 11, 14 },
 	gap = 3,
-	sa = -55, ea = 180
+	sa = -55, ea = 180,
+	neg = true
+
+	vars = {
+		{ arg = '%S', max = 60 },
+		{ arg = '%M', max = 60 },
+		{ arg = '%H', max = 24 }
+	}
 }
 
-time_vars = {
-	{ arg = '%S', max = 60 },
-	{ arg = '%M', max = 60 },
-	{ arg = '%H', max = 24 }
-}
-
-for i in pairs(time_vars) do
+for i in pairs(time_rings.vars) do
 	local r = time_rings.r
 	for j = 2, i do
 		r = r + (time_rings.w[j] + time_rings.w[j-1])/2 + time_rings.gap
@@ -118,14 +122,14 @@ for i in pairs(time_vars) do
 
 	rings_table['time'..i] = {
 		name = 'time',
-		arg = time_vars[i].arg,
-		max = time_vars[i].max,
+		arg = time_rings.vars[i].arg,
+		max = time_rings.vars[i].max,
 		x = time_rings.x, y = time_rings.y,
 		radius = r,
 		width = time_rings.w[i],
 		start_angle = time_rings.sa,
 		end_angle = time_rings.ea,
-		neg = true
+		neg = time_rings.neg
 	}
 end
 
@@ -136,30 +140,32 @@ net_rings = {
 	x = 320, y = 440,
 	r = 27, w = 16,
 	gap = 3,
-	sa = -180, ea = 55
+	sa = -180, ea = 55,
+	neg = false
+
+	-- Max values in KB/s
+	net_vars = {
+		{ name = 'upspeedf', max = 1500 },
+		{ name = 'downspeedf', max = 1500 },
+	}
 }
 
--- Max values in KB/s
-net_vars = {
-	{ name = 'upspeedf', max = 1500 },
-	{ name = 'downspeedf', max = 1500 },
-}
 
 net_interface = 'wlp3s0'
 
-for i in pairs(net_vars) do
+for i in pairs(net_rings.vars) do
 	local r = net_rings.r + (i - 1)*(net_rings.w + net_rings.gap)
 
 	rings_table['net'..i] = {
-		name = net_vars[i].name,
+		name = net_rings.vars[i].name,
 		arg = net_interface,
-		max = net_vars[i].max,
+		max = net_rings.vars[i].max,
 		x = net_rings.x, y = net_rings.y,
 		radius = r,
 		width = net_rings.w,
 		start_angle = net_rings.sa,
 		end_angle = net_rings.ea,
-		neg = false
+		neg = net_rings.neg
 	}
 end
 
@@ -170,30 +176,32 @@ bat_rings = {
 	x = 215, y = 415,
 	r = 10, w = { 20, 12 },
 	gap = 3,
-	sa = { -180, -55 }, ea = { 180, 180 }
+	sa = { -180, -55 }, ea = { 180, 180 },
+	neg = true
+
+	bat_vars = {
+		{ name = 'goto', arg = 0 },
+		{ name = 'battery_percent', arg = '' },
+	}
 }
 
-bat_vars = {
-	{ name = 'goto', arg = 0 },
-	{ name = 'battery_percent', arg = '' },
-}
 
-for i in pairs(bat_vars) do
+for i in pairs(bat_rings.vars) do
 	local r = bat_rings.r
 	for j = 2, i do
 		r = r + (bat_rings.w[j] + bat_rings.w[j-1])/2 + bat_rings.gap
 	end
 
 	rings_table['bat'..i] = {
-		name = bat_vars[i].name,
-		arg = bat_vars[i].arg,
+		name = bat_rings.vars[i].name,
+		arg = bat_rings.vars[i].arg,
 		max = 100,
 		x = bat_rings.x, y = bat_rings.y,
 		radius = r,
 		width = bat_rings.w[i],
 		start_angle = bat_rings.sa[i],
 		end_angle = bat_rings.ea[i],
-		neg = true
+		neg = bat_rings.neg
 	}
 end
 
