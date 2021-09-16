@@ -3,20 +3,18 @@
 ---------------------------------------
 function get_ring_geom(i, gt)
 	local ot = {}
-	ot.x = gt.x
-	ot.y = gt.y
 
-	ot.w = ((type(gt.w) == 'table') and gt.w[i] or gt.w)
+	-- Copy single values
+	for k, v in pairs({'x', 'y', 'ccw'}) do ot[v] = gt[v] end
 
+	-- Get values from tables
+	for k, v in pairs({'w', 'sa', 'ea'}) do ot[v] = ((type(gt[v]) == 'table') and gt[v][i] or gt[v]) end
+
+	-- Calculate radius of indiviudal rings
 	ot.r = gt.ri
 	for j = 2, i do
 		ot.r = ot.r + ((type(gt.w) == 'table') and ((gt.w[j] + gt.w[j-1])/2) or gt.w) + gt.gap
 	end
-
-	ot.sa = ((type(gt.sa) == 'table') and gt.sa[i] or gt.sa)
-	ot.ea = ((type(gt.ea) == 'table') and gt.ea[i] or gt.ea)
-
-	ot.ccw = gt.ccw
 
 	return(ot)
 end
