@@ -8,11 +8,9 @@ function get_ring_geom(i, gt)
 
 	ot.w = ((type(gt.w) == 'table') and gt.w[i] or gt.w)
 
-	if type(gt.w) == 'table' then
-		ot.r = gt.ri
-		for j = 2, i do ot.r = ot.r + (gt.w[j] + gt.w[j-1])/2 + gt.gap end
-	else
-		ot.r = gt.ri + (i - 1)*(gt.w + gt.gap)
+	ot.r = gt.ri
+	for j = 2, i do
+		ot.r = ot.r + ((type(gt.w) == 'table') and ((gt.w[j] + gt.w[j-1])/2) or gt.w) + gt.gap
 	end
 
 	ot.sa = ((type(gt.sa) == 'table') and gt.sa[i] or gt.sa)
