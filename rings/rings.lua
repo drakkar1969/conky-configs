@@ -140,7 +140,7 @@ net_rings = {
 	-- Max values in KB/s
 	vars = {
 		{ name = 'upspeedf', max = 1500 },
-		{ name = 'downspeedf', max = 1500 },
+		{ name = 'downspeedf', max = 10000 },
 	}
 }
 
