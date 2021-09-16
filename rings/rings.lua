@@ -9,10 +9,10 @@ function get_ring_geom(i, gt)
 	ot.w = ((type(gt.w) == 'table') and gt.w[i] or gt.w)
 
 	if type(gt.w) == 'table' then
-		ot.r = gt.r
+		ot.r = gt.ri
 		for j = 2, i do ot.r = ot.r + (gt.w[j] + gt.w[j-1])/2 + gt.gap end
 	else
-		ot.r = gt.r + (i - 1)*(gt.w + gt.gap)
+		ot.r = gt.ri + (i - 1)*(gt.w + gt.gap)
 	end
 
 	ot.sa = ((type(gt.sa) == 'table') and gt.sa[i] or gt.sa)
@@ -38,7 +38,7 @@ rings_table = {}
 ---------------------------------------
 cpu_rings = {
 	x = 180, y = 135,
-	r = 60, w = 10,
+	ri = 60, w = 10,
 	gap = 2,
 	sa = 0, ea = 235,
 
@@ -60,7 +60,7 @@ end
 ---------------------------------------
 mem_rings = {
 	x = 325, y = 280,
-	r = 55, w = 17,
+	ri = 55, w = 17,
 	gap = 3,
 	sa = -180, ea = 55,
 
@@ -82,7 +82,7 @@ end
 ---------------------------------------
 fs_rings = {
 	x = 370, y = 115,
-	r = 27, w = 14,
+	ri = 27, w = 14,
 	gap = 3,
 	sa = 360, ea = 125,
 
@@ -104,7 +104,7 @@ end
 -- ---------------------------------------
 time_rings = {
 	x = 170, y = 310,
-	r = 20, w = { 9, 11, 14 },
+	ri = 20, w = { 9, 11, 14 },
 	gap = 3,
 	sa = 180, ea = -55,
 
@@ -130,7 +130,7 @@ end
 ---------------------------------------
 net_rings = {
 	x = 320, y = 440,
-	r = 27, w = 16,
+	ri = 27, w = 16,
 	gap = 3,
 	sa = -180, ea = 55,
 
@@ -158,7 +158,7 @@ end
 ---------------------------------------
 bat_rings = {
 	x = 215, y = 415,
-	r = 10, w = { 20, 12 },
+	ri = 10, w = { 20, 12 },
 	gap = 3,
 	sa = { 0, 180 }, ea = { 360, -55 },
 
