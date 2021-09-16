@@ -18,8 +18,6 @@ function get_ring_geom(i, gt)
 	ot.sa = ((type(gt.sa) == 'table') and gt.sa[i] or gt.sa)
 	ot.ea = ((type(gt.ea) == 'table') and gt.ea[i] or gt.ea)
 
-	ot.ccw = gt.ccw
-
 	return(ot)
 end
 
@@ -43,7 +41,6 @@ cpu_rings = {
 	r = 60, w = 10,
 	gap = 2,
 	sa = 0, ea = 235,
-	ccw = false,
 
 	n = 4
 }
@@ -66,7 +63,6 @@ mem_rings = {
 	r = 55, w = 17,
 	gap = 3,
 	sa = -180, ea = 55,
-	ccw = false,
 
 	vars = { 'swapperc', 'memperc' }
 }
@@ -88,8 +84,7 @@ fs_rings = {
 	x = 370, y = 115,
 	r = 27, w = 14,
 	gap = 3,
-	sa = 125, ea = 360,
-	ccw = true,
+	sa = 360, ea = 125,
 
 	paths = { '/home', '/', '/home/data' }
 }
@@ -111,8 +106,7 @@ time_rings = {
 	x = 170, y = 310,
 	r = 20, w = { 9, 11, 14 },
 	gap = 3,
-	sa = -55, ea = 180,
-	ccw = true,
+	sa = 180, ea = -55,
 
 	vars = {
 		{ arg = '%S', max = 60 },
@@ -139,7 +133,6 @@ net_rings = {
 	r = 27, w = 16,
 	gap = 3,
 	sa = -180, ea = 55,
-	ccw = false,
 
 	-- Max values in KB/s
 	vars = {
@@ -167,8 +160,7 @@ bat_rings = {
 	x = 215, y = 415,
 	r = 10, w = { 20, 12 },
 	gap = 3,
-	sa = { -180, -55 }, ea = { 180, 180 },
-	ccw = true,
+	sa = { 0, 180 }, ea = { 360, -55 },
 
 	vars = {
 		{ name = 'goto', arg = 0 },
@@ -226,18 +218,22 @@ function draw_ring(cr, pt)
 	local t_arc = pct*(angle_f - angle_0)
 
 	-- Draw background ring
-	cairo_arc(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_f)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bgc, pt.attr.bga))
 	cairo_set_line_width(cr, pt.geom.w)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bgc, pt.attr.bga))
+	if t_arc < 0 then
+		cairo_arc_negative(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_f)
+	else
+		cairo_arc(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_f)
+	end
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
-	if pt.geom.ccw == true then
-		cairo_arc_negative(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_f, angle_f - t_arc)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fgc, pt.attr.fga))
+	if t_arc < 0 then
+		cairo_arc_negative(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_0 + t_arc)
 	else
 		cairo_arc(cr, pt.geom.x, pt.geom.y, pt.geom.r, angle_0, angle_0 + t_arc)
 	end
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fgc, pt.attr.fga))
 	cairo_stroke(cr)
 end
 
