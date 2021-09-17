@@ -46,9 +46,7 @@ n_cpu = 4
 
 for i = 1, n_cpu do
 	rings_table['cpu'..i] = {
-		name = 'cpu',
-		arg = 'cpu'..(n_cpu - i + 1),
-		max = 100,
+		vars = { name = 'cpu', arg = 'cpu'..(n_cpu - i + 1), max = 100 },
 		geom = get_ring_geom(i, cpu_rings),
 		attr = rings_attr
 	}
@@ -72,9 +70,7 @@ mem_vars = {
 
 for i in pairs(mem_vars) do
 	rings_table['mem'..i] = {
-		name = mem_vars[i].name,
-		arg = mem_vars[i].arg,
-		max = mem_vars[i].max,
+		vars = mem_vars[i],
 		geom = get_ring_geom(i, mem_rings),
 		attr = rings_attr
 	}
@@ -99,9 +95,7 @@ fs_vars = {
 
 for i in pairs(fs_vars) do
 	rings_table['fs'..i] = {
-		name = fs_vars[i].name,
-		arg = fs_vars[i].arg,
-		max = fs_vars[i].max,
+		vars = fs_vars[i],
 		geom = get_ring_geom(i, fs_rings),
 		attr = rings_attr
 	}
@@ -126,9 +120,7 @@ time_vars = {
 
 for i in pairs(time_vars) do
 	rings_table['time'..i] = {
-		name = time_vars[i].name,
-		arg = time_vars[i].arg,
-		max = time_vars[i].max,
+		vars = time_vars[i],
 		geom = get_ring_geom(i, time_rings),
 		attr = rings_attr
 	}
@@ -154,9 +146,7 @@ net_vars = {
 
 for i in pairs(net_vars) do
 	rings_table['net'..i] = {
-		name = net_vars[i].name,
-		arg = net_vars[i].arg,
-		max = net_vars[i].max,
+		vars = net_vars[i],
 		geom = get_ring_geom(i, net_rings),
 		attr = rings_attr
 	}
@@ -180,9 +170,7 @@ bat_vars = {
 
 for i in pairs(bat_vars) do
 	rings_table['bat'..i] = {
-		name = bat_vars[i].name,
-		arg = bat_vars[i].arg,
-		max = bat_vars[i].max,
+		vars = bat_vars[i],
 		geom = get_ring_geom(i, bat_rings),
 		attr = rings_attr
 	}
@@ -217,9 +205,9 @@ end
 -- Function draw_ring
 ---------------------------------------
 function draw_ring(cr, pt)
-	local value = get_conky_string(pt.name, pt.arg)
+	local value = get_conky_string(pt.vars.name, pt.vars.arg)
 
-	local pct = value/pt.max
+	local pct = value/pt.vars.max
 	pct = (pct > 1 and 1 or pct)
 
 	local angle_0 = pt.geom.sa*(2*math.pi/360) - math.pi/2
@@ -255,7 +243,7 @@ function conky_rings()
 	local cr = cairo_create(cs)
 
 	for id, ring in pairs(rings_table) do
-		if id:find('net') then ring.arg = net_interface end
+		if id:find('net') then ring.vars.arg = net_interface end
 		draw_ring(cr, ring)
 	end
 
