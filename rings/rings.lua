@@ -65,13 +65,16 @@ mem_rings = {
 	ccw = false
 }
 
-mem_vars = { 'swapperc', 'memperc' }
+mem_vars = {
+	{ name = 'swapperc', arg = '', max = 100},
+	{ name = 'memperc', arg = '', max = 100}
+}
 
 for i in pairs(mem_vars) do
 	rings_table['mem'..i] = {
-		name = mem_vars[i],
-		arg = '',
-		max = 100,
+		name = mem_vars[i].name,
+		arg = mem_vars[i].arg,
+		max = mem_vars[i].max,
 		geom = get_ring_geom(i, mem_rings),
 		attr = rings_attr
 	}
@@ -88,21 +91,25 @@ fs_rings = {
 	ccw = true
 }
 
-fs_paths = { '/home', '/', '/home/data' }
+fs_vars = {
+	{ name = 'fs_used_perc', arg = '/home', max = 100},
+	{ name = 'fs_used_perc', arg = '/', max = 100},
+	{ name = 'fs_used_perc', arg = '/home/data', max = 100}
+}
 
-for i in pairs(fs_paths) do
+for i in pairs(fs_vars) do
 	rings_table['fs'..i] = {
-		name = 'fs_used_perc',
-		arg = fs_paths[i],
-		max = 100,
+		name = fs_vars[i].name,
+		arg = fs_vars[i].arg,
+		max = fs_vars[i].max,
 		geom = get_ring_geom(i, fs_rings),
 		attr = rings_attr
 	}
 end
 
--- ---------------------------------------
--- -- TIME variables
--- ---------------------------------------
+---------------------------------------
+-- TIME variables
+---------------------------------------
 time_rings = {
 	x = 170, y = 310,
 	ri = 20, w = { 9, 11, 14 },
@@ -112,14 +119,14 @@ time_rings = {
 }
 
 time_vars = {
-	{ arg = '%S', max = 60 },
-	{ arg = '%M', max = 60 },
-	{ arg = '%H', max = 24 }
+	{ name = 'time', arg = '%S', max = 60 },
+	{ name = 'time', arg = '%M', max = 60 },
+	{ name = 'time', arg = '%H', max = 24 }
 }
 
 for i in pairs(time_vars) do
 	rings_table['time'..i] = {
-		name = 'time',
+		name = time_vars[i].name,
 		arg = time_vars[i].arg,
 		max = time_vars[i].max,
 		geom = get_ring_geom(i, time_rings),
@@ -141,14 +148,14 @@ net_rings = {
 net_interface = 'wlp3s0'
 -- Max values in KB/s
 net_vars = {
-	{ name = 'upspeedf', max = 1500 },
-	{ name = 'downspeedf', max = 10000 },
+	{ name = 'upspeedf', arg = net_interface, max = 1500 },
+	{ name = 'downspeedf', arg = net_interface, max = 10000 },
 }
 
 for i in pairs(net_vars) do
 	rings_table['net'..i] = {
 		name = net_vars[i].name,
-		arg = net_interface,
+		arg = net_vars[i].arg,
 		max = net_vars[i].max,
 		geom = get_ring_geom(i, net_rings),
 		attr = rings_attr
@@ -167,15 +174,15 @@ bat_rings = {
 }
 
 bat_vars = {
-	{ name = 'goto', arg = 0 },
-	{ name = 'battery_percent', arg = '' },
+	{ name = 'goto', arg = 0, max = 100 },
+	{ name = 'battery_percent', arg = '', max = 100 },
 }
 
 for i in pairs(bat_vars) do
 	rings_table['bat'..i] = {
 		name = bat_vars[i].name,
 		arg = bat_vars[i].arg,
-		max = 100,
+		max = bat_vars[i].max,
 		geom = get_ring_geom(i, bat_rings),
 		attr = rings_attr
 	}
