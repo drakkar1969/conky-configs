@@ -28,11 +28,6 @@ text_alpha_label = 1
 label_y = dial_init_y + dial_radius + (dial_width/2) + 12
 
 ---------------------------------------
--- NET variables
----------------------------------------
-net_interface = 'wlp3s0'
-
----------------------------------------
 -- Dials table
 ---------------------------------------
 dials_table = {
