@@ -39,15 +39,15 @@ cpu_rings = {
 	ri = 60, w = 10,
 	gap = 2,
 	sa = 0, ea = 235,
-	ccw = false,
-
-	n = 4
+	ccw = false
 }
 
-for i = 1, cpu_rings.n do
+n_cpu = 4
+
+for i = 1, n_cpu do
 	rings_table['cpu'..i] = {
 		name = 'cpu',
-		arg = 'cpu'..(cpu_rings.n - i + 1),
+		arg = 'cpu'..(n_cpu - i + 1),
 		max = 100,
 		geom = get_ring_geom(i, cpu_rings),
 		attr = rings_attr
@@ -62,14 +62,14 @@ mem_rings = {
 	ri = 55, w = 17,
 	gap = 3,
 	sa = -180, ea = 55,
-	ccw = false,
-
-	vars = { 'swapperc', 'memperc' }
+	ccw = false
 }
 
-for i in pairs(mem_rings.vars) do
+mem_vars = { 'swapperc', 'memperc' }
+
+for i in pairs(mem_vars) do
 	rings_table['mem'..i] = {
-		name = mem_rings.vars[i],
+		name = mem_vars[i],
 		arg = '',
 		max = 100,
 		geom = get_ring_geom(i, mem_rings),
@@ -85,15 +85,15 @@ fs_rings = {
 	ri = 27, w = 14,
 	gap = 3,
 	sa = 125, ea = 360,
-	ccw = true,
-
-	paths = { '/home', '/', '/home/data' }
+	ccw = true
 }
 
-for i in pairs(fs_rings.paths) do
+fs_paths = { '/home', '/', '/home/data' }
+
+for i in pairs(fs_paths) do
 	rings_table['fs'..i] = {
 		name = 'fs_used_perc',
-		arg = fs_rings.paths[i],
+		arg = fs_paths[i],
 		max = 100,
 		geom = get_ring_geom(i, fs_rings),
 		attr = rings_attr
@@ -108,20 +108,20 @@ time_rings = {
 	ri = 20, w = { 9, 11, 14 },
 	gap = 3,
 	sa = -55, ea = 180,
-	ccw = true,
-
-	vars = {
-		{ arg = '%S', max = 60 },
-		{ arg = '%M', max = 60 },
-		{ arg = '%H', max = 24 }
-	}
+	ccw = true
 }
 
-for i in pairs(time_rings.vars) do
+time_vars = {
+	{ arg = '%S', max = 60 },
+	{ arg = '%M', max = 60 },
+	{ arg = '%H', max = 24 }
+}
+
+for i in pairs(time_vars) do
 	rings_table['time'..i] = {
 		name = 'time',
-		arg = time_rings.vars[i].arg,
-		max = time_rings.vars[i].max,
+		arg = time_vars[i].arg,
+		max = time_vars[i].max,
 		geom = get_ring_geom(i, time_rings),
 		attr = rings_attr
 	}
@@ -135,22 +135,21 @@ net_rings = {
 	ri = 27, w = 16,
 	gap = 3,
 	sa = -180, ea = 55,
-	ccw = false,
-
-	-- Max values in KB/s
-	vars = {
-		{ name = 'upspeedf', max = 1500 },
-		{ name = 'downspeedf', max = 10000 },
-	}
+	ccw = false
 }
 
 net_interface = 'wlp3s0'
+-- Max values in KB/s
+net_vars = {
+	{ name = 'upspeedf', max = 1500 },
+	{ name = 'downspeedf', max = 10000 },
+}
 
-for i in pairs(net_rings.vars) do
+for i in pairs(net_vars) do
 	rings_table['net'..i] = {
-		name = net_rings.vars[i].name,
+		name = net_vars[i].name,
 		arg = net_interface,
-		max = net_rings.vars[i].max,
+		max = net_vars[i].max,
 		geom = get_ring_geom(i, net_rings),
 		attr = rings_attr
 	}
@@ -165,18 +164,17 @@ bat_rings = {
 	gap = 3,
 	sa = { -180, -55 }, ea = { 180, 180 },
 	ccw = true,
-
-	vars = {
-		{ name = 'goto', arg = 0 },
-		{ name = 'battery_percent', arg = '' },
-	}
 }
 
+bat_vars = {
+	{ name = 'goto', arg = 0 },
+	{ name = 'battery_percent', arg = '' },
+}
 
-for i in pairs(bat_rings.vars) do
+for i in pairs(bat_vars) do
 	rings_table['bat'..i] = {
-		name = bat_rings.vars[i].name,
-		arg = bat_rings.vars[i].arg,
+		name = bat_vars[i].name,
+		arg = bat_vars[i].arg,
 		max = 100,
 		geom = get_ring_geom(i, bat_rings),
 		attr = rings_attr
