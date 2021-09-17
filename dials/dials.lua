@@ -33,7 +33,7 @@ label_y = dial_init_y + dial_radius + (dial_width/2) + 12
 net_interface = 'wlp3s0'
 
 ---------------------------------------
--- Settings table
+-- Dials table
 ---------------------------------------
 dials_table = {
 	core = {
@@ -41,50 +41,59 @@ dials_table = {
 		label = 'Core Temp',
 		suffix = '°C',
 		name = 'acpitemp',
-		arg = '',
-		x = 0, y = dial_init_y
+		arg = ''
 	},
 	cpu = {
 		index = 1,
 		label = 'CPU',
 		suffix = '%',
 		name = 'cpu',
-		arg = 'cpu0',
-		x = 0, y = dial_init_y
+		arg = 'cpu0'
 	},
 	ram = {
 		index = 2,
 		label = 'Memory',
 		suffix = '%',
 		name = 'memperc',
-		arg = '',
-		x = 0, y = dial_init_y
+		arg = ''
 	},
 	home = {
 		index = 3,
 		label = 'Home',
 		suffix = '%',
 		name = 'fs_used_perc',
-		arg = '/home',
-		x = 0, y = dial_init_y
+		arg = '/home'
 	},
 	data = {
 		index = 4,
 		label = 'Data',
 		suffix = '%',
 		name = 'fs_used_perc',
-		arg = '/home/data',
-		x = 0, y = dial_init_y
+		arg = '/home/data'
 	},
 	battery = {
 		index = 5,
 		label = 'Battery',
 		suffix = '%',
 		name = 'battery_percent',
-		arg = '',
-		x = 0, y = dial_init_y
+		arg = ''
 	},
 }
+
+---------------------------------------
+-- Dial positions
+---------------------------------------
+-- Get dial count
+for i in pairs(dials_table) do dial_count = dial_count + 1 end
+
+-- Calculate initial x offset (to center rings)
+dial_init_x = -(dial_count/2 - 0.5)*dial_spacing
+
+-- Calculate x offset of individual rings
+for i, dial in pairs(dials_table) do
+	dial.x = dial_init_x + dial.index*dial_spacing
+	dial.y = dial_init_y
+end
 
 ---------------------------------------
 -- LUA FUNCTIONS
@@ -168,21 +177,6 @@ function draw_dial(cr, pt)
 	cairo_stroke(cr)
 end
 
----------------------------------------
--- Function conky_set_coords
----------------------------------------
-function conky_set_coords()
-	-- Get dial count
-	for i in pairs(dials_table) do dial_count = dial_count + 1 end
-
-	-- Calculate initial x offset
-	dial_init_x = -(dial_count/2 - 0.5)*dial_spacing
-
-	-- Calculate x offset of individual rings
-	for i in pairs(dials_table) do
-		dials_table[i].x = dial_init_x + dials_table[i].index*dial_spacing
-	end
-end
 ---------------------------------------
 -- Function conky_dials
 ---------------------------------------
