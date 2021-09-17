@@ -14,7 +14,7 @@ dial_end_angle = 180
 dial_spacing = 2*dial_radius + dial_width/2 + 50
 
 dial_init_x = 0
-dial_init_y = dial_radius + 10
+dial_init_y = dial_radius + 6
 dial_count = 0
 
 text_font_perc = "Ubuntu"
@@ -25,7 +25,7 @@ text_color_perc = 0x383c4a
 text_color_label = 0x21232b
 text_alpha_perc = 1
 text_alpha_label = 1
-label_y = dial_init_y + dial_radius + (dial_width/2) + 12
+label_y = dial_init_y + dial_radius + (dial_width/2) + 14
 
 ---------------------------------------
 -- Dials table
