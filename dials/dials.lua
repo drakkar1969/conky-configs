@@ -103,9 +103,9 @@ function rgb_to_r_g_b(color, alpha)
 end
 
 ---------------------------------------
--- Function get_conky_string
+-- Function get_conky_value
 ---------------------------------------
-function get_conky_string(name, arg)
+function get_conky_value(name, arg)
 	local str = string.format('${%s %s}', name, arg)
 	str = conky_parse(str)
 
@@ -119,7 +119,7 @@ end
 -- Function draw_dial
 ---------------------------------------
 function draw_dial(cr, pt)
-	local value = get_conky_string(pt.name, pt.arg)
+	local value = get_conky_value(pt.name, pt.arg)
 
 	local pct = value/100
 	pct = (pct > 1 and 1 or pct)
