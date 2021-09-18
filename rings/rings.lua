@@ -189,9 +189,9 @@ function rgb_to_r_g_b(color, alpha)
 end
 
 ---------------------------------------
--- Function get_conky_string
+-- Function get_conky_value
 ---------------------------------------
-function get_conky_string(name, arg)
+function get_conky_value(name, arg)
 	local str = string.format('${%s %s}', name, arg)
 	str = conky_parse(str)
 
@@ -205,7 +205,7 @@ end
 -- Function draw_ring
 ---------------------------------------
 function draw_ring(cr, pt)
-	local value = get_conky_string(pt.vars.name, pt.vars.arg)
+	local value = get_conky_value(pt.vars.name, pt.vars.arg)
 
 	local pct = value/pt.vars.max
 	pct = (pct > 1 and 1 or pct)
