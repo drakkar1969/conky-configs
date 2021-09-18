@@ -53,30 +53,6 @@ for i = 1, n_cpu do
 end
 
 ---------------------------------------
--- MEM variables
----------------------------------------
-mem_rings = {
-	x = 325, y = 280,
-	ri = 55, w = 17,
-	gap = 3,
-	sa = -180, ea = 55,
-	ccw = false
-}
-
-mem_vars = {
-	{ name = 'swapperc', arg = '', max = 100},
-	{ name = 'memperc', arg = '', max = 100}
-}
-
-for i in pairs(mem_vars) do
-	rings_table['mem'..i] = {
-		vars = mem_vars[i],
-		geom = get_ring_geom(i, mem_rings),
-		attr = rings_attr
-	}
-end
-
----------------------------------------
 -- FS variables
 ---------------------------------------
 fs_rings = {
@@ -97,6 +73,30 @@ for i in pairs(fs_vars) do
 	rings_table['fs'..i] = {
 		vars = fs_vars[i],
 		geom = get_ring_geom(i, fs_rings),
+		attr = rings_attr
+	}
+end
+
+---------------------------------------
+-- MEM variables
+---------------------------------------
+mem_rings = {
+	x = 325, y = 280,
+	ri = 55, w = 17,
+	gap = 3,
+	sa = -180, ea = 55,
+	ccw = false
+}
+
+mem_vars = {
+	{ name = 'swapperc', arg = '', max = 100},
+	{ name = 'memperc', arg = '', max = 100}
+}
+
+for i in pairs(mem_vars) do
+	rings_table['mem'..i] = {
+		vars = mem_vars[i],
+		geom = get_ring_geom(i, mem_rings),
 		attr = rings_attr
 	}
 end
@@ -127,6 +127,30 @@ for i in pairs(time_vars) do
 end
 
 ---------------------------------------
+-- BAT variables
+---------------------------------------
+bat_rings = {
+	x = 220, y = 410,
+	ri = 10, w = { 20, 12 },
+	gap = 3,
+	sa = { -180, -55 }, ea = { 180, 180 },
+	ccw = true,
+}
+
+bat_vars = {
+	{ name = 'goto', arg = 0, max = 100 },
+	{ name = 'battery_percent', arg = '', max = 100 },
+}
+
+for i in pairs(bat_vars) do
+	rings_table['bat'..i] = {
+		vars = bat_vars[i],
+		geom = get_ring_geom(i, bat_rings),
+		attr = rings_attr
+	}
+end
+
+---------------------------------------
 -- NET variables
 ---------------------------------------
 net_rings = {
@@ -148,30 +172,6 @@ for i in pairs(net_vars) do
 	rings_table['net'..i] = {
 		vars = net_vars[i],
 		geom = get_ring_geom(i, net_rings),
-		attr = rings_attr
-	}
-end
-
----------------------------------------
--- BAT variables
----------------------------------------
-bat_rings = {
-	x = 220, y = 410,
-	ri = 10, w = { 20, 12 },
-	gap = 3,
-	sa = { -180, -55 }, ea = { 180, 180 },
-	ccw = true,
-}
-
-bat_vars = {
-	{ name = 'goto', arg = 0, max = 100 },
-	{ name = 'battery_percent', arg = '', max = 100 },
-}
-
-for i in pairs(bat_vars) do
-	rings_table['bat'..i] = {
-		vars = bat_vars[i],
-		geom = get_ring_geom(i, bat_rings),
 		attr = rings_attr
 	}
 end
