@@ -285,9 +285,9 @@ function rgb_to_r_g_b(color, alpha)
 end
 
 ---------------------------------------
--- Function get_conky_string
+-- Function get_conky_value
 ---------------------------------------
-function get_conky_string(name, arg)
+function get_conky_value(name, arg)
 
 	local str = string.format('${%s %s}', name, arg)
 	str = conky_parse(str)
@@ -302,7 +302,7 @@ end
 -- Function draw_ring
 ---------------------------------------
 function draw_ring(cr, pt)
-	local value = get_conky_string(pt.name, pt.arg)
+	local value = get_conky_value(pt.name, pt.arg)
 
 	local pct = value/pt.max
 	pct = (pct > 1 and 1 or pct)
@@ -385,7 +385,7 @@ function draw_graph(cr, pt)
 		pt.data[i] = pt.data[i+1]
 
 		if i == n_bars then
-			pt.data[n_bars] = get_conky_string(pt.name, pt.arg)
+			pt.data[n_bars] = get_conky_value(pt.name, pt.arg)
 		end
 	end
 
