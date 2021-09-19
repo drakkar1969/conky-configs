@@ -125,7 +125,7 @@ cpu_rings = {
 	start_angle = 0, end_angle = 235,
 	ccw = false,
 	text_angle = 0, text_width = 68,
-	font_size = 10, text_pos = TEXTL,
+	font_size = 10.5, text_pos = TEXTL,
 	header_angle = 242, header_gap = 26,
 	header_align = ALIGNR
 }
@@ -147,7 +147,7 @@ text_table['temp'] = {
 	y = cpu_rings.y - rings_size - 20,
 	label = 'CORE TEMP',
 	value = '${acpitemp}°C',
-	align = ALIGNL, fs = 14,
+	align = ALIGNL, fs = 15,
 	attr = text_attr.label
 }
 
@@ -157,7 +157,7 @@ for i = 1, 3 do
 		y = cpu_rings.y + 15*(i - 2),
 		label = '${top name '..i..'}',
 		value = '${top cpu '..i..'}%',
-		align = ALIGNC, fs = 13,
+		align = ALIGNC, fs = 13.5,
 		attr = text_attr.label
 	}
 end
@@ -174,7 +174,7 @@ fs_rings = {
 	start_angle = 125, end_angle = 360,
 	ccw = true,
 	text_angle = 360, text_width = 175,
-	font_size = 13, text_pos = TEXTR,
+	font_size = 13.5, text_pos = TEXTR,
 	header_angle = 105, header_gap = 0,
 	header_align = ALIGNL
 }
@@ -232,7 +232,7 @@ for i = 1, 3 do
 		y = mem_rings.y + 5 + 15*(i - 2),
 		label = '${top_mem name '..i..'}',
 		value = '${top_mem mem '..i..'}%',
-		align = ALIGNR, fs = 13,
+		align = ALIGNR, fs = 13.5,
 		attr = text_attr.label
 	}
 end
@@ -283,7 +283,7 @@ bat_rings = {
 	start_angle = { -180, -55 }, end_angle = { 180, 180 },
 	ccw = true,
 	text_angle = 180, text_width = 0,
-	font_size = 13, text_pos = TEXTL,
+	font_size = 13.5, text_pos = TEXTL,
 	header_angle = -95, header_gap = 5,
 	header_align = ALIGNR
 }
@@ -313,7 +313,7 @@ net_rings = {
 	start_angle = -180, end_angle = 55,
 	ccw = false,
 	text_angle = -180, text_width = 153,
-	font_size = 13, text_pos = TEXTR,
+	font_size = 13.5, text_pos = TEXTR,
 	header_angle = 80, header_gap = 5,
 	header_align = ALIGNL
 }
