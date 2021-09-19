@@ -286,7 +286,7 @@ time_vars = {
 local rings_size = add_rings('time', time_rings, time_vars)
 
 -- Header
-add_header('time_hdr', time_rings, rings_size, '${time %H:%M}', text_attr.time, time_font_size)
+add_header('time_hdr', time_rings, rings_size, '${time %R}', text_attr.time, time_font_size)
 
 ---------------------------------------
 -- BAT variables
