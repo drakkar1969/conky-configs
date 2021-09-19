@@ -209,7 +209,7 @@ mem_rings = {
 	ccw = false,
 	text_angle = -180, text_width = 188,
 	font_size = 14, text_pos = TEXTR,
-	header_angle = 64, header_gap = 20,
+	header_angle = 62, header_gap = 20,
 	header_align = ALIGNL
 }
 
