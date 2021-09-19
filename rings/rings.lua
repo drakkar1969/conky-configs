@@ -118,6 +118,7 @@ end
 ---------------------------------------
 -- CPU variables
 ---------------------------------------
+-- CPU rings
 cpu_rings = {
 	x = ring_x + 180, y = ring_y + 135,
 	radius = 60, width = 10,
@@ -142,6 +143,7 @@ end
 
 local rings_size = add_rings('cpu', cpu_rings, cpu_vars)
 
+-- Core temperature text
 text_table['temp'] = {
 	xl = cpu_rings.x - 100, xv = cpu_rings.x,
 	y = cpu_rings.y - rings_size - 20,
@@ -151,6 +153,7 @@ text_table['temp'] = {
 	attr = text_attr.label
 }
 
+-- Top CPU list
 local top_y_spacing = 15
 
 for i = 1, 3 do
@@ -164,11 +167,13 @@ for i = 1, 3 do
 	}
 end
 
+-- Header
 add_header('cpu_hdr', cpu_rings, rings_size, 'CPU', text_attr.header, header_font_size)
 
 ---------------------------------------
 -- FS variables
 ---------------------------------------
+-- FS rings
 fs_rings = {
 	x = ring_x + 370, y = ring_y + 115,
 	radius = 27, width = 14,
@@ -198,11 +203,13 @@ end
 
 local rings_size = add_rings('fs', fs_rings, fs_vars)
 
+-- Header
 add_header('fs_hdr', fs_rings, rings_size, 'FILESYSTEM', text_attr.header, header_font_size)
 
 ---------------------------------------
 -- MEM variables
 ---------------------------------------
+-- MEM rings
 mem_rings = {
 	x = ring_x + 325, y = ring_y + 280,
 	radius = 55, width = 17,
@@ -228,6 +235,7 @@ mem_vars = {
 
 local rings_size = add_rings('mem', mem_rings, mem_vars)
 
+-- Top MEM list
 local top_y_spacing = 15
 
 for i = 1, 3 do
@@ -241,11 +249,13 @@ for i = 1, 3 do
 	}
 end
 
+-- Header
 add_header('mem_hdr', mem_rings, rings_size, 'MEMORY', text_attr.header, header_font_size)
 
 ---------------------------------------
 -- TIME variables
 ---------------------------------------
+-- TIME rings
 time_rings = {
 	x = ring_x + 170, y = ring_y + 310,
 	radius = 20, width = { 9, 11, 14 },
@@ -275,11 +285,13 @@ time_vars = {
 
 local rings_size = add_rings('time', time_rings, time_vars)
 
+-- Header
 add_header('time_hdr', time_rings, rings_size, '${time %H:%M}', text_attr.time, time_font_size)
 
 ---------------------------------------
 -- BAT variables
 ---------------------------------------
+-- BAT rings
 bat_rings = {
 	x = ring_x + 220, y = ring_y + 410,
 	radius = 10, width = { 20, 12 },
@@ -305,11 +317,13 @@ bat_vars = {
 
 local rings_size = add_rings('bat', bat_rings, bat_vars)
 
+-- Header
 add_header('bat_hdr', bat_rings, rings_size, 'BATTERY', text_attr.header, header_font_size)
 
 ---------------------------------------
 -- NET variables
 ---------------------------------------
+-- NET rings
 net_rings = {
 	x = ring_x + 320, y = ring_y + 440,
 	radius = 27, width = 16,
@@ -322,8 +336,10 @@ net_rings = {
 	header_align = ALIGNL
 }
 
+-- Interface variables
 wifi_interface = 'wlp3s0'
 lan_interface = 'enp2s0'
+
 net_interface = wifi_interface
 net_conn = '${wireless_essid '..net_interface..'}'
 
@@ -341,8 +357,10 @@ net_vars = {
 
 local rings_size = add_rings('net', net_rings, net_vars)
 
+-- Header
 add_header('net_hdr', net_rings, rings_size, 'NETWORK', text_attr.header, header_font_size)
 
+-- Extra NET text
 local net_extra_text = {
 	{ label = 'CONN', value = net_conn },
 	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' }
