@@ -151,10 +151,12 @@ text_table['temp'] = {
 	attr = text_attr.label
 }
 
+local top_y_spacing = 15
+
 for i = 1, 3 do
 	text_table['topcpu'..i] = {
 		xl = cpu_rings.x - 151, xv = cpu_rings.x,
-		y = cpu_rings.y + 15*(i - 2),
+		y = cpu_rings.y + top_y_spacing*(i - 2),
 		label = '${top name '..i..'}',
 		value = '${top cpu '..i..'}%',
 		align = ALIGNC, fs = 13.5,
@@ -226,10 +228,12 @@ mem_vars = {
 
 local rings_size = add_rings('mem', mem_rings, mem_vars)
 
+local top_y_spacing = 15
+
 for i = 1, 3 do
 	text_table['topmem'..i] = {
 		xl = mem_rings.x - 15, xv = mem_rings.x + 160,
-		y = mem_rings.y + 5 + 15*(i - 2),
+		y = mem_rings.y + 5 + top_y_spacing*(i - 2),
 		label = '${top_mem name '..i..'}',
 		value = '${top_mem mem '..i..'}%',
 		align = ALIGNR, fs = 13.5,
@@ -339,23 +343,22 @@ local rings_size = add_rings('net', net_rings, net_vars)
 
 add_header('net_hdr', net_rings, rings_size, 'NETWORK', text_attr.header, header_font_size)
 
-text_table['netconn'] = {
-	xl = net_rings.x + text_gap, xv = net_rings.x + text_gap + 92,
-	y = net_rings.y + rings_size + 25,
-	label = 'CONN',
-	value = net_conn,
-	align = ALIGNL, fs = 14,
-	attr = text_attr.label
+local net_extra_text = {
+	{ label = 'CONN', value = net_conn },
+	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' }
 }
+local net_y_spacing = 20
 
-text_table['netip'] = {
-	xl = net_rings.x + text_gap, xv = net_rings.x + text_gap + 92,
-	y = net_rings.y + rings_size + 45,
-	label = 'LOCAL IP',
-	value = '${addr '..net_interface..'}',
-	align = ALIGNL, fs = 14,
-	attr = text_attr.label
-}
+for i, extra_text in pairs(net_extra_text) do
+	text_table['netextra'..i] = {
+		xl = net_rings.x + text_gap, xv = net_rings.x + text_gap + 92,
+		y = net_rings.y + rings_size + 25 + net_y_spacing*(i - 1),
+		label = extra_text.label,
+		value = extra_text.value,
+		align = ALIGNL, fs = 14,
+		attr = text_attr.label
+	}
+end
 
 ---------------------------------------
 -- LUA FUNCTIONS
