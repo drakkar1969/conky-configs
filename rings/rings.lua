@@ -467,10 +467,10 @@ end
 function conky_rings()
 	if conky_window == nil then return end
 
-	local gw_up = conky_parse('${if_up '..lan_interface..'}2${else}${if_up '..wifi_interface..'}1${else}0${endif}${endif}')
+	local gw_up = tonumber(conky_parse('${if_up '..lan_interface..'}2${else}${if_up '..wifi_interface..'}1${else}0${endif}${endif}'))
 
-	local check_interface = ((gw_up == "2") and lan_interface or ((gw_up == "1") and wifi_interface or 'none'))
-	local check_conn = ((gw_up == "2") and 'LAN' or ((gw_up == "1") and '${wireless_essid '..check_interface..'}' or 'None'))
+	local check_interface = ((gw_up == 2) and lan_interface or ((gw_up == 1) and wifi_interface or 'none'))
+	local check_conn = ((gw_up == 2) and 'LAN' or ((gw_up == 1) and '${wireless_essid '..check_interface..'}' or 'None'))
 
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
