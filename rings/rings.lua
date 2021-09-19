@@ -28,9 +28,9 @@ ring_x, ring_y = 0, 0
 text_table = {}
 
 text_attr = {
-	label = { font = "Ubuntu", fgc = 0x21232b, fga = 1 },
-	header = { font = "Ubuntu", fgc = 0x383c4a, fga = 1 },
-	time = { font = "Ubuntu", fgc = 0x383c4a, fga = 1 }
+	label = { font = 'Ubuntu', fgc = 0x21232b, fga = 1 },
+	header = { font = 'Ubuntu', fgc = 0x383c4a, fga = 1 },
+	time = { font = 'Ubuntu', fgc = 0x383c4a, fga = 1 }
 }
 
 text_gap = 12
@@ -108,7 +108,7 @@ function add_header(key, rings, ring_size, text, font_attr, font_size)
 	text_table[key] = {
 		xl = xt, xv = xt,
 		y = yt,
-		label = "",
+		label = '',
 		value = text,
 		align = rings.header_align, fs = font_size,
 		attr = font_attr
@@ -451,12 +451,12 @@ end
 ---------------------------------------
 function draw_label_value(cr, pt)
 	-- Draw label
-	if pt.label ~= "" then
+	if pt.label ~= '' then
 		draw_text(cr, { x = pt.xl, y = pt.y, text = conky_parse(pt.label), align = ALIGNL, fs = pt.fs, attr = pt.attr })
 	end
 
 	-- Draw value
-	if pt.value ~= "" then
+	if pt.value ~= '' then
 		draw_text(cr, { x = pt.xv, y = pt.y, text = conky_parse(pt.value), align = pt.align, fs = pt.fs, attr = pt.attr })
 	end
 end
