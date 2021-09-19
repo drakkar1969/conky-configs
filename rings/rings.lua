@@ -264,7 +264,7 @@ time_rings = {
 	ccw = true,
 	text_angle = 180, text_width = 0,
 	font_size = 15, text_pos = TEXTL,
-	header_angle = -120, header_gap = -30,
+	header_angle = -115, header_gap = -25,
 	header_align = ALIGNR
 }
 
