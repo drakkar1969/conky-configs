@@ -152,6 +152,7 @@ function draw_dial(cr, pt)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(text_color_perc, text_alpha_perc))
 
 	local extents = cairo_text_extents_t:create()
+	tolua.takeownership(f_extents)
 	local value_text = value..pt.suffix
 
 	cairo_text_extents(cr, value_text, extents)
