@@ -154,7 +154,7 @@ function draw_text(cr, pt)
 
 	if align_r then
 		local extents = cairo_text_extents_t:create()
-		tolua.takeownership(f_extents)
+		tolua.takeownership(extents)
 		cairo_text_extents(cr, pt.text, extents)
 		text_x = conky_window.width - pt.x - extents.width - extents.x_bearing
 	end
