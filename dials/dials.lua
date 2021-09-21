@@ -151,13 +151,17 @@ function draw_dial(cr, pt)
 	cairo_set_font_size(cr, text_size_perc)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(text_color_perc, text_alpha_perc))
 
-	local extents = cairo_text_extents_t:create()
-	tolua.takeownership(extents)
+	local t_extents = cairo_text_extents_t:create()
+	tolua.takeownership(t_extents)
 	local value_text = value..pt.suffix
 
-	cairo_text_extents(cr, value_text, extents)
+	local f_extents = cairo_font_extents_t:create()
+	tolua.takeownership(f_extents)
+	cairo_font_extents(cr, f_extents)
 
-	cairo_move_to(cr, dial_x - (extents.width/2), dial_init_y + (extents.height/2))
+	cairo_text_extents(cr, value_text, t_extents)
+
+	cairo_move_to(cr, dial_x - t_extents.width*0.5, dial_init_y + f_extents.height/2 - f_extents.descent)
 	cairo_show_text(cr, value_text)
 	cairo_stroke(cr)
 
@@ -166,9 +170,9 @@ function draw_dial(cr, pt)
 	cairo_set_font_size(cr, text_size_label)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(text_color_label, text_alpha_label))
 
-	cairo_text_extents(cr, pt.label, extents)
+	cairo_text_extents(cr, pt.label, t_extents)
 
-	cairo_move_to(cr, dial_x - (extents.width/2), label_y + extents.height)
+	cairo_move_to(cr, dial_x - t_extents.width*0.5, label_y + t_extents.height)
 	cairo_show_text(cr, pt.label)
 	cairo_stroke(cr)
 end
