@@ -246,15 +246,6 @@ function draw_bar(cr, pt)
 end
 
 ---------------------------------------
--- Function conky_set_align
----------------------------------------
-function conky_set_align(align)
-	if align == 'right' then
-		align_r = true
-	end
-end
-
----------------------------------------
 -- Function conky_albumart
 ---------------------------------------
 function conky_albumart()
