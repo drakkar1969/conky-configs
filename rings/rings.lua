@@ -346,11 +346,11 @@ net_conn = '${wireless_essid '..net_interface..'}'
 -- Max values in KB/s
 net_vars = {
 	{
-		ring = { value = '${upspeedf '..net_interface..'}', max = 1500 },
+		ring = { value = '${upspeedf '..net_interface..'}', max = 500 },
 		text = { label = 'Up', value = '${upspeed '..net_interface..'}' }
 	},
 	{
-		ring = { value = '${downspeedf '..net_interface..'}', max = 10000 },
+		ring = { value = '${downspeedf '..net_interface..'}', max = 5000 },
 		text = { label = 'Down', value = '${downspeed '..net_interface..'}' }
 	}
 }
