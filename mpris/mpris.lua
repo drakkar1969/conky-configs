@@ -1,4 +1,9 @@
 ---------------------------------------
+-- Light/dark mode
+---------------------------------------
+dark_mode = false
+
+---------------------------------------
 -- Variables
 ---------------------------------------
 
@@ -10,8 +15,8 @@ align_r = false
 
 -- Font/colors
 main_font = "Ubuntu"
-main_color = 0x383c4a
-hilight_color = 0x21232b
+main_color = dark_mode and 0x383c4a or 0xd3dae3
+hilight_color = dark_mode and 0x21232b or 0xbac3cf
 
 -- Gaps
 gap_x = 14
@@ -44,20 +49,20 @@ line_alpha = 0.25
 status_icon = {
 	file = "",
 	size = 11,
-	alpha = 0.7,
+	alpha = dark_mode and 0.7 or 0.85,
 	x = cover.x,
 	y = cover.y + cover.size + gap_y
 }
 
-icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.png')
-icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.png')
-icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.png')
+icon_play = string.gsub(conky_config, 'mpris.conf', dark_mode and 'icons/play_dark.png' or 'icons/play_light.png')
+icon_pause = string.gsub(conky_config, 'mpris.conf', dark_mode and 'icons/pause_dark.png' or 'icons/pause_light.png')
+icon_stop = string.gsub(conky_config, 'mpris.conf', dark_mode and 'icons/stop_dark.png' or 'icons/stop_light.png')
 
 -- Bar
 bar_color_bg = main_color
 bar_color_fg = main_color
-bar_alpha_bg = 0.2
-bar_alpha_fg = 0.6
+bar_alpha_bg = dark_mode and 0.2 or 0.3
+bar_alpha_fg = dark_mode and 0.6 or 0.8
 bar_w = 200
 bar_h = 5
 
