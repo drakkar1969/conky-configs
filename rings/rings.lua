@@ -9,15 +9,20 @@ ALIGNC = 1
 ALIGNR = 2
 
 ---------------------------------------
+-- Light/dark mode
+---------------------------------------
+dark_mode = false
+
+---------------------------------------
 -- Ring variables
 ---------------------------------------
 rings_table = {}
 
 rings_attr = {
-	bgc = 0x383c4a,
-	bga = 0.2,
-	fgc = 0x383c4a,
-	fga = 0.6,
+	bgc = dark_mode and 0x383c4a or 0xd3dae3,
+	bga = dark_mode and 0.2 or 0.3,
+	fgc = dark_mode and 0x383c4a or 0xd3dae3,
+	fga = dark_mode and 0.6 or 0.8,
 }
 
 ring_x, ring_y = 0, 0
@@ -28,9 +33,9 @@ ring_x, ring_y = 0, 0
 text_table = {}
 
 text_attr = {
-	label = { font = 'Ubuntu', fgc = 0x21232b, fga = 1 },
-	header = { font = 'Ubuntu', fgc = 0x383c4a, fga = 1 },
-	time = { font = 'Ubuntu', fgc = 0x383c4a, fga = 1 }
+	label = { font = 'Ubuntu', fgc = dark_mode and 0x21232b or 0xbac3cf, fga = 1 },
+	header = { font = 'Ubuntu', fgc = dark_mode and 0x383c4a or 0xd3dae3, fga = 1 },
+	time = { font = 'Ubuntu', fgc = dark_mode and 0x383c4a or 0xd3dae3, fga = 1 }
 }
 
 text_gap = 12
