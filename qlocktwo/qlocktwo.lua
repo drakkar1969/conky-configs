@@ -6,7 +6,7 @@ dark_colors = false
 
 -- Font/color variables
 clock_font = 'Hack'
-clock_fontsize = 30
+clock_fontsize = 32
 attr_on = dark_colors and { color = 0x383c4a, alpha = 1 } or { color = 0xd3dae3, alpha = 1 }
 attr_off = dark_colors and { color = 0x383c4a, alpha = 0.25 } or { color = 0xd3dae3, alpha = 0.15 }
 
