@@ -8,7 +8,7 @@ sleep 7        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less
 # conky -d -c $CONKYFOLDER/clock_rings/clock_rings.conf
 
 # # QlockTwo
-# conky -d -c $CONKYFOLDER/qlock_two/qlocktwo.conf
+# conky -d -c $CONKYFOLDER/qlocktwo/qlocktwo.conf
 
 # Rings
 conky -d -c $CONKYFOLDER/rings/rings.conf
