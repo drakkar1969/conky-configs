@@ -310,14 +310,14 @@ for id, table in pairs(vars) do
 		}
 
 		-- Calculate text x,y coordinates
-		local textlabel_x, textvalue_x, text_y
+		local label_x, value_x, text_y
 
 		if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
-			textlabel_x = rings[id].x - text_gap - rings[id].text.width
-			textvalue_x = rings[id].x - text_gap
+			label_x = rings[id].x - text_gap - rings[id].text.width
+			value_x = rings[id].x - text_gap
 		else
-			textlabel_x = rings[id].x + text_gap
-			textvalue_x = rings[id].x + text_gap + rings[id].text.width
+			label_x = rings[id].x + text_gap
+			value_x = rings[id].x + text_gap + rings[id].text.width
 		end
 
 		if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
@@ -333,7 +333,7 @@ for id, table in pairs(vars) do
 			fs = rings[id].text.fontsize,
 			color = text_attr.text.color,
 			alpha = text_attr.text.alpha,
-			x = textlabel_x, y = text_y,
+			x = label_x, y = text_y,
 			align = ALIGNL
 		}
 
@@ -344,7 +344,7 @@ for id, table in pairs(vars) do
 			fs = rings[id].text.fontsize,
 			color = text_attr.text.color,
 			alpha = text_attr.text.alpha,
-			x = textvalue_x, y = text_y,
+			x = value_x, y = text_y,
 			align = ALIGNR
 		}
 
