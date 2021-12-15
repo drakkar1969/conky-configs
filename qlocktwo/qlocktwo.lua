@@ -5,8 +5,10 @@
 dark_colors = false
 
 -- Font/color variables
-clock_font = 'Hack'
+clock_font = 'Source Code Pro'
 clock_fontsize = 32
+clock_bold = false
+clock_italic = false
 attr_on = dark_colors and { color = 0x383c4a, alpha = 1 } or { color = 0xd3dae3, alpha = 1 }
 attr_off = dark_colors and { color = 0x383c4a, alpha = 0.25 } or { color = 0xd3dae3, alpha = 0.15 }
 
@@ -123,7 +125,7 @@ function conky_main()
 
 	local cr = cairo_create(cs)
 
-	cairo_select_font_face(cr, clock_font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_select_font_face(cr, clock_font, clock_italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL, clock_bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size(cr, clock_fontsize)
 
 	-- Calculate text/font extents
