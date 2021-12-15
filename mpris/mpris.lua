@@ -245,15 +245,15 @@ function draw_svg_icon(cr, pt)
 	-- Position and size SVG image
 	local icon_x = (align_right and (conky_window.width - (pt.x + pt.size)) or pt.x)
 
-	cairo_translate (cr, icon_x, pt.y)
-	cairo_scale (cr, pt.size/w, pt.size/h)
+	cairo_translate(cr, icon_x, pt.y)
+	cairo_scale(cr, pt.size/w, pt.size/h)
 
 	-- Render SVG image on temporary canvas
 	cairo_push_group(cr)
 	rsvg_handle_render_cairo(handle, cr)
 
 	-- Re-color and draw SVG image
-	local pattern = cairo_pop_group (cr)
+	local pattern = cairo_pop_group(cr)
 
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
