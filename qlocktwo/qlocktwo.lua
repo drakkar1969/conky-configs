@@ -137,7 +137,7 @@ function conky_main()
 	tolua.takeownership(f_extents)
 	cairo_font_extents(cr, f_extents)
 
-	-- Calculate text position
+	-- Calculate text position to center clock
 	local col_width = t_extents.x_advance
 	local row_height = (f_extents.height/2 - f_extents.descent)*2
 
@@ -146,8 +146,8 @@ function conky_main()
 
 	-- Draw text
 	for id, pt in pairs(text_table) do
-		local x = x_init + (pt.col)*col_width
-		local y = y_init + (pt.row)*row_spacing
+		local x = x_init + pt.col*col_width
+		local y = y_init + pt.row*row_spacing
 	
 		cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 		cairo_move_to(cr, x, y)
