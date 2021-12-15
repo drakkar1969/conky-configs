@@ -261,7 +261,7 @@ end
 top_count.cpu = n_cpu_top
 
 for i = 1, n_mem_top do
-	tops.mem[i] = { label = '${top_mem name '..i..'}', value = '${top_mem mem '..i..'}%' }
+	tops.mem[i] = { label = '${top_mem name '..i..'}', value = '${top_mem mem_res '..i..'}' }
 end
 top_count.mem = n_mem_top
 
