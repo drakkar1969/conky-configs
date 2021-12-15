@@ -259,6 +259,8 @@ function draw_svg_icon(cr, pt)
 
 	cairo_mask(cr, pattern)
 
+	cairo_pattern_destroy(pattern)
+
 	rsvg_destroy_handle(handle)
 
 	cairo_restore(cr)
