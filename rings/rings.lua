@@ -47,14 +47,12 @@ rings_attr = {
 ---------------------------------------
 -- Text font/colors
 ---------------------------------------
--- Text/header/time font and colors
+-- Text/header/extra/top font and colors
 text_attr = {
-	-- Note: text font size is replaced below for individual rings
-	text = { font = 'Ubuntu', fontsize = 0, color = text_color, alpha = 1 },
-	header = { font = 'Ubuntu', fontsize = 22, color = main_color, alpha = 1 },
-	time = { font = 'Ubuntu', fontsize = 36, color = main_color, alpha = 1 },
-	extra = { font = 'Ubuntu', fontsize = 15, color = text_color, alpha = 1 },
-	top = { font = 'Ubuntu', fontsize = 13.5, color = text_color, alpha = 1 }
+	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
+	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
+	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
+	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
 }
 
 -- Horizontal gap between rings and text
@@ -80,13 +78,13 @@ rings.cpu = {
 	-- Ring text position, width and fontsize. pos is one of TOP_LEFT, TOP_RIGHT,
 	-- BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 	text = { pos = TOP_LEFT, width = 68, fontsize = 10.5 },
-	-- Header text and offset from ring center
-	header = { text = 'CPU', dx = -145, dy = 60 },
-	-- Extra text offset from ring center, width and space between lines
-	extra = { dx = -105, dy = -125, width = 105, spacing = 20 },
-	-- Top list text position, offset from ring center, width and space
+	-- Header text, fontsize and offset from ring center
+	header = { text = 'CPU', fontsize = 22, dx = -145, dy = 60 },
+	-- Extra text fontsize, offset from ring center, width and space between lines
+	extra = { fontsize = 15.5, dx = -109, dy = -125, width = 109, spacing = 20 },
+	-- Top list text position, fontsize, offset from ring center, width and space
 	-- between lines. pos is one of LTR, RTL
-	top = { pos = RTL, dx = 18, dy = -2, width = 171, spacing = 15 }
+	top = { pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 15 }
 }
 
 ---------------------------------------
@@ -105,7 +103,8 @@ rings.fs = {
 	radius = 27,
 	width = 14, gap = 3,
 	text = { pos = TOP_RIGHT, width = 180, fontsize = 13.5 },
-	header = { text = 'FILESYSTEM', dx = 70, dy = 20 }
+	header = { text = 'FILESYSTEM', fontsize = 22, dx = 70, dy = 20 },
+	extra = { fontsize = 15.5, dx = -52, dy = -91, width = 77, spacing = 20 }
 }
 
 ---------------------------------------
@@ -120,8 +119,8 @@ rings.mem = {
 	radius = 55,
 	width = 17, gap = 3,
 	text = { pos = BOTTOM_RIGHT, width = 188, fontsize = 14 },
-	header = { text = 'MEMORY', dx = 90, dy = -45 },
-	top = { pos = LTR, dx = -12, dy = 6, width = 195, spacing = 15 }
+	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
+	top = { pos = LTR, fontsize = 13.5, dx = -12, dy = 6, width = 195, spacing = 15 }
 }
 
 ---------------------------------------
@@ -138,7 +137,7 @@ rings.time = {
 	-- Width requires 3 values: inner to outer ring from left to right
 	width = { 9, 11, 14 }, gap = 3,
 	text = { pos = BOTTOM_LEFT, width = 0, fontsize = 15 },
-	header = { text = '${time '..time_format..'}', dx = -115, dy = 12 }
+	header = { text = '${time '..time_format..'}', fontsize = 36, dx = -115, dy = 12 }
 }
 
 ---------------------------------------
@@ -150,7 +149,7 @@ rings.bat = {
 	-- Width requires 2 values: inner to outer ring from left to right
 	width = { 20, 12 }, gap = 3,
 	text = { pos = BOTTOM_LEFT, width = 0, fontsize = 13.5 },
-	header = { text = 'BATTERY', dx = -135, dy = 3 }
+	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 }
 }
 
 ---------------------------------------
@@ -173,8 +172,8 @@ rings.net = {
 	radius = 27,
 	width = 16, gap = 3,
 	text = { pos = BOTTOM_RIGHT, width = 153, fontsize = 13.5 },
-	header = { text = 'NETWORK', dx = 60, dy = -20 },
-	extra = { dx = text_gap, dy = 80, width = 110, spacing = 20 }
+	header = { text = 'NETWORK', fontsize = 22, dx = 60, dy = -20 },
+	extra = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 }
 }
 
 ------------------------------------------------------------------------------
@@ -245,6 +244,10 @@ vars.net = {
 
 extras.cpu = {
 	{ label = 'CORE TEMP', value = '${acpitemp}°C' }
+}
+
+extras.fs = {
+	{ label = 'DISK IO', value = '${diskio}/s' }
 }
 
 net_conn = '${wireless_essid '..net_interface..'}'
@@ -350,29 +353,16 @@ for id, table in pairs(vars) do
 
 		-- Add ring header to table
 		if i == 1 then
-			if id == 'time' then
-				text_table[id..'header'] = {
-					text = rings[id].header.text,
-					font = text_attr.time.font,
-					fs = text_attr.time.fontsize,
-					color = text_attr.time.color,
-					alpha = text_attr.time.alpha,
-					x = rings[id].x + rings[id].header.dx,
-					y = rings[id].y + rings[id].header.dy,
-					align = ALIGNL
-				}
-			else
-				text_table[id..'header'] = {
-					text = rings[id].header.text,
-					font = text_attr.header.font,
-					fs = text_attr.header.fontsize,
-					color = text_attr.header.color,
-					alpha = text_attr.header.alpha,
-					x = rings[id].x + rings[id].header.dx,
-					y = rings[id].y + rings[id].header.dy,
-					align = ALIGNL
-				}
-			end
+			text_table[id..'header'] = {
+				text = rings[id].header.text,
+				font = text_attr.header.font,
+				fs = rings[id].header.fontsize,
+				color = text_attr.header.color,
+				alpha = text_attr.header.alpha,
+				x = rings[id].x + rings[id].header.dx,
+				y = rings[id].y + rings[id].header.dy,
+				align = ALIGNL
+			}
 		end
 	end
 end
@@ -383,7 +373,7 @@ for id, table in pairs(extras) do
 		text_table[id..'extralabel'..i] = {
 			text = extra.label,
 			font = text_attr.extra.font,
-			fs = text_attr.extra.fontsize,
+			fs = rings[id].extra.fontsize,
 			color = text_attr.extra.color,
 			alpha = text_attr.extra.alpha,
 			x = rings[id].x + rings[id].extra.dx,
@@ -395,7 +385,7 @@ for id, table in pairs(extras) do
 		text_table[id..'extravalue'..i] = {
 			text = extra.value,
 			font = text_attr.extra.font,
-			fs = text_attr.extra.fontsize,
+			fs = rings[id].extra.fontsize,
 			color = text_attr.extra.color,
 			alpha = text_attr.extra.alpha,
 			x = rings[id].x + rings[id].extra.dx + rings[id].extra.width,
@@ -415,7 +405,7 @@ for id, temp in pairs(tops) do
 		text_table[id..'toplabel'..i] = {
 			text = top.label,
 			font = text_attr.top.font,
-			fs = text_attr.top.fontsize,
+			fs = rings[id].top.fontsize,
 			color = text_attr.top.color,
 			alpha = text_attr.top.alpha,
 			x = xi,
@@ -427,7 +417,7 @@ for id, temp in pairs(tops) do
 		text_table[id..'topvalue'..i] = {
 			text = top.value,
 			font = text_attr.top.font,
-			fs = text_attr.top.fontsize,
+			fs = rings[id].top.fontsize,
 			color = text_attr.top.color,
 			alpha = text_attr.top.alpha,
 			x = xi + rings[id].top.width,
