@@ -67,7 +67,7 @@ text_gap = 14
 n_cpus = 4
 
 -- Number of top CPU processes
-n_cpu_top = 3
+top_count.cpu = 3
 
 -- CPU rings
 rings.cpu = {
@@ -112,7 +112,7 @@ rings.fs = {
 -- MEMORY rings
 ---------------------------------------
 -- Number of top MEMORY processes
-n_mem_top = 3
+top_count.mem = 3
 
 -- MEMORY rings
 rings.mem = {
@@ -255,15 +255,13 @@ extras.net = {
 	{ label = 'NETWORK', value = net_conn }
 }
 
-for i = 1, n_cpu_top do
+for i = 1, top_count.cpu do
 	tops.cpu[i] = { label = '${top name '..i..'}', value = '${top cpu '..i..'}%' }
 end
-top_count.cpu = n_cpu_top
 
-for i = 1, n_mem_top do
+for i = 1, top_count.mem do
 	tops.mem[i] = { label = '${top_mem name '..i..'}', value = '${top_mem mem_res '..i..'}' }
 end
-top_count.mem = n_mem_top
 
 ------------------------------------------------------------------------------
 -- BUILD RING/TEXT TABLES
