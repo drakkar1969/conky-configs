@@ -71,17 +71,18 @@ div_line = {
 
 -- Status icon (playing, paused, stopped)
 status_icon = {
-	size = 11,
+	size = 12,
+	color = main_color,
 	alpha = dark_colors and 0.7 or 0.85,
-	play_icon = string.gsub(conky_config, 'mpris.conf', dark_colors and 'icons/play_dark.png' or 'icons/play_light.png'),
-	pause_icon = string.gsub(conky_config, 'mpris.conf', dark_colors and 'icons/pause_dark.png' or 'icons/pause_light.png'),
-	stop_icon = string.gsub(conky_config, 'mpris.conf', dark_colors and 'icons/stop_dark.png' or 'icons/stop_light.png')
+	play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg'),
+	pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg'),
+	stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
 }
 
 -- Progress bar
 progress_bar = {
 	width = 200,
-	height = 5,
+	height = 6,
 	color_bg = main_color,
 	color_fg = main_color,
 	alpha_bg = dark_colors and 0.2 or 0.3,
@@ -126,6 +127,7 @@ tags.artist.x = cover_art.frame_x + cover_art.frame_size + div_line.width + 2*ga
 ------------------------------------------------------------------------------
 require 'cairo'
 require 'imlib2'
+require 'rsvg'
 
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
@@ -226,20 +228,40 @@ function draw_text(cr, pt)
 end
 
 ---------------------------------------
--- Function draw_icon
+-- Function draw_svg_icon
 ---------------------------------------
-function draw_icon(cr, pt)
+function draw_svg_icon(cr, pt)
 	cairo_save(cr)
 
-	local cs = cairo_image_surface_create_from_png(pt.file)
+	-- Load SVG image from file
+	local handle = rsvg_create_handle_from_file(pt.file)
 
+	-- Get SVG image dimensions
+	local svgprop = RsvgDimensionData:create()
+	rsvg_handle_get_dimensions(handle, svgprop)
+
+	local w, h, em, ex = svgprop:get()
+
+	-- Position and size SVG image
 	local icon_x = (align_right and (conky_window.width - (pt.x + pt.size)) or pt.x)
 
-	cairo_set_source_surface(cr, cs, icon_x, pt.y)
-	cairo_paint_with_alpha(cr, pt.alpha)
+	cairo_translate (cr, icon_x, pt.y)
+	cairo_scale (cr, pt.size/w, pt.size/h)
+
+	-- Render SVG image on temporary canvas
+	cairo_push_group(cr)
+	rsvg_handle_render_cairo(handle, cr)
+
+	-- Re-color and draw SVG image
+	local pattern = cairo_pop_group (cr)
+
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
+
+	cairo_mask(cr, pattern)
+
+	rsvg_destroy_handle(handle)
 
 	cairo_restore(cr)
-	cairo_surface_destroy(cs)
 end
 
 ---------------------------------------
@@ -332,7 +354,7 @@ function conky_main()
 		-- Draw status icon
 		status_icon.file = ((metadata.status == "PAUSED") and status_icon.pause_icon or ((metadata.status == "PLAYING") and status_icon.play_icon or status_icon.stop_icon))
 
-		draw_icon(cr, status_icon)
+		draw_svg_icon(cr, status_icon)
 
 		-- Draw progressbar
 		if (metadata.pos == nil or metadata.len == nil or metadata.len == 0) then
