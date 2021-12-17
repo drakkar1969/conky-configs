@@ -84,7 +84,7 @@ rings.cpu = {
 	extra = { fontsize = 15.5, dx = -109, dy = -125, width = 109, spacing = 20 },
 	-- Top list text position, fontsize, offset from ring center, width and space
 	-- between lines. pos is one of LTR, RTL
-	top = { pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 15 }
+	top = { pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 }
 }
 
 ---------------------------------------
@@ -120,7 +120,7 @@ rings.mem = {
 	width = 17, gap = 3,
 	text = { pos = BOTTOM_RIGHT, width = 188, fontsize = 14 },
 	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
-	top = { pos = LTR, fontsize = 13.5, dx = -12, dy = 6, width = 195, spacing = 15 }
+	top = { pos = LTR, fontsize = 13.5, dx = -10, dy = 6, width = 195, spacing = 16 }
 }
 
 ---------------------------------------
