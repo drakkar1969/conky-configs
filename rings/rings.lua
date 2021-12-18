@@ -67,6 +67,9 @@ n_cpus = 4
 -- Number of top CPU processes
 top_count.cpu = 3
 
+-- Show global CPU percentage if true
+single_cpu = true
+
 -- CPU rings
 rings.cpu = {
 	-- Coordinates of ring center
@@ -77,7 +80,7 @@ rings.cpu = {
 	width = 10, gap = 2,
 	-- Ring text position, width and fontsize. pos is one of TOP_LEFT, TOP_RIGHT,
 	-- BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
-	text = { pos = TOP_LEFT, width = 68, fontsize = 10.5 },
+	text = { pos = TOP_LEFT, width = 68, fontsize = 10.5, fontsize_single= 20 },
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'CPU', fontsize = 22, dx = -145, dy = 60 },
 	-- Extra text fontsize, offset from ring center, width and space between lines
@@ -312,44 +315,82 @@ for id, table in pairs(vars) do
 			fga = rings_attr.fg_alpha
 		}
 
-		-- Calculate text x,y coordinates
-		local label_x, value_x, text_y
+		if single_cpu and id == 'cpu' then
+			if i == 1 then
+				-- Calculate text x,y coordinates and alignment
+				local ring_rs, text_x, text_y, text_align
 
-		if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
-			label_x = rings[id].x - text_gap - rings[id].text.width
-			value_x = rings[id].x - text_gap
+				if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
+					text_x = rings[id].x - text_gap
+					text_align = ALIGNR
+				else
+					text_x = rings[id].x + text_gap
+					text_align = ALIGNL
+				end
+
+				if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
+					text_y = rings[id].y - rings[id].radius - (n_cpus - 1)*(rings[id].width + rings[id].gap)/2
+				else
+					text_y = rings[id].y + rings[id].radius + (n_cpus - 1)*(rings[id].width + rings[id].gap)/2
+				end
+
+				-- Add value text to table
+				text_table[id..i..'value'] = {
+					text = '${cpu cpu0}%',
+					font = text_attr.text.font,
+					fs = rings[id].text.fontsize_single,
+					color = text_attr.text.color,
+					alpha = text_attr.text.alpha,
+					x = text_x, y = text_y,
+					align = text_align
+				}
+			end
 		else
-			label_x = rings[id].x + text_gap
-			value_x = rings[id].x + text_gap + rings[id].text.width
+			-- Calculate text x,y coordinates and alignment
+			local label_x, value_x, text_y
+
+			if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
+				label_x = rings[id].x - text_gap - rings[id].text.width
+				value_x = rings[id].x - text_gap
+			else
+				label_x = rings[id].x + text_gap
+				value_x = rings[id].x + text_gap + rings[id].text.width
+			end
+
+			if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
+				text_y = rings[id].y - ring_r
+			else
+				text_y = rings[id].y + ring_r
+			end
+
+			local value_align = ALIGNR
+
+			if var.text.label == "" and (rings[id].text.pos == TOP_RIGHT or rings[id].text.pos == BOTTOM_RIGHT) then
+				value_align = ALIGNL
+			end
+
+			-- Add label text to table
+			text_table[id..i..'label'] = {
+				text = var.text.label,
+				font = text_attr.text.font,
+				fs = rings[id].text.fontsize,
+				color = text_attr.text.color,
+				alpha = text_attr.text.alpha,
+				x = label_x, y = text_y,
+				align = ALIGNL
+			}
+
+			-- Add value text to table
+			text_table[id..i..'value'] = {
+				text = var.text.value,
+				font = text_attr.text.font,
+				fs = rings[id].text.fontsize,
+				color = text_attr.text.color,
+				alpha = text_attr.text.alpha,
+				x = value_x, y = text_y,
+				align = value_align
+			}
 		end
-
-		if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
-			text_y = rings[id].y - ring_r
-		else
-			text_y = rings[id].y + ring_r
-		end
-
-		-- Add label text to table
-		text_table[id..i..'label'] = {
-			text = var.text.label,
-			font = text_attr.text.font,
-			fs = rings[id].text.fontsize,
-			color = text_attr.text.color,
-			alpha = text_attr.text.alpha,
-			x = label_x, y = text_y,
-			align = ALIGNL
-		}
-
-		-- Add value text to table
-		text_table[id..i..'value'] = {
-			text = var.text.value,
-			font = text_attr.text.font,
-			fs = rings[id].text.fontsize,
-			color = text_attr.text.color,
-			alpha = text_attr.text.alpha,
-			x = value_x, y = text_y,
-			align = ALIGNR
-		}
 
 		-- Add ring header to table
 		if i == 1 then
