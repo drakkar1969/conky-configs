@@ -45,7 +45,7 @@ rings_attr = {
 other_attr = {
 	clock = { color = 0x5294e2, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
-	line = { color = main_color, alpha = 0.5 }
+	dotline = { color = main_color, alpha = 0.5 }
 }
 
 ---------------------------------------
@@ -391,8 +391,8 @@ lines_table['topcpu'] = {
 	xe = topcpu_x + rings.topcpu.text_w, ye = topcpu_y + rings.topcpu.line_gap_y + rings.topcpu.line_w,
 	dot = true,
 	w = rings.topcpu.line_w,
-	color = other_attr.line.color,
-	alpha = other_attr.line.alpha
+	color = other_attr.dotline.color,
+	alpha = other_attr.dotline.alpha
 }
 
 topcpu_y = topcpu_y + rings.topcpu.line_gap_y*2 + rings.topcpu.line_w
@@ -484,8 +484,8 @@ lines_table['topmem'] = {
 	xe = topmem_x + rings.topmem.text_w, ye = topmem_y + rings.topmem.line_gap_y + rings.topmem.line_w,
 	dot = true,
 	w = rings.topmem.line_w,
-	color = other_attr.line.color,
-	alpha = other_attr.line.alpha
+	color = other_attr.dotline.color,
+	alpha = other_attr.dotline.alpha
 }
 
 topmem_y = topmem_y + rings.topmem.line_gap_y*2 + rings.topmem.line_w
