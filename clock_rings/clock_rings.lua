@@ -88,8 +88,8 @@ rings = {
 	-- Top CPU/MEM lists: no. of items, gap between title text and disks ring along 
 	-- angle, width of text, width of line, vertical gap between line and text,
 	-- vertical distance between text lines
-	topcpu = { n = 4, text_gap_r = 30, text_angle = 145, text_w = 190, line_w = 1, line_gap_y = 14, text_space_y = 16 },
-	topmem = { n = 4, text_gap_r = 128, text_angle = 234, text_w = 190, line_w = 1, line_gap_y = 14, text_space_y = 16 }
+	topcpu = { n = 4, text_gap_r = 30, text_angle = 145, text_w = 190, line_w = 1, line_gap_y = 13.5, text_space_y = 16 },
+	topmem = { n = 4, text_gap_r = 128, text_angle = 234, text_w = 190, line_w = 1, line_gap_y = 13.5, text_space_y = 16 }
 }
 
 -- Clock hands: width and gap between individual hands and inner seconds ring
@@ -270,8 +270,8 @@ end
 ---------------------------------------
 -- Core Temp text
 ---------------------------------------
-temp_x = rings.x + (rings_ext_r + rings.temp.text_gap_r)*math.sin(rings.temp.text_angle*(2*math.pi/360))
-temp_y = rings.y - (rings_ext_r + rings.temp.text_gap_r)*math.cos(rings.temp.text_angle*(2*math.pi/360))
+temp_x = math.floor(rings.x + (rings_ext_r + rings.temp.text_gap_r)*math.sin(rings.temp.text_angle*(2*math.pi/360)))
+temp_y = math.floor(rings.y - (rings_ext_r + rings.temp.text_gap_r)*math.cos(rings.temp.text_angle*(2*math.pi/360)))
 
 text_table['templabel'] = {
 	text = 'CORE TEMP',
@@ -359,8 +359,8 @@ lines_table['main'] = {
 ---------------------------------------
 -- CPU top list
 ---------------------------------------
-topcpu_x = rings.x + (rings_ext_r + rings.topcpu.text_gap_r)*math.sin(rings.topcpu.text_angle*(2*math.pi/360))
-topcpu_y = rings.y - (rings_ext_r + rings.topcpu.text_gap_r)*math.cos(rings.topcpu.text_angle*(2*math.pi/360))
+topcpu_x = math.floor(rings.x + (rings_ext_r + rings.topcpu.text_gap_r)*math.sin(rings.topcpu.text_angle*(2*math.pi/360)))
+topcpu_y = math.floor(rings.y - (rings_ext_r + rings.topcpu.text_gap_r)*math.cos(rings.topcpu.text_angle*(2*math.pi/360)))
 
 text_table['topcpulabel'] = {
 	text = 'CPU',
@@ -452,8 +452,8 @@ end
 ---------------------------------------
 -- MEM top list
 ---------------------------------------
-topmem_x = rings.x + (rings_ext_r + rings.topmem.text_gap_r)*math.sin(rings.topmem.text_angle*(2*math.pi/360))
-topmem_y = rings.y - (rings_ext_r + rings.topmem.text_gap_r)*math.cos(rings.topmem.text_angle*(2*math.pi/360))
+topmem_x = math.floor(rings.x + (rings_ext_r + rings.topmem.text_gap_r)*math.sin(rings.topmem.text_angle*(2*math.pi/360)))
+topmem_y = math.floor(rings.y - (rings_ext_r + rings.topmem.text_gap_r)*math.cos(rings.topmem.text_angle*(2*math.pi/360)))
 
 text_table['topmemlabel'] = {
 	text = 'RAM',
@@ -657,8 +657,6 @@ function draw_graph(cr, pt)
 
 	-- Get number of bars
 	local n_bars = math.floor(pt.w/(pt.bar_w + pt.bar_gap))
-
-	print(n_bars)
 
 	-- Update graph data
 	for i = 1, n_bars do
