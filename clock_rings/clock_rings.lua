@@ -1,282 +1,529 @@
+------------------------------------------------------------------------------
+-- CONSTANTS - DO NOT DELETE
+------------------------------------------------------------------------------
+-- Text justification
+ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
+ALIGNT, ALIGNM, ALIGNB = 0, 1, 2
+
+------------------------------------------------------------------------------
+-- TABLE VARIABLES - DO NOT DELETE
+------------------------------------------------------------------------------
+rings_table = {}
+text_table = {}
+graphs_table = {}
+lines_table = {}
+
+------------------------------------------------------------------------------
+-- USER CONFIGURATION
+------------------------------------------------------------------------------
 ---------------------------------------
--- Ring variables
+-- Light/dark colors
 ---------------------------------------
-ring_x = 220
-ring_y = 145
-ring_radius = 70
-ring_spacing = 4
-
-ring_color_bg = 0x383c4a
-ring_color_fg = 0x383c4a
-ring_alpha_bg = 0.20
-ring_alpha_fg = 0.60
-ring_alpha_bg_dummy = 0.20
-ring_alpha_fg_dummy = 0
-
-cpu_start_angle = 91
-cpu_end_angle = 209
-cpu_width = 4
-cpu_radius = ring_radius + 9
-cpu_spacing = 6
-
-memtemp_radius = ring_radius + 18
-memtemp_width = 22
-
-fs_radius = ring_radius + 37
-fs_width = 6
-
-dummy_radius = ring_radius + 60
-dummy_width = 2
+dark_colors = false
 
 ---------------------------------------
--- Clock variables
+-- Font/color variables
 ---------------------------------------
-clock_r = ring_radius - 5
-clock_x = ring_x
-clock_y = ring_y
-clock_color = 0x5294E2
-clock_alpha = 1.0
-clock_show_seconds = false
+main_color = dark_colors and 0x383c4a or 0xd3dae3
+text_color = dark_colors and 0x21232b or 0xbac3cf
+main_font = 'Ubuntu'
 
 ---------------------------------------
--- Line variables
+-- Ring colors
 ---------------------------------------
-line_solid_width = 2
-line_dotted_width = 1
-line_solid_color = 0x383c4a
-line_dotted_color = 0x383c4a
-line_solid_alpha = ring_alpha_bg_dummy
-line_dotted_alpha = 0.70
-
----------------------------------------
--- Graph variables
----------------------------------------
-graph_color = 0x383c4a
-graph_alpha = 0.7
-graph_bar_width = 1
-graph_bar_gap = 0
-
----------------------------------------
--- NET variables
----------------------------------------
-net_interface = 'wlp3s0'
--- Max download
-net_max_dl = 26000
-
----------------------------------------
--- Settings table
----------------------------------------
-rings_table = {
-	-- TIME -------------------------------
-	{
-		name = 'time',
-		arg = '%S',
-		max = 60,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = ring_radius,
-		width = 4,
-		start_angle = 0,
-		end_angle = 360
-	},
-	-- CPU --------------------------------
-	{
-		name = 'cpu',
-		arg = 'cpu1',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = cpu_radius,
-		width = cpu_width,
-		start_angle = cpu_start_angle,
-		end_angle = cpu_end_angle
-	},
-	{
-		name = 'cpu',
-		arg = 'cpu2',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = cpu_radius + cpu_spacing,
-		width = cpu_width,
-		start_angle = cpu_start_angle,
-		end_angle = cpu_end_angle
-	},
-	{
-		name = 'cpu',
-		arg = 'cpu3',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = cpu_radius + 2*cpu_spacing,
-		width = cpu_width,
-		start_angle = cpu_start_angle,
-		end_angle = cpu_end_angle
-	},
-	{
-		name = 'cpu',
-		arg = 'cpu4',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = cpu_radius + 3*cpu_spacing,
-		width = cpu_width,
-		start_angle = cpu_start_angle,
-		end_angle = cpu_end_angle
-	},
-	-- MEM --------------------------------
-	{
-		name = 'memperc',
-		arg = '',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = memtemp_radius,
-		width = memtemp_width,
-		start_angle = 212,
-		end_angle = 329
-	},
-	-- TEMP -------------------------------
-	{
-		name = 'acpitemp',
-		arg = '',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = memtemp_radius,
-		width = memtemp_width,
-		start_angle = -28,
-		end_angle = 88
-	},
-	-- FS ---------------------------------
-	{
-		name = 'fs_used_perc',
-		arg = '/',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = fs_radius,
-		width = fs_width,
-		start_angle = -120,
-		end_angle = -2
-	},
-	{
-		name = 'fs_used_perc',
-		arg = '/home/data',
-		max = 100,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg,
-		x = ring_x, y = ring_y,
-		radius = fs_radius,
-		width = fs_width,
-		start_angle = 2,
-		end_angle = 120
-	},
-	-- DUMMY ------------------------------
-	{
-		name = 'cpu', -- dummy (used for arc around graph)
-		arg = '',
-		max = 1,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg_dummy,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg_dummy,
-		x = ring_x, y = ring_y,
-		radius = dummy_radius,
-		width = dummy_width,
-		start_angle = 73,
-		end_angle = 107
-	},
-	{
-		name = 'cpu', -- dummy (used for arc around graph)
-		arg = '',
-		max = 1,
-		bg_color = ring_color_bg,
-		bg_alpha = ring_alpha_bg_dummy,
-		fg_color = ring_color_fg,
-		fg_alpha = ring_alpha_fg_dummy,
-		x = ring_x + 470, y = ring_y,
-		radius = dummy_radius,
-		width = dummy_width,
-		start_angle = 73,
-		end_angle = 107
-	},
+rings_attr = {
+	bg_color = main_color,
+	bg_alpha = dark_colors and 0.2 or 0.3,
+	fg_color = main_color,
+	fg_alpha = dark_colors and 0.6 or 0.8,
+	dummy_alpha = 0.2
 }
 
-lines_table = {
-	{
-		color = line_dotted_color,
-		alpha = line_dotted_alpha,
-		w = line_dotted_width,
-		xs = 30, ys = 295,
-		xe = 211, ye = 295,
-		dot=true
-	},
-	{
-		color = line_dotted_color,
-		alpha = line_dotted_alpha,
-		w = line_dotted_width,
-		xs = 300, ys = 269,
-		xe = 481, ye = 269,
-		dot=true
-	},
-	{
-		color = line_solid_color,
-		alpha = line_solid_alpha,
-		w = line_solid_width,
-		xs = ring_x + ring_radius+46, ys = ring_y,
-		xe = 980, ye = ring_y,
-		dot=false
-	},
+---------------------------------------
+-- Other colors
+---------------------------------------
+other_attr = {
+	clock = { color = 0x5294e2, alpha = 1 },
+	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
+	line = { color = main_color, alpha = 0.5 }
 }
 
-graphs_table = {
-	downspeed = {
-		name = 'downspeedf',
-		arg = net_interface,
-		max = net_max_dl,
-		color = graph_color,
-		alpha = graph_alpha,
-		x = ring_x + ring_radius + 78, y = ring_y - 1,
-		w = 432, h = 26,
-		bar_w = graph_bar_width,
-		bar_gap = graph_bar_gap,
-		data = {},
-		log_scale = true
+---------------------------------------
+-- Text fonts/colors
+---------------------------------------
+text_attr = {
+	disk = { font = main_font, fontsize = 15.5, color = text_color, alpha = 1 },
+	label = { font = main_font, fontsize = 21, color = main_color, alpha = 1 },
+	value = { font = main_font, fontsize = 18, color = main_color, alpha = 1 },
+	time = { font = main_font, fontsize = 42, color = main_color, alpha = 1 },
+	date = { font = main_font, fontsize = 23, color = text_color, alpha = 0.8 },
+	top = { font = main_font, fontsize = 13.5, color = text_color, alpha = 1 }
+}
+
+---------------------------------------
+-- Rings
+---------------------------------------
+rings = {
+	-- Coordinates of center of ring and radius (of inner seconds ring)
+	x = 260, y = 230, radius = 70,
+	-- Seconds ring: width and gap from CPU/memory/temp rings
+	sec = { width = 4, gap = 5 },
+	-- CPU rings: no. of CPU cores, width and gap of rings
+	cpu = { n = 8, width = 2, gap = 1 },
+	-- Disks: width of rings, gap from CPU/memory/temp rings, vertical offset of
+	-- text from ring center, horiz gap between disk text at top and disks rings
+	disk = { width = 6, gap = 5, text_gap_x = 18, text_gap_y = 18 },
+	-- Dummy rings: width and gap on left/right of each ring
+	dummy = { width = 2, gap = 30 },
+	-- Graph: width/height of graph, width/gap of individual bars, log_scale
+	graph = { width = 400, height = 30, bar_w = 1, bar_gap = 0, log_scale = true },
+	-- Main horizontal line: width and gap from disk rings
+	line = { width = 2, gap = 7 },
+	-- Temperature text: gap between text and disks ring along angle, width of text
+	temp = { text_gap_r = 25, text_angle = 57, text_w = 165 },
+	-- Date text: vertical offset from main line
+	date = { text_gap_y = 20 },
+	-- NET text: vertical offset from main line, width of text
+	net = { text_gap_y = 15, text_w = 130 },
+	-- Top CPU/MEM lists: no. of items, gap between title text and disks ring along 
+	-- angle, width of text, width of line, vertical gap between line and text,
+	-- vertical distance between text lines
+	topcpu = { n = 4, text_gap_r = 30, text_angle = 145, text_w = 190, line_w = 1, line_gap_y = 14, text_space_y = 16 },
+	topmem = { n = 4, text_gap_r = 128, text_angle = 234, text_w = 190, line_w = 1, line_gap_y = 14, text_space_y = 16 }
+}
+
+-- Clock hands: width and gap between individual hands and inner seconds ring
+clock_hands = {
+	hrs_width = 5,
+	hrs_gap = 14,
+	min_width = 3,
+	min_gap = 5,
+	sec_width = 1,
+	sec_gap = 3,
+	show_seconds = true
+}
+
+-- Name and path of two disks to display in disk rings/text
+disks = {
+	{ name = 'home', path = '/home' },
+	{ name = 'data', path = '/home/data'}
+}
+
+-- Network interface variables
+wifi_interface = 'wlp3s0'
+lan_interface = 'enp2s0'
+
+-- Initial value for network interface (automatically adjusted in main function)
+net_interface = wifi_interface
+
+-- Max download speed in KB/s
+net_max_down = 5000
+
+------------------------------------------------------------------------------
+-- BUILD VARIABLE TABLES
+------------------------------------------------------------------------------
+---------------------------------------
+-- Seconds ring
+---------------------------------------
+rings_table['sec'] = {
+	name = 'time', arg = '%S', max = 60,
+	bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
+	fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
+	x = rings.x, y = rings.y,
+	radius = rings.radius,
+	width = rings.sec.width,
+	start_angle = 0, end_angle = 360
+}
+
+rings_ext_r = rings.radius + rings.sec.width/2
+
+---------------------------------------
+-- CPU rings
+---------------------------------------
+for i = 1, rings.cpu.n do
+	rings_table['cpu'..i] = {
+		name = 'cpu', arg = 'cpu'..i, max = 100,
+		bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
+		fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
+		x = rings.x, y = rings.y,
+		radius = rings_ext_r + rings.sec.gap + rings.cpu.width/2 + (i - 1)*(rings.cpu.width + rings.cpu.gap),
+		width = rings.cpu.width,
+		start_angle = 91, end_angle = 209
 	}
+end
+
+cpu_rings_w = rings.cpu.n*rings.cpu.width + (rings.cpu.n - 1)*rings.cpu.gap
+
+---------------------------------------
+-- Memory/Temperature rings
+---------------------------------------
+
+rings_table['mem'] = {
+	name = 'memperc', arg = '', max = 100,
+	bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
+	fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
+	x = rings.x, y = rings.y,
+	radius = rings_ext_r + rings.sec.gap + cpu_rings_w/2,
+	width = cpu_rings_w,
+	start_angle = 212, end_angle = 329
+}
+
+rings_table['temp'] = {
+	name = 'acpitemp', arg = '', max = 100,
+	bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
+	fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
+	x = rings.x, y = rings.y,
+	radius = rings_ext_r + rings.sec.gap + cpu_rings_w/2,
+	width = cpu_rings_w,
+	start_angle = -28, end_angle = 88
+}
+
+rings_ext_r = rings_ext_r + rings.sec.gap + cpu_rings_w
+
+---------------------------------------
+-- Disk rings
+---------------------------------------
+for i, disk in pairs(disks) do
+	rings_table['disk'..i] = {
+		name = 'fs_used_perc', arg = disk.path, max = 100,
+		bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
+		fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
+		x = rings.x, y = rings.y,
+		radius = rings_ext_r + rings.disk.gap + rings.disk.width/2,
+		width = rings.disk.width,
+		start_angle = (i == 1 and -120 or 2), end_angle = (i == 1 and -2 or 120)
+	}
+end
+
+rings_ext_r = rings_ext_r + rings.disk.gap + rings.disk.width
+
+---------------------------------------
+-- Dummy rings
+---------------------------------------
+for i = 1, 2 do
+	rings_table['dummy'..i] = {
+		name = 'cpu', arg = '', max = 100,
+		bg_color = rings_attr.bg_color, bg_alpha = rings_attr.dummy_alpha,
+		fg_color = rings_attr.fg_color, fg_alpha = 0,
+		x = rings.x + (i-1)*(rings.graph.width + 2*rings.dummy.gap + rings.dummy.width), y = rings.y,
+		radius = rings_ext_r + rings.dummy.gap + rings.dummy.width/2,
+		width = rings.dummy.width,
+		start_angle = 73, end_angle = 107
+	}
+end
+
+---------------------------------------
+-- Clock hands
+---------------------------------------
+clock_hands.x = rings.x
+clock_hands.y = rings.y
+clock_hands.radius = rings.radius - rings.sec.width/2
+
+---------------------------------------
+-- Graph
+---------------------------------------
+graphs_table['net'] = {
+	name = 'downspeedf',
+	arg = net_interface,
+	max = net_max_down,
+	color = other_attr.graph.color,
+	alpha = other_attr.graph.alpha,
+	x = rings.x + rings_ext_r + 2*rings.dummy.gap + rings.dummy.width, y = rings.y - rings.line.width/2,
+	w = rings.graph.width, h = rings.graph.height,
+	bar_w = rings.graph.bar_w, bar_gap = rings.graph.bar_gap,
+	data = {},
+	log_scale = rings.graph.log_scale
 }
 
 ---------------------------------------
--- LUA FUNCTIONS
+-- Time text
 ---------------------------------------
+text_table['time'] = {
+	text = '${time %H %M}',
+	font = text_attr.time.font,
+	fs = text_attr.time.fontsize,
+	color = text_attr.time.color,
+	alpha = text_attr.time.alpha,
+	x = rings.x,
+	y = rings.y,
+	align_x = ALIGNC,
+	align_y = ALIGNM
+}
+
+---------------------------------------
+-- Disk text
+---------------------------------------
+for i, disk in pairs(disks) do
+	text_table['disk'..i] = {
+		text = disk.name..'    ${fs_used '..disk.path..'}/${fs_size '..disk.path..'}',
+		font = text_attr.disk.font,
+		fs = text_attr.disk.fontsize,
+		color = text_attr.disk.color,
+		alpha = text_attr.disk.alpha,
+		x = rings.x + (i == 1 and -rings.disk.text_gap_x or rings.disk.text_gap_x),
+		y = rings.y - (rings_ext_r + rings.disk.text_gap_y),
+		align_x = (i == 1 and ALIGNR or ALIGNL),
+		align_y = ALIGNB
+	}
+end
+
+---------------------------------------
+-- Core Temp text
+---------------------------------------
+temp_x = rings.x + (rings_ext_r + rings.temp.text_gap_r)*math.sin(rings.temp.text_angle*(2*math.pi/360))
+temp_y = rings.y - (rings_ext_r + rings.temp.text_gap_r)*math.cos(rings.temp.text_angle*(2*math.pi/360))
+
+text_table['templabel'] = {
+	text = 'CORE TEMP',
+	font = text_attr.label.font,
+	fs = text_attr.label.fontsize,
+	color = text_attr.label.color,
+	alpha = text_attr.label.alpha,
+	x = temp_x,
+	y = temp_y,
+	align_x = ALIGNL,
+	align_y = ALIGNB
+}
+
+text_table['tempvalue'] = {
+	text = '${acpitemp}°C',
+	font = text_attr.value.font,
+	fs = text_attr.value.fontsize,
+	color = text_attr.value.color,
+	alpha = text_attr.value.alpha,
+	x = temp_x + rings.temp.text_w,
+	y = temp_y,
+	align_x = ALIGNR,
+	align_y = ALIGNB
+}
+
+---------------------------------------
+-- Date text
+---------------------------------------
+text_table['date'] = {
+	text = '${time %A, %d %B %Y}',
+	font = text_attr.date.font,
+	fs = text_attr.date.fontsize,
+	color = text_attr.date.color,
+	alpha = text_attr.date.alpha,
+	-- x is calculated in main function
+	x = 0,
+	y = rings.y + rings.line.width/2 + rings.date.text_gap_y,
+	align_x = ALIGNC,
+	align_y = ALIGNT
+}
+
+---------------------------------------
+-- NET text
+---------------------------------------
+max_x = rings.x + rings_ext_r + rings.dummy.gap*4 + rings.dummy.width*2 + rings.graph.width
+
+text_table['netlabel'] = {
+	text = 'NET',
+	font = text_attr.label.font,
+	fs = text_attr.label.fontsize,
+	color = text_attr.label.color,
+	alpha = text_attr.label.alpha,
+	x = max_x,
+	y = rings.y - rings.line.width/2 - rings.net.text_gap_y,
+	align_x = ALIGNL,
+	align_y = ALIGNB
+}
+
+max_x = max_x + rings.net.text_w
+
+text_table['netvalue'] = {
+	text = '${downspeed '..net_interface..'}',
+	font = text_attr.value.font,
+	fs = text_attr.value.fontsize,
+	color = text_attr.value.color,
+	alpha = text_attr.value.alpha,
+	x = max_x,
+	y = rings.y - rings.line.width/2 - rings.net.text_gap_y,
+	align_x = ALIGNR,
+	align_y = ALIGNB
+}
+
+---------------------------------------
+-- Main line
+---------------------------------------
+lines_table['main'] = {
+	xs = rings.x + rings_ext_r + rings.line.gap, ys = rings.y,
+	xe = max_x, ye = rings.y,
+	dot = false,
+	w = rings.line.width,
+	color = rings_attr.bg_color,
+	alpha = rings_attr.dummy_alpha
+}
+
+---------------------------------------
+-- CPU top list
+---------------------------------------
+topcpu_x = rings.x + (rings_ext_r + rings.topcpu.text_gap_r)*math.sin(rings.topcpu.text_angle*(2*math.pi/360))
+topcpu_y = rings.y - (rings_ext_r + rings.topcpu.text_gap_r)*math.cos(rings.topcpu.text_angle*(2*math.pi/360))
+
+text_table['topcpulabel'] = {
+	text = 'CPU',
+	font = text_attr.label.font,
+	fs = text_attr.label.fontsize,
+	color = text_attr.label.color,
+	alpha = text_attr.label.alpha,
+	x = topcpu_x,
+	y = topcpu_y,
+	align_x = ALIGNL,
+	align_y = ALIGNB
+}
+
+text_table['topcpuvalue'] = {
+	text = '${cpu cpu0}%',
+	font = text_attr.value.font,
+	fs = text_attr.value.fontsize,
+	color = text_attr.value.color,
+	alpha = text_attr.value.alpha,
+	x = topcpu_x + rings.topcpu.text_w,
+	y = topcpu_y,
+	align_x = ALIGNR,
+	align_y = ALIGNB
+}
+
+lines_table['topcpu'] = {
+	xs = topcpu_x, ys = topcpu_y + rings.topcpu.line_gap_y + rings.topcpu.line_w,
+	xe = topcpu_x + rings.topcpu.text_w, ye = topcpu_y + rings.topcpu.line_gap_y + rings.topcpu.line_w,
+	dot = true,
+	w = rings.topcpu.line_w,
+	color = other_attr.line.color,
+	alpha = other_attr.line.alpha
+}
+
+topcpu_y = topcpu_y + rings.topcpu.line_gap_y*2 + rings.topcpu.line_w
+
+text_table['topcpu_processlabel'] = {
+	text = 'Processes:',
+	font = text_attr.top.font,
+	fs = text_attr.top.fontsize,
+	color = text_attr.top.color,
+	alpha = text_attr.top.alpha,
+	x = topcpu_x,
+	y = topcpu_y,
+	align_x = ALIGNL,
+	align_y = ALIGNT
+}
+
+text_table['topcpu_processvalue'] = {
+	text = '${running_processes}/${processes}',
+	font = text_attr.top.font,
+	fs = text_attr.top.fontsize,
+	color = text_attr.top.color,
+	alpha = text_attr.top.alpha,
+	x = topcpu_x + rings.topcpu.text_w,
+	y = topcpu_y,
+	align_x = ALIGNR,
+	align_y = ALIGNT
+}
+
+topcpu_y = topcpu_y + rings.topcpu.text_space_y*1.5
+
+for i = 1, rings.topcpu.n do
+	text_table['topcpu_toplabel'..i] = {
+		text = '${top name '..i..'}',
+		font = text_attr.top.font,
+		fs = text_attr.top.fontsize,
+		color = text_attr.top.color,
+		alpha = text_attr.top.alpha,
+		x = topcpu_x,
+		y = topcpu_y + (i-1)*rings.topcpu.text_space_y,
+		align_x = ALIGNL,
+		align_y = ALIGNT
+	}
+
+	text_table['topcpu_topvalue'..i] = {
+		text = '${top cpu '..i..'}%',
+		font = text_attr.top.font,
+		fs = text_attr.top.fontsize,
+		color = text_attr.top.color,
+		alpha = text_attr.top.alpha,
+		x = topcpu_x + rings.topcpu.text_w,
+		y = topcpu_y + (i-1)*rings.topcpu.text_space_y,
+		align_x = ALIGNR,
+		align_y = ALIGNT
+	}
+end
+
+---------------------------------------
+-- MEM top list
+---------------------------------------
+topmem_x = rings.x + (rings_ext_r + rings.topmem.text_gap_r)*math.sin(rings.topmem.text_angle*(2*math.pi/360))
+topmem_y = rings.y - (rings_ext_r + rings.topmem.text_gap_r)*math.cos(rings.topmem.text_angle*(2*math.pi/360))
+
+text_table['topmemlabel'] = {
+	text = 'RAM',
+	font = text_attr.label.font,
+	fs = text_attr.label.fontsize,
+	color = text_attr.label.color,
+	alpha = text_attr.label.alpha,
+	x = topmem_x,
+	y = topmem_y,
+	align_x = ALIGNL,
+	align_y = ALIGNB
+}
+
+text_table['topmemvalue'] = {
+	text = '${memperc}%',
+	font = text_attr.value.font,
+	fs = text_attr.value.fontsize,
+	color = text_attr.value.color,
+	alpha = text_attr.value.alpha,
+	x = topmem_x + rings.topmem.text_w,
+	y = topmem_y,
+	align_x = ALIGNR,
+	align_y = ALIGNB
+}
+
+lines_table['topmem'] = {
+	xs = topmem_x, ys = topmem_y + rings.topmem.line_gap_y + rings.topmem.line_w,
+	xe = topmem_x + rings.topmem.text_w, ye = topmem_y + rings.topmem.line_gap_y + rings.topmem.line_w,
+	dot = true,
+	w = rings.topmem.line_w,
+	color = other_attr.line.color,
+	alpha = other_attr.line.alpha
+}
+
+topmem_y = topmem_y + rings.topmem.line_gap_y*2 + rings.topmem.line_w
+
+for i = 1, rings.topmem.n do
+	text_table['topmem_toplabel'..i] = {
+		text = '${top_mem name '..i..'}',
+		font = text_attr.top.font,
+		fs = text_attr.top.fontsize,
+		color = text_attr.top.color,
+		alpha = text_attr.top.alpha,
+		x = topmem_x,
+		y = topmem_y + (i-1)*rings.topmem.text_space_y,
+		align_x = ALIGNL,
+		align_y = ALIGNT
+	}
+
+	text_table['topmem_topvalue'..i] = {
+		text = '${top_mem mem '..i..'}%',
+		font = text_attr.top.font,
+		fs = text_attr.top.fontsize,
+		color = text_attr.top.color,
+		alpha = text_attr.top.alpha,
+		x = topmem_x + rings.topmem.text_w,
+		y = topmem_y + (i-1)*rings.topmem.text_space_y,
+		align_x = ALIGNR,
+		align_y = ALIGNT
+	}
+end
+
+------------------------------------------------------------------------------
+-- LUA MODULES
+------------------------------------------------------------------------------
 require 'cairo'
 
+------------------------------------------------------------------------------
+-- AUXILIARY FUNCTIONS
+------------------------------------------------------------------------------
 ---------------------------------------
 -- Function rgb_to_r_g_b
 ---------------------------------------
@@ -298,6 +545,9 @@ function get_conky_value(name, arg)
 	return(value)
 end
 
+------------------------------------------------------------------------------
+-- DRAWING FUNCTIONS
+------------------------------------------------------------------------------
 ---------------------------------------
 -- Function draw_ring
 ---------------------------------------
@@ -326,7 +576,7 @@ end
 ---------------------------------------
 -- Function draw_clock_hands
 ---------------------------------------
-function draw_clock_hands(cr, xc, yc)
+function draw_clock_hands(cr, pt)
 	local secs = os.date("%S")
 	local mins = os.date("%M")
 	local hours = os.date("%I")
@@ -335,18 +585,46 @@ function draw_clock_hands(cr, xc, yc)
 	local mins_arc = (2*math.pi/60)*mins + secs_arc/60
 	local hours_arc = (2*math.pi/12)*hours + mins_arc/12
 
-	local hours_len = 0.7
-
 	-- Draw hour hand
-	draw_line(cr, {color = clock_color, alpha = clock_alpha, w = 5, xs = xc, ys = yc, xe = xc + (hours_len*clock_r)*math.sin(hours_arc), ye = yc - (hours_len*clock_r)*math.cos(hours_arc), dot = false})
+	draw_line(cr, {color = other_attr.clock.color, alpha = other_attr.clock.alpha, w = pt.hrs_width, xs = pt.x, ys = pt.y, xe = pt.x + (pt.radius - pt.hrs_gap)*math.sin(hours_arc), ye = pt.y - (pt.radius - pt.hrs_gap)*math.cos(hours_arc), dot = false})
 
 	-- Draw minute hand
-	draw_line(cr, {color = clock_color, alpha = clock_alpha, w = 3, xs = xc, ys = yc, xe = xc + clock_r*math.sin(mins_arc), ye = yc - clock_r*math.cos(mins_arc), dot = false})
+	draw_line(cr, {color = other_attr.clock.color, alpha = other_attr.clock.alpha, w = pt.min_width, xs = pt.x, ys = pt.y, xe = pt.x + (pt.radius - pt.min_gap)*math.sin(mins_arc), ye = pt.y - (pt.radius - pt.min_gap)*math.cos(mins_arc), dot = false})
 
 	-- Draw seconds hand
-	if clock_show_seconds then
-		draw_line(cr, {color = clock_color, alpha = clock_alpha, w = 1, xs = xc, ys = yc, xe = xc + clock_r*math.sin(secs_arc), ye = yc - clock_r*math.cos(secs_arc), dot = false})
+	if pt.show_seconds then
+		draw_line(cr, {color = other_attr.clock.color, alpha = other_attr.clock.alpha, w = pt.sec_width, xs = pt.x, ys = pt.y, xe = pt.x + (pt.radius - pt.sec_gap)*math.sin(secs_arc), ye = pt.y - (pt.radius - pt.sec_gap)*math.cos(secs_arc), dot = false})
 	end
+end
+
+---------------------------------------
+-- Function draw_text
+---------------------------------------
+function draw_text(cr, pt)
+	-- Set text font/color
+	cairo_select_font_face(cr, pt.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, pt.fs)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
+
+	local text = conky_parse(pt.text)
+
+	-- Calculate text and font extents
+	local t_extents = cairo_text_extents_t:create()
+	tolua.takeownership(t_extents)
+	cairo_text_extents(cr, text, t_extents)
+
+	local f_extents = cairo_font_extents_t:create()
+	tolua.takeownership(f_extents)
+	cairo_font_extents(cr, f_extents)
+
+	-- Justify text
+	local text_x = ((pt.align_x == ALIGNR) and (pt.x - t_extents.width - t_extents.x_bearing) or ((pt.align_x == ALIGNC) and (pt.x - t_extents.width*0.5 - t_extents.x_bearing*0.5) or pt.x))
+	local text_y = ((pt.align_y == ALIGNT) and (pt.y + f_extents.height - f_extents.descent*2) or ((pt.align_y == ALIGNM) and (pt.y + f_extents.height/2 - f_extents.descent) or pt.y))
+
+	-- Draw text
+	cairo_move_to(cr, text_x, text_y)
+	cairo_show_text(cr, text)
+	cairo_stroke(cr)
 end
 
 ---------------------------------------
@@ -375,8 +653,12 @@ end
 -- Function draw_graph
 ---------------------------------------
 function draw_graph(cr, pt)
+	cairo_save(cr)
+
 	-- Get number of bars
-	local n_bars = pt.w/(pt.bar_w + pt.bar_gap)
+	local n_bars = math.floor(pt.w/(pt.bar_w + pt.bar_gap))
+
+	print(n_bars)
 
 	-- Update graph data
 	for i = 1, n_bars do
@@ -392,7 +674,7 @@ function draw_graph(cr, pt)
 	-- Draw graph bars
 	local bar_h
 
-	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT)
 	cairo_set_line_width(cr, pt.bar_w)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
@@ -415,39 +697,62 @@ function draw_graph(cr, pt)
 			cairo_stroke(cr)
 		end
 	end
+
+	cairo_restore(cr)
 end
 
----------------------------------------
--- Function conky_clock_rings
----------------------------------------
-function conky_clock_rings()
+------------------------------------------------------------------------------
+-- MAIN FUNCTION
+------------------------------------------------------------------------------
+function conky_main()
 	if conky_window == nil then return end
 
-	net_interface = conky_parse("${if_up ${template1}}${template1}${else}${if_up ${template0}}${template0}${else}none${endif}${endif}")
+	-- Check network interface status
+	local gw_up = tonumber(conky_parse('${if_up '..lan_interface..'}2${else}${if_up '..wifi_interface..'}1${else}0${endif}${endif}'))
 
-	graphs_table.downspeed.arg = net_interface
+	local check_interface = ((gw_up == 2) and lan_interface or ((gw_up == 1) and wifi_interface or 'None'))
 
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 	local cr = cairo_create(cs)
 
 	-- Draw rings
-	for i in pairs(rings_table) do
-		draw_ring(cr, rings_table[i])
+	for id, ring in pairs(rings_table) do
+		if id:find('net') then
+			ring.value = ring.value:gsub(net_interface, check_interface)
+		end
+		draw_ring(cr, ring)
+	end
+
+	-- Draw text
+	for id, text in pairs(text_table) do
+		if id == 'date' then
+			text.x = (rings_table['dummy1'].x + rings_table['dummy1'].radius + rings_table['dummy2'].x + rings_table['dummy2'].radius)/2
+		end
+		if id:find('net') then
+			text.text = text.text:gsub(net_interface, check_interface)
+		end
+		draw_text(cr, text)
 	end
 
 	-- Draw clock hands
-	draw_clock_hands(cr, clock_x, clock_y)
+	draw_clock_hands(cr, clock_hands)
 
 	-- Draw graphs
-	for i in pairs(graphs_table) do
-		draw_graph(cr, graphs_table[i])
+	for id, graph in pairs(graphs_table) do
+		if id:find('net') then
+			graph.arg = check_interface
+		end
+		draw_graph(cr, graph)
 	end
 
 	-- Draw lines
-	for i in pairs(lines_table) do
-		draw_line(cr, lines_table[i])
+	for id, line in pairs(lines_table) do
+		draw_line(cr, line)
 	end
+
+	-- Update network variables
+	net_interface = check_interface
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
