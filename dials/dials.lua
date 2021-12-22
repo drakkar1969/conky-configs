@@ -39,7 +39,7 @@ dials = {
 -- Index, label, suffix (default = '%'), name, arg (default = '')
 dials_table = {
 	core = {
-		index = 0, label = 'Core Temp', suffix = '°C', name = 'acpitemp'
+		index = 0, label = 'Temperature', suffix = '°C', name = 'acpitemp'
 	},
 	cpu = {
 		index = 1, label = 'CPU', name = 'cpu', arg = 'cpu0'
