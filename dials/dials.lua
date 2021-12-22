@@ -27,7 +27,7 @@ text_attr = {
 
 -- Dials
 dials = {
-	radius = 50, width = 10,
+	radius = 48, width = 8,
 	start_angle = -180, end_angle = 180,
 	gap_x = 50, gap_y = 0,
 	gap_label = 20
@@ -39,22 +39,22 @@ dials = {
 -- Index, label, suffix (default = '%'), name, arg (default = '')
 dials_table = {
 	core = {
-		index = 0, text = 'Core Temp', suffix = '°C', name = 'acpitemp'
+		index = 0, label = 'Core Temp', suffix = '°C', name = 'acpitemp'
 	},
 	cpu = {
-		index = 1, text = 'CPU', name = 'cpu', arg = 'cpu0'
+		index = 1, label = 'CPU', name = 'cpu', arg = 'cpu0'
 	},
 	ram = {
-		index = 2, text = 'Memory', name = 'memperc'
+		index = 2, label = 'Memory', name = 'memperc'
 	},
 	home = {
-		index = 3, text = 'Home', name = 'fs_used_perc', arg = '/home'
+		index = 3, label = 'Home', name = 'fs_used_perc', arg = '/home'
 	},
 	data = {
-		index = 4, text = 'Data', name = 'fs_used_perc', arg = '/home/data'
+		index = 4, label = 'Data', name = 'fs_used_perc', arg = '/home/data'
 	},
 	battery = {
-		index = 5, text = 'Battery', name = 'battery_percent'
+		index = 5, label = 'Battery', name = 'battery_percent'
 	},
 }
 
@@ -76,26 +76,11 @@ for i, dial in pairs(dials_table) do
 	dial.ea = dials.end_angle
 	dial.x = dial_x + dial.index*dial_spacing
 	dial.y = dials.radius + dials.width/2 + dials.gap_y
-	dial.fillc = dials_attr.fill_color
-	dial.filla = dials_attr.fill_alpha
-	dial.bgc = dials_attr.bg_color
-	dial.bga = dials_attr.bg_alpha
-	dial.fgc = dials_attr.fg_color
-	dial.fga = dials_attr.fg_alpha
-	dial.label = {
-		y = dial.y + dial.r + dial.w/2 + dials.gap_label,
-		font = text_attr.label.font,
-		fs = text_attr.label.fontsize,
-		color = text_attr.label.color,
-		alpha = text_attr.label.alpha
-	}
-	dial.value = {
-		y = dial.y,
-		font = text_attr.value.font,
-		fs = text_attr.value.fontsize,
-		color = text_attr.value.color,
-		alpha = text_attr.value.alpha
-	}
+	dial.label_y = dial.y + dial.r + dial.w/2 + dials.gap_label
+
+	dial.attr = dials_attr
+	dial.label_attr = text_attr.label
+	dial.value_attr = text_attr.value
 end
 
 ------------------------------------------------------------------------------
@@ -143,24 +128,24 @@ function draw_dial(cr, pt)
 
 	-- Draw background fill
 	cairo_arc(cr, dial_x, pt.y, pt.r + pt.w/2, angle_0, angle_f)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.fillc, pt.filla))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fill_color, pt.attr.fill_alpha))
 	cairo_fill(cr)
 
 	-- Draw background ring
 	cairo_arc(cr, dial_x, pt.y, pt.r, angle_0, angle_f)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.bgc, pt.bga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bg_color, pt.attr.bg_alpha))
 	cairo_set_line_width(cr, pt.w)
 	cairo_stroke(cr)
 
 	-- Draw indicator ring
 	cairo_arc(cr, dial_x, pt.y, pt.r, angle_0, angle_0 + t_arc)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.fgc, pt.fga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fg_color, pt.attr.fg_alpha))
 	cairo_stroke(cr)
 
 	-- Draw value text
-	cairo_select_font_face(cr, pt.value.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, pt.value.fs)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.value.color, pt.value.alpha))
+	cairo_select_font_face(cr, pt.value_attr.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, pt.value_attr.fontsize)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.value_attr.color, pt.value_attr.alpha))
 
 	local value_text = value..pt.suffix
 
@@ -172,20 +157,20 @@ function draw_dial(cr, pt)
 	tolua.takeownership(f_extents)
 	cairo_font_extents(cr, f_extents)
 
-	cairo_move_to(cr, dial_x - t_extents.width*0.5 - t_extents.x_bearing*0.5, pt.value.y + f_extents.height/2 - f_extents.descent)
+	cairo_move_to(cr, dial_x - t_extents.width*0.5 - t_extents.x_bearing*0.5, pt.y + f_extents.height/2 - f_extents.descent)
 	cairo_show_text(cr, value_text)
 	cairo_stroke(cr)
 
 	-- Draw label text
-	cairo_select_font_face(cr, pt.label.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, pt.label.fs)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.label.color, pt.label.alpha))
+	cairo_select_font_face(cr, pt.label_attr.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, pt.label_attr.fontsize)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.label_attr.color, pt.label_attr.alpha))
 
-	cairo_text_extents(cr, pt.text, t_extents)
+	cairo_text_extents(cr, pt.label, t_extents)
 	cairo_font_extents(cr, f_extents)
 
-	cairo_move_to(cr, dial_x - t_extents.width*0.5 - t_extents.x_bearing*0.5, pt.label.y + f_extents.height - f_extents.descent*2)
-	cairo_show_text(cr, pt.text)
+	cairo_move_to(cr, dial_x - t_extents.width*0.5 - t_extents.x_bearing*0.5, pt.label_y + f_extents.height - f_extents.descent*2)
+	cairo_show_text(cr, pt.label)
 	cairo_stroke(cr)
 end
 
