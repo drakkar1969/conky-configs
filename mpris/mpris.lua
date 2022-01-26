@@ -8,7 +8,7 @@ player_name = "Lollypop"
 align_right = false
 
 -- Light/dark colors
-dark_colors = false
+dark_colors = true
 
 -- Font/color variables
 main_font = "Ubuntu"

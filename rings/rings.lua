@@ -25,7 +25,7 @@ text_table = {}
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = false
+dark_colors = true
 
 ---------------------------------------
 -- Font/color variables
