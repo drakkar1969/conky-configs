@@ -19,13 +19,13 @@ lines_table = {}
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = false
+dark_colors = true
 
 ---------------------------------------
 -- Font/color variables
 ---------------------------------------
-main_color = dark_colors and 0x383c4a or 0xd3dae3
-text_color = dark_colors and 0x21232b or 0xbac3cf
+main_color = dark_colors and 0x3d3846 or 0xdeddda
+text_color = dark_colors and 0x241f31 or 0xc0bfbc
 main_font = 'Ubuntu'
 
 ---------------------------------------
@@ -43,7 +43,7 @@ rings_attr = {
 -- Other colors
 ---------------------------------------
 other_attr = {
-	clock = { color = 0x5294e2, alpha = 1 },
+	clock = { color = 0x3584e4, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
 	dotline = { color = main_color, alpha = 0.5 }
 }

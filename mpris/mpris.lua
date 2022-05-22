@@ -12,8 +12,8 @@ dark_colors = true
 
 -- Font/color variables
 main_font = "Ubuntu"
-main_color = dark_colors and 0x383c4a or 0xd3dae3
-hilight_color = dark_colors and 0x21232b or 0xbac3cf
+main_color = dark_colors and 0x3d3846 or 0xdeddda
+hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 -- Element spacing
 gaps = { x = 14, y = 14 }

@@ -5,8 +5,8 @@
 dark_colors = false
 
 -- Font/color variables
-main_color = dark_colors and 0x383c4a or 0xd3dae3
-text_color = dark_colors and 0x21232b or 0xbac3cf
+main_color = dark_colors and 0x3d3846 or 0xdeddda
+text_color = dark_colors and 0x241f31 or 0xc0bfbc
 main_font = 'Ubuntu'
 
 -- Dial colors

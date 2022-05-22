@@ -18,7 +18,7 @@ username = {
 	fontsize = 26,
 	bold = false,
 	italic = false,
-	color = dark_colors and 0x383c4a or 0xd3dae3,
+	color = dark_colors and 0x3d3846 or 0xdeddda,
 	alpha = 1,
 	margin = 20
 }
