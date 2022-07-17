@@ -298,6 +298,7 @@ function parse_metadata()
 	{{ mpris:artUrl }}
 	{{ uc(title) }}
 	{{ uc(artist) }}
+	{{ uc(xesam:albumArtist) }}
 	{{ uc(status) }}
 	{{ position }}
 	{{ mpris:length }}
@@ -305,6 +306,7 @@ function parse_metadata()
 
 	local parse_mask = [[
 	file://(.-)
+	(.-)
 	(.-)
 	(.-)
 	(.-)
@@ -323,7 +325,12 @@ function parse_metadata()
 
 	-- Extract metadata tags
 	local s, f
-	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos, metadata.len = meta_text:find(parse_mask)
+	s, f, metadata.art, metadata.title, metadata.artist, metadata.albumArtist, metadata.status, metadata.pos, metadata.len = meta_text:find(parse_mask)
+
+	-- Fix artist (remove album artist)
+	if metadata.artist ~= metadata.albumArtist then
+		metadata.artist = metadata.artist:gsub(string.format(", %s", metadata.albumArtist), "")
+	end
 
 	return metadata
 end
