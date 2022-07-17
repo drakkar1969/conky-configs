@@ -44,8 +44,8 @@ tags.header = {
 tags.title = {
 	text = "UNKNOWN TRACK",
 	font = main_font,
-	font_size = 22,
-	bold = false,
+	font_size = 24,
+	bold = true,
 	italic = false,
 	color = main_color,
 	alpha = 1,
@@ -55,7 +55,7 @@ tags.title = {
 tags.artist = {
 	text = "UNKNOWN ARTIST",
 	font = main_font,
-	font_size = 17,
+	font_size = 14,
 	bold = false,
 	italic = false,
 	color = hilight_color,
@@ -272,14 +272,6 @@ end
 function draw_bar(cr, pt)
 	local bar_x = (align_right and (conky_window.width - (pt.x + pt.width)) or pt.x)
 
-	-- cairo_rectangle(cr, bar_x, pt.y, pt.width, pt.height)
-	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
-	-- cairo_fill(cr)
-
-	-- cairo_rectangle(cr, bar_x, pt.y, pt.width*pt.pct, pt.height)
-	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_fg, pt.alpha_fg))
-	-- cairo_fill(cr)
-
 	cairo_move_to(cr, bar_x, pt.y + pt.height/2)
 	cairo_rel_line_to(cr, pt.width, 0)
 
@@ -353,10 +345,10 @@ function conky_main()
 		-- Calculate tags y coordinate
 		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size)
 		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size)
-		local tag_spacing = (cover_art.frame_size - title_height - artist_height)/4
+		local tag_spacing = (cover_art.frame_size - title_height - artist_height)/3
 		
-		tags.artist.y = cover_art.frame_y + artist_height + tag_spacing
-		tags.title.y = tags.artist.y + title_height + 2*tag_spacing
+		tags.title.y = cover_art.frame_y + title_height + tag_spacing
+		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
 		-- Draw header
 		draw_text(cr, tags.header)
