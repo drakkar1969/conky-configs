@@ -82,7 +82,7 @@ status_icon = {
 -- Progress bar
 progress_bar = {
 	width = 200,
-	height = 6,
+	height = 8,
 	color_bg = main_color,
 	color_fg = main_color,
 	alpha_bg = dark_colors and 0.2 or 0.3,
@@ -272,13 +272,29 @@ end
 function draw_bar(cr, pt)
 	local bar_x = (align_right and (conky_window.width - (pt.x + pt.width)) or pt.x)
 
-	cairo_rectangle(cr, bar_x, pt.y, pt.width, pt.height)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
-	cairo_fill(cr)
+	-- cairo_rectangle(cr, bar_x, pt.y, pt.width, pt.height)
+	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
+	-- cairo_fill(cr)
 
-	cairo_rectangle(cr, bar_x, pt.y, pt.width*pt.pct, pt.height)
+	-- cairo_rectangle(cr, bar_x, pt.y, pt.width*pt.pct, pt.height)
+	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_fg, pt.alpha_fg))
+	-- cairo_fill(cr)
+
+	cairo_move_to(cr, bar_x, pt.y + pt.height/2)
+	cairo_rel_line_to(cr, pt.width, 0)
+
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+	cairo_set_line_width(cr, pt.height)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
+	cairo_stroke(cr)
+
+	cairo_move_to(cr, bar_x, pt.y + pt.height/2)
+	cairo_rel_line_to(cr, pt.width*pt.pct, 0)
+
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+	cairo_set_line_width(cr, pt.height)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_fg, pt.alpha_fg))
-	cairo_fill(cr)
+	cairo_stroke(cr)
 end
 
 ------------------------------------------------------------------------------
