@@ -64,9 +64,9 @@ tags.artist = {
 
 -- Vertical line between cover and tags
 div_line = {
-	width = 2,
+	width = 1,
 	color = main_color,
-	alpha = 0.25
+	alpha = 0.15
 }
 
 -- Status icon (playing, paused, stopped)
@@ -196,7 +196,7 @@ function draw_rel_line(cr, pt)
 	cairo_move_to(cr, line_xs, pt.ys)
 	cairo_rel_line_to(cr, pt.xr, pt.yr)
 
-	cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT)
+	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
 	cairo_set_line_width(cr, pt.width)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 	cairo_stroke(cr)
