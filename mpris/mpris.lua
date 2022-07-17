@@ -20,7 +20,7 @@ gaps = { x = 14, y = 14 }
 
 -- Song cover art
 cover_art = {
-	image_size = 64,
+	image_size = 70,
 	frame_width = 0,
 	frame_color = main_color,
 	frame_alpha = 1
