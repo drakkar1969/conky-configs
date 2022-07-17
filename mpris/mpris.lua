@@ -81,7 +81,7 @@ status_icon = {
 
 -- Progress bar
 progress_bar = {
-	width = 200,
+	width = 220,
 	height = 8,
 	color_bg = main_color,
 	color_fg = main_color,
