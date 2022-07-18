@@ -326,14 +326,16 @@ function parse_metadata()
 	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos, metadata.len = meta_text:find(parse_mask)
 
 	-- Fix artist (remove album artist)
-	artist_list = {}
-	separator = ", "
+	if metadata.artist ~= "" then
+		artist_list = {}
+		separator = ", "
 
-	for match in (metadata.artist..separator):gmatch("(.-)"..separator) do
-		artist_list[#artist_list+1] = match
+		for match in (metadata.artist..separator):gmatch("(.-)"..separator) do
+			artist_list[#artist_list+1] = match
+		end
+
+		metadata.artist = artist_list[1]
 	end
-
-	metadata.artist = artist_list[1]
 
 	return metadata
 end
