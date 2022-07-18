@@ -43,7 +43,7 @@ rings_attr = {
 -- Other colors
 ---------------------------------------
 other_attr = {
-	clock = { color = 0x3584e4, alpha = 1 },
+	clock = { color = 0x1c71d8, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
 	dotline = { color = main_color, alpha = 0.5 }
 }
