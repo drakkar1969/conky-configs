@@ -73,7 +73,7 @@ div_line = {
 status_icon = {
 	size = 16,
 	color = main_color,
-	alpha = dark_colors and 0.7 or 0.85,
+	alpha = dark_colors and 0.75 or 0.85,
 	play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg'),
 	pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg'),
 	stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
@@ -85,8 +85,8 @@ progress_bar = {
 	height = 8,
 	color_bg = main_color,
 	color_fg = main_color,
-	alpha_bg = dark_colors and 0.2 or 0.3,
-	alpha_fg = dark_colors and 0.65 or 0.8
+	alpha_bg = dark_colors and 0.15 or 0.3,
+	alpha_fg = dark_colors and 0.7 or 0.8
 }
 
 ------------------------------------------------------------------------------
