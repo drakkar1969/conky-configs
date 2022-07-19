@@ -110,13 +110,13 @@ divider.xr = 0
 divider.yr = cover_art.frame.size
 
 -- Calculate status icon/progress bar position
-status_height = math.max(status_icon.size, progress_bar.height)
+temp_height = math.max(status_icon.size, progress_bar.height)
 
 status_icon.x = cover_art.frame.x
-status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (status_height - status_icon.size)/2
+status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - status_icon.size)/2
 
 progress_bar.x = status_icon.x + status_icon.size + gaps.x
-progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (status_height - progress_bar.height)/2
+progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height/2
 
 -- Calculate tags position (y coordinate calculated in main func)
 tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
@@ -272,7 +272,7 @@ end
 function draw_bar(cr, pt)
 	local bar_x = (align_right and (conky_window.width - (pt.x + pt.width)) or pt.x)
 
-	cairo_move_to(cr, bar_x, pt.y + pt.height/2)
+	cairo_move_to(cr, bar_x, pt.y)
 	cairo_rel_line_to(cr, pt.width, 0)
 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
@@ -280,7 +280,7 @@ function draw_bar(cr, pt)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
 	cairo_stroke(cr)
 
-	cairo_move_to(cr, bar_x, pt.y + pt.height/2)
+	cairo_move_to(cr, bar_x, pt.y)
 	cairo_rel_line_to(cr, pt.width*pt.pct, 0)
 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
