@@ -86,7 +86,7 @@ divider = {
 -- Status icon (playing, paused, stopped)
 status_icon = {
 	size = 16,
-	color = main_color,
+	color = hilight_color,
 	alpha = dark_colors and 0.75 or 0.9,
 	play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg'),
 	pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg'),
