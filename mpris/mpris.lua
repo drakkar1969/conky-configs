@@ -63,6 +63,16 @@ tags = {
 		italic = false,
 		color = hilight_color,
 		alpha = 1,
+	},
+	-- Track position
+	position = {
+		text = "0:00",
+		font = main_font,
+		font_size = 12,
+		bold = true,
+		italic = false,
+		color = hilight_color,
+		alpha = 1,
 	}
 }
 
@@ -121,6 +131,7 @@ progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height
 -- Calculate tags position (y coordinate calculated in main func)
 tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
 tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
+tags.position.x = progress_bar.x + progress_bar.width + 1.3*gaps.x
 
 ------------------------------------------------------------------------------
 -- LUA MODULES
@@ -301,10 +312,12 @@ function parse_metadata()
 	{{ uc(status) }}
 	{{ position }}
 	{{ mpris:length }}
+	{{ duration(position) }}
 	]]
 
 	local parse_mask = [[
 	file://(.-)
+	(.-)
 	(.-)
 	(.-)
 	(.-)
@@ -323,7 +336,7 @@ function parse_metadata()
 
 	-- Extract metadata tags
 	local s, f
-	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos, metadata.len = meta_text:find(parse_mask)
+	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos, metadata.len, metadata.time = meta_text:find(parse_mask)
 
 	-- Fix artist (remove album artist)
 	if metadata.artist ~= "" then
@@ -357,10 +370,12 @@ function conky_main()
 		-- Calculate tags y coordinate
 		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size)
 		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size)
+		local position_height = get_font_height(cr, tags.position.font, tags.position.font_size)
 		local tag_spacing = (cover_art.frame.size - title_height - artist_height)/3
 		
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
+		tags.position.y = progress_bar.y + position_height/2
 
 		-- Draw header
 		draw_text(cr, tags.header)
@@ -393,6 +408,11 @@ function conky_main()
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
+
+		-- Draw position text
+		tags.position.text = metadata.time
+
+		draw_text(cr, tags.position)
 
 		cairo_destroy(cr)
 		cairo_surface_destroy(cs)
