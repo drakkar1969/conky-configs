@@ -20,50 +20,54 @@ gaps = { x = 14, y = 14 }
 
 -- Song cover art
 cover_art = {
-	image_size = 70,
-	frame_width = 0,
-	frame_color = main_color,
-	frame_alpha = 1
+	image = {
+		size = 70
+	},
+	frame = {
+		width = 0,
+		color = main_color,
+		alpha = 1
+	},
 }
 
--- Tags table - DO NOT DELETE
-tags = {}
-
--- "Now Playing" header
-tags.header = {
-	text = "NOW PLAYING",
-	font = main_font,
-	font_size = 15,
-	bold = false,
-	italic = false,
-	color = main_color,
-	alpha = 0.5
-}
-
--- Song title
-tags.title = {
-	text = "UNKNOWN TRACK",
-	font = main_font,
-	font_size = 23,
-	bold = true,
-	italic = false,
-	color = main_color,
-	alpha = 1,
-}
-
--- Song artist
-tags.artist = {
-	text = "UNKNOWN ARTIST",
-	font = main_font,
-	font_size = 14,
-	bold = false,
-	italic = false,
-	color = hilight_color,
-	alpha = 1,
+-- Tags table
+tags = {
+	-- "Now Playing" header
+	header = {
+		x = 1,
+		y = 20,
+		text = "NOW PLAYING",
+		font = main_font,
+		font_size = 15,
+		bold = false,
+		italic = false,
+		color = main_color,
+		alpha = 0.5
+	},	
+	-- Song title
+	title = {
+		text = "UNKNOWN TRACK",
+		font = main_font,
+		font_size = 23,
+		bold = true,
+		italic = false,
+		color = main_color,
+		alpha = 1,
+	},
+	-- Song artist
+	artist = {
+		text = "UNKNOWN ARTIST",
+		font = main_font,
+		font_size = 14,
+		bold = false,
+		italic = false,
+		color = hilight_color,
+		alpha = 1,
+	}
 }
 
 -- Vertical line between cover and tags
-div_line = {
+divider = {
 	width = 1,
 	color = main_color,
 	alpha = 0.15
@@ -92,35 +96,31 @@ progress_bar = {
 ------------------------------------------------------------------------------
 -- VARIABLE INITIALIZATION
 ------------------------------------------------------------------------------
--- Calculate header position
-tags.header.x = 1
-tags.header.y = 20
-
 -- Calculate cover image/frame position and dimensions
-cover_art.frame_x = 10
-cover_art.frame_y = tags.header.y + gaps.y
-cover_art.frame_size = cover_art.image_size + 2*cover_art.frame_width
-cover_art.image_x = cover_art.frame_x + cover_art.frame_width
-cover_art.image_y = cover_art.frame_y + cover_art.frame_width
+cover_art.frame.x = 10
+cover_art.frame.y = tags.header.y + gaps.y
+cover_art.frame.size = cover_art.image.size + 2*cover_art.frame.width
+cover_art.image.x = cover_art.frame.x + cover_art.frame.width
+cover_art.image.y = cover_art.frame.y + cover_art.frame.width
 
 -- Calculate vertical line position and dimensions
-div_line.xs = cover_art.frame_x + cover_art.frame_size + gaps.x + div_line.width/2
-div_line.ys = cover_art.frame_y
-div_line.xr = 0
-div_line.yr = cover_art.frame_size
+divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.x + divider.width/2
+divider.ys = cover_art.frame.y
+divider.xr = 0
+divider.yr = cover_art.frame.size
 
 -- Calculate status icon/progress bar position
 status_height = math.max(status_icon.size, progress_bar.height)
 
-status_icon.x = cover_art.frame_x
-status_icon.y = cover_art.frame_y + cover_art.frame_size + gaps.y + (status_height - status_icon.size)/2
+status_icon.x = cover_art.frame.x
+status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (status_height - status_icon.size)/2
 
 progress_bar.x = status_icon.x + status_icon.size + gaps.x
-progress_bar.y = cover_art.frame_y + cover_art.frame_size + gaps.y + (status_height - progress_bar.height)/2
+progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (status_height - progress_bar.height)/2
 
 -- Calculate tags position (y coordinate calculated in main func)
-tags.title.x = cover_art.frame_x + cover_art.frame_size + div_line.width + 2*gaps.x
-tags.artist.x = cover_art.frame_x + cover_art.frame_size + div_line.width + 2*gaps.x
+tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
+tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
 
 ------------------------------------------------------------------------------
 -- LUA MODULES
@@ -159,11 +159,11 @@ end
 ---------------------------------------
 function draw_cover(cr, pt)
 	-- Draw frame
-	local frame_x = (align_right and (conky_window.width - (pt.frame_x + pt.frame_size)) or pt.frame_x)
+	local frame_x = (align_right and (conky_window.width - (pt.frame.x + pt.frame.size)) or pt.frame.x)
 
-	cairo_rectangle(cr, frame_x, pt.frame_y, pt.frame_size, pt.frame_size)
+	cairo_rectangle(cr, frame_x, pt.frame.y, pt.frame.size, pt.frame.size)
 
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame_color, pt.frame_alpha))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame.color, pt.frame.alpha))
 	cairo_fill(cr)
 
 	-- Draw cover
@@ -174,15 +174,15 @@ function draw_cover(cr, pt)
 
 	imlib_context_set_image(image)
 
-	local image_x = (align_right and (conky_window.width - (pt.image_x + pt.image_size)) or pt.image_x)
+	local image_x = (align_right and (conky_window.width - (pt.image.x + pt.image.size)) or pt.image.x)
 
-	local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image_size, pt.image_size)
+	local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
 
 	imlib_free_image()
 
 	imlib_context_set_image(scaled)
 
-	imlib_render_image_on_drawable(image_x, pt.image_y)
+	imlib_render_image_on_drawable(image_x, pt.image.y)
 
 	imlib_free_image()
 end
@@ -357,9 +357,9 @@ function conky_main()
 		-- Calculate tags y coordinate
 		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size)
 		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size)
-		local tag_spacing = (cover_art.frame_size - title_height - artist_height)/3
+		local tag_spacing = (cover_art.frame.size - title_height - artist_height)/3
 		
-		tags.title.y = cover_art.frame_y + title_height + tag_spacing
+		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
 		-- Draw header
@@ -371,7 +371,7 @@ function conky_main()
 		draw_cover(cr, cover_art)
 
 		-- Draw vertical line
-		draw_rel_line(cr, div_line)
+		draw_rel_line(cr, divider)
 
 		-- Draw status icon
 		status_icon.file = ((metadata.status == "PAUSED") and status_icon.pause_icon or ((metadata.status == "PLAYING") and status_icon.play_icon or status_icon.stop_icon))
