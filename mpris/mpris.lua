@@ -87,7 +87,7 @@ divider = {
 status_icon = {
 	size = 16,
 	color = main_color,
-	alpha = dark_colors and 0.75 or 0.9,
+	alpha = dark_colors and 0.85 or 0.9,
 	play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg'),
 	pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg'),
 	stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
@@ -100,7 +100,7 @@ progress_bar = {
 	color_bg = main_color,
 	color_fg = main_color,
 	alpha_bg = dark_colors and 0.15 or 0.2,
-	alpha_fg = dark_colors and 0.7 or 0.9
+	alpha_fg = dark_colors and 0.8 or 0.9
 }
 
 ------------------------------------------------------------------------------
