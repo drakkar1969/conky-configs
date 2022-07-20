@@ -34,7 +34,7 @@ audio_icon = {
 	size = 32,
 	color = main_color,
 	alpha = 1,
-	icon = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+	file = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
 }
 
 -- Tags table
@@ -203,37 +203,7 @@ function draw_cover(cr, pt, icn)
 
 	-- Draw cover
 	if (pt.file == nil or pt.file == "") then
-		cairo_save(cr)
-
-		-- Load SVG image from file
-		local handle = rsvg_create_handle_from_file(icn.icon)
-	
-		-- Get SVG image dimensions
-		local svgprop = RsvgDimensionData:create()
-		rsvg_handle_get_dimensions(handle, svgprop)
-	
-		local w, h, em, ex = svgprop:get()
-	
-		-- Position and size SVG image
-		cairo_translate(cr, icn.x, icn.y)
-		cairo_scale(cr, icn.size/w, icn.size/h)
-	
-		-- Render SVG image on temporary canvas
-		cairo_push_group(cr)
-		rsvg_handle_render_cairo(handle, cr)
-	
-		-- Re-color and draw SVG image
-		local pattern = cairo_pop_group(cr)
-	
-		cairo_set_source_rgba(cr, rgb_to_r_g_b(icn.color, icn.alpha))
-	
-		cairo_mask(cr, pattern)
-	
-		cairo_pattern_destroy(pattern)
-	
-		rsvg_destroy_handle(handle)
-	
-		cairo_restore(cr)	
+			draw_svg_icon(cr, icn)
 	else
 		local image = imlib_load_image(pt.file)
 		if image == nil then return end
