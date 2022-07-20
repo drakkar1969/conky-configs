@@ -5,22 +5,34 @@
 align_right = false
 
 -- Light/dark colors
-dark_colors = false
+dark_colors = true
 
 -- User picture
 avatar = {
-	size = 70
+	x = 0,
+	y = 0,
+	size = 70,
+	margin = 20
 }
 
 -- User name
 username = {
 	font = 'Ubuntu',
-	fontsize = 26,
+	font_size = 24,
+	bold = true,
+	italic = false,
+	color = dark_colors and 0x3d3846 or 0xdeddda,
+	alpha = 1
+}
+
+-- GNOME version
+gnomever = {
+	font = 'Ubuntu',
+	font_size = 14,
 	bold = false,
 	italic = false,
 	color = dark_colors and 0x3d3846 or 0xdeddda,
-	alpha = 1,
-	margin = 20
+	alpha = 1
 }
 
 ------------------------------------------------------------------------------
@@ -28,16 +40,6 @@ username = {
 ------------------------------------------------------------------------------
 require 'cairo'
 require 'imlib2'
-
-------------------------------------------------------------------------------
--- VARIABLE INITIALIZATION
-------------------------------------------------------------------------------
-avatar.x = 0
-avatar.y = 0
-avatar.outfile = string.gsub(conky_config, 'user.conf', 'user.png')
-
-username.x = avatar.x + avatar.size + username.margin
-username.y = avatar.y + avatar.size/2
 
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
@@ -57,6 +59,21 @@ function convert_to_png(infile, outfile)
 	imlib_save_image(outfile)
 
 	imlib_free_image()
+end
+
+function get_font_height(cr, font, font_size)
+	cairo_save(cr)
+
+	cairo_select_font_face(cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, font_size)
+
+	local f_extents = cairo_font_extents_t:create()
+	tolua.takeownership(f_extents)
+	cairo_font_extents(cr, f_extents)
+
+	cairo_restore(cr)
+
+	return (f_extents.height/2 - f_extents.descent)*2
 end
 
 ------------------------------------------------------------------------------
@@ -99,27 +116,20 @@ function draw_text(cr, pt)
 	local weight = (pt.bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
 
 	cairo_select_font_face(cr, pt.font, slant, weight)
-	cairo_set_font_size(cr, pt.fontsize)
+	cairo_set_font_size(cr, pt.font_size)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
-
-	local text = conky_parse(pt.text)
 
 	-- Calculate text and font extents
 	local t_extents = cairo_text_extents_t:create()
 	tolua.takeownership(t_extents)
-	cairo_text_extents(cr, text, t_extents)
-
-	local f_extents = cairo_font_extents_t:create()
-	tolua.takeownership(f_extents)
-	cairo_font_extents(cr, f_extents)
+	cairo_text_extents(cr, pt.text, t_extents)
 
 	-- Justify text
 	local text_x = (align_right and (conky_window.width - pt.x - t_extents.width - t_extents.x_bearing) or pt.x)
-	local text_y = pt.y + f_extents.height/2 - f_extents.descent
 
 	-- Draw text
-	cairo_move_to(cr, text_x, text_y)
-	cairo_show_text(cr, text)
+	cairo_move_to(cr, text_x, pt.y)
+	cairo_show_text(cr, pt.text)
 	cairo_stroke(cr)
 end
 
@@ -133,18 +143,36 @@ function conky_main()
 
 	local cr = cairo_create(cs)
 
-	-- Get username and avatar
+	-- Get avatar, user name and GNOME version
 	local user_name = conky_parse('${exec "id -un"}')
 	local user_icon = "/var/lib/AccountsService/icons/"..user_name
+	local gnome_version = conky_parse('${exec "gnome-shell --version"}')
+
+	username.text = user_name
+	gnomever.text = gnome_version
+
+	-- Convert avatar to PNG format
+	avatar.outfile = string.gsub(conky_config, 'user.conf', 'user.png')
 
 	convert_to_png(user_icon, avatar.outfile)
 
-	username.text = user_name:upper()
-
-	-- Draw username and avatar
+	-- Draw avatar
 	draw_round_image(cr, avatar)
 
+	-- Calculate text coordinates
+	local user_name_height = get_font_height(cr, username.font, username.font_size)
+	local gnome_version_height = get_font_height(cr, gnomever.font, gnomever.font_size)
+	local text_gap = (avatar.size - user_name_height - gnome_version_height)/3
+
+	username.x = avatar.x + avatar.size + avatar.margin
+	username.y = avatar.y + user_name_height + text_gap
+
+	gnomever.x = username.x
+	gnomever.y = username.y + gnome_version_height + text_gap
+
+	-- Draw text
 	draw_text(cr, username)
+	draw_text(cr, gnomever)
 
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
