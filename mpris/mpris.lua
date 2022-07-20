@@ -31,7 +31,7 @@ cover_art = {
 }
 
 audio_icon = {
-	size = 48,
+	size = 32,
 	color = main_color,
 	alpha = 1,
 	icon = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
@@ -215,7 +215,7 @@ function draw_cover(cr, pt)
 		local w, h, em, ex = svgprop:get()
 	
 		-- Position and size SVG image
-		cairo_translate(cr, audio_icon,x, audio_icon.y)
+		cairo_translate(cr, audio_icon.x, audio_icon.y)
 		cairo_scale(cr, audio_icon.size/w, audio_icon.size/h)
 	
 		-- Render SVG image on temporary canvas
