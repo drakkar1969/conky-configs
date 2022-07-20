@@ -10,6 +10,9 @@ align_right = false
 -- Light/dark colors
 dark_colors = true
 
+-- Progress bar dot (false = full progress bar)
+progress_dot = false
+
 -- Font/color variables
 main_font = "Ubuntu"
 main_color = dark_colors and 0x3d3846 or 0xdeddda
@@ -307,9 +310,14 @@ function draw_bar(cr, pt)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
 	cairo_stroke(cr)
 
-	cairo_move_to(cr, bar_x, pt.y)
-	cairo_rel_line_to(cr, pt.width*pt.pct, 0)
-
+	if progress_dot then
+		cairo_move_to(cr, bar_x + pt.width*pt.pct, pt.y)
+		cairo_rel_line_to(cr, 0, 0)
+	else
+		cairo_move_to(cr, bar_x, pt.y)
+		cairo_rel_line_to(cr, pt.width*pt.pct, 0)
+	end
+	
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
 	cairo_set_line_width(cr, pt.height)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_fg, pt.alpha_fg))
