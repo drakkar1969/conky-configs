@@ -10,6 +10,9 @@ dark_colors = true
 -- Progress bar dot (false = full progress bar)
 progress_dot = false
 
+-- Show cover art
+show_cover_art = true
+
 -- Assets
 play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
 pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
@@ -205,7 +208,7 @@ function draw_cover(cr, pt, icn)
 	cairo_fill(cr)
 
 	-- Draw cover
-	if (pt.file == nil or pt.file == "") then
+	if (show_cover_art == false or pt.file == nil or pt.file == "") then
 			draw_svg_icon(cr, icn)
 	else
 		local image = imlib_load_image(pt.file)
