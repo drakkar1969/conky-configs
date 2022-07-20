@@ -10,6 +10,12 @@ dark_colors = true
 -- Progress bar dot (false = full progress bar)
 progress_dot = false
 
+-- Assets
+play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
+pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
+stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
+audio_icon = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+
 -- Font/color variables
 main_font = "Ubuntu"
 main_color = dark_colors and 0x3d3846 or 0xdeddda
@@ -34,7 +40,7 @@ audio_icon = {
 	size = 32,
 	color = main_color,
 	alpha = 1,
-	file = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+	file = audio_icon
 }
 
 -- Tags table
@@ -94,10 +100,7 @@ divider = {
 status_icon = {
 	size = 16,
 	color = main_color,
-	alpha = dark_colors and 0.85 or 0.9,
-	play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg'),
-	pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg'),
-	stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
+	alpha = dark_colors and 0.85 or 0.9
 }
 
 -- Progress bar
@@ -410,7 +413,7 @@ function conky_main()
 		draw_text(cr, tags.artist)
 
 		-- Draw status icon
-		status_icon.file = ((metadata.status == "PAUSED") and status_icon.pause_icon or ((metadata.status == "PLAYING") and status_icon.play_icon or status_icon.stop_icon))
+		status_icon.file = ((metadata.status == "PAUSED") and pause_icon or ((metadata.status == "PLAYING") and play_icon or stop_icon))
 
 		draw_svg_icon(cr, status_icon)
 
