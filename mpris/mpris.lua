@@ -213,19 +213,21 @@ function draw_cover(cr, pt)
 	-- Draw cover
 	else
 		local image = imlib_load_image(pt.file)
-		if image == nil then return end
+		if image == nil then
+			draw_svg_icon(cr, pt.icon)
+		else
+			imlib_context_set_image(image)
 
-		imlib_context_set_image(image)
+			local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
 
-		local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
+			imlib_free_image()
 
-		imlib_free_image()
+			imlib_context_set_image(scaled)
 
-		imlib_context_set_image(scaled)
+			imlib_render_image_on_drawable(pt.image.x, pt.image.y)
 
-		imlib_render_image_on_drawable(pt.image.x, pt.image.y)
-
-		imlib_free_image()
+			imlib_free_image()
+		end
 	end
 end
 
