@@ -102,7 +102,8 @@ divider = {
 status_icon = {
 	size = 16,
 	color = main_color,
-	alpha = dark_colors and 0.85 or 0.9
+	alpha = dark_colors and 0.85 or 0.9,
+	file = ""
 }
 
 -- Progress bar
