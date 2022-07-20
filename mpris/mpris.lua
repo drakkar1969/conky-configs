@@ -29,8 +29,15 @@ cover_art = {
 	frame = {
 		width = 0,
 		color = main_color,
-		alpha = 1
+		alpha = 0.1
 	},
+}
+
+audio_icon = {
+	size = 48,
+	color = main_color,
+	alpha = 1,
+	icon = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
 }
 
 -- Tags table
@@ -116,6 +123,9 @@ cover_art.frame.size = cover_art.image.size + 2*cover_art.frame.width
 cover_art.image.x = cover_art.frame.x + cover_art.frame.width
 cover_art.image.y = cover_art.frame.y + cover_art.frame.width
 
+audio_icon.x = cover_art.image.x + (cover_art.image.size - audio_icon.size)/2
+audio_icon.y = cover_art.image.y + (cover_art.image.size - audio_icon.size)/2
+
 -- Calculate vertical line position and dimensions
 divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.x + divider.width/2
 divider.ys = cover_art.frame.y
@@ -197,24 +207,58 @@ function draw_cover(cr, pt)
 	cairo_fill(cr)
 
 	-- Draw cover
-	if (pt.file == nil or pt.file == "") then return end
+	if (pt.file == nil or pt.file == "") then
+		cairo_save(cr)
 
-	local image = imlib_load_image(pt.file)
-	if image == nil then return end
+		-- Load SVG image from file
+		local handle = rsvg_create_handle_from_file(audio_icon.icon)
+	
+		-- Get SVG image dimensions
+		local svgprop = RsvgDimensionData:create()
+		rsvg_handle_get_dimensions(handle, svgprop)
+	
+		local w, h, em, ex = svgprop:get()
+	
+		-- Position and size SVG image
+		local icon_x = (align_right and (conky_window.width - (audio_icon.x + audio_icon.size)) or audio_icon.x)
+	
+		cairo_translate(cr, icon_x, audio_icon.y)
+		cairo_scale(cr, audio_icon.size/w, audio_icon.size/h)
+	
+		-- Render SVG image on temporary canvas
+		cairo_push_group(cr)
+		rsvg_handle_render_cairo(handle, cr)
+	
+		-- Re-color and draw SVG image
+		local pattern = cairo_pop_group(cr)
+	
+		cairo_set_source_rgba(cr, rgb_to_r_g_b(audio_icon.color, audio_icon.alpha))
+	
+		cairo_mask(cr, pattern)
+	
+		cairo_pattern_destroy(pattern)
+	
+		rsvg_destroy_handle(handle)
+	
+		cairo_restore(cr)	
+	else
+		local image = imlib_load_image(pt.file)
+		if image == nil then return end
 
-	imlib_context_set_image(image)
+		imlib_context_set_image(image)
 
-	local image_x = (align_right and (conky_window.width - (pt.image.x + pt.image.size)) or pt.image.x)
+		local image_x = (align_right and (conky_window.width - (pt.image.x + pt.image.size)) or pt.image.x)
 
-	local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
+		local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
 
-	imlib_free_image()
+		imlib_free_image()
 
-	imlib_context_set_image(scaled)
+		imlib_context_set_image(scaled)
 
-	imlib_render_image_on_drawable(image_x, pt.image.y)
+		imlib_render_image_on_drawable(image_x, pt.image.y)
 
-	imlib_free_image()
+		imlib_free_image()
+	end
 end
 
 ---------------------------------------
