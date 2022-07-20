@@ -33,6 +33,7 @@ cover_art = {
 		size = 70
 	},
 	frame = {
+		x = 10,
 		width = 0,
 		color = main_color,
 		alpha = 0.1
@@ -120,7 +121,6 @@ progress_bar = {
 -- VARIABLE INITIALIZATION
 ------------------------------------------------------------------------------
 -- Calculate cover image/frame position and dimensions
-cover_art.frame.x = 10
 cover_art.frame.y = tags.header.y + gaps.y
 cover_art.frame.size = cover_art.image.size + 2*cover_art.frame.width
 cover_art.image.x = cover_art.frame.x + cover_art.frame.width
