@@ -33,10 +33,10 @@ main_font = 'Ubuntu'
 ---------------------------------------
 rings_attr = {
 	bg_color = main_color,
-	bg_alpha = dark_colors and 0.2 or 0.3,
+	bg_alpha = dark_colors and 0.15 or 0.3,
 	fg_color = main_color,
-	fg_alpha = dark_colors and 0.6 or 0.8,
-	dummy_alpha = 0.2
+	fg_alpha = dark_colors and 0.7 or 0.8,
+	dummy_alpha = 0.15
 }
 
 ---------------------------------------
@@ -45,7 +45,7 @@ rings_attr = {
 other_attr = {
 	clock = { color = 0x1c71d8, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
-	dotline = { color = main_color, alpha = 0.5 }
+	dotline = { color = main_color, alpha = 0.6 }
 }
 
 ---------------------------------------
