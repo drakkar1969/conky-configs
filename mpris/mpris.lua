@@ -194,7 +194,7 @@ end
 ---------------------------------------
 -- Function draw_cover
 ---------------------------------------
-function draw_cover(cr, pt)
+function draw_cover(cr, pt, icn)
 	-- Draw frame
 	cairo_rectangle(cr, pt.frame.x, pt.frame.y, pt.frame.size, pt.frame.size)
 
@@ -206,7 +206,7 @@ function draw_cover(cr, pt)
 		cairo_save(cr)
 
 		-- Load SVG image from file
-		local handle = rsvg_create_handle_from_file(audio_icon.icon)
+		local handle = rsvg_create_handle_from_file(icn.icon)
 	
 		-- Get SVG image dimensions
 		local svgprop = RsvgDimensionData:create()
@@ -215,8 +215,8 @@ function draw_cover(cr, pt)
 		local w, h, em, ex = svgprop:get()
 	
 		-- Position and size SVG image
-		cairo_translate(cr, audio_icon.x, audio_icon.y)
-		cairo_scale(cr, audio_icon.size/w, audio_icon.size/h)
+		cairo_translate(cr, icn.x, icn.y)
+		cairo_scale(cr, icn.size/w, icn.size/h)
 	
 		-- Render SVG image on temporary canvas
 		cairo_push_group(cr)
@@ -225,7 +225,7 @@ function draw_cover(cr, pt)
 		-- Re-color and draw SVG image
 		local pattern = cairo_pop_group(cr)
 	
-		cairo_set_source_rgba(cr, rgb_to_r_g_b(audio_icon.color, audio_icon.alpha))
+		cairo_set_source_rgba(cr, rgb_to_r_g_b(icn.color, icn.alpha))
 	
 		cairo_mask(cr, pattern)
 	
@@ -419,7 +419,7 @@ function conky_main()
 		-- Draw cover with frame
 		cover_art.file = metadata.art
 
-		draw_cover(cr, cover_art)
+		draw_cover(cr, cover_art, audio_icon)
 
 		-- Draw vertical line
 		draw_rel_line(cr, divider)
