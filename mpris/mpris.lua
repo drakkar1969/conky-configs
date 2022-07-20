@@ -65,7 +65,7 @@ tags = {
 		alpha = 1,
 	},
 	-- Track position
-	position = {
+	time = {
 		text = "0:00",
 		font = main_font,
 		font_size = 12,
@@ -95,7 +95,7 @@ status_icon = {
 
 -- Progress bar
 progress_bar = {
-	width = 220,
+	width = 200,
 	height = 8,
 	color_bg = main_color,
 	color_fg = main_color,
@@ -119,19 +119,20 @@ divider.ys = cover_art.frame.y
 divider.xr = 0
 divider.yr = cover_art.frame.size
 
--- Calculate status icon/progress bar position
+-- Calculate status icon position
 temp_height = math.max(status_icon.size, progress_bar.height)
 
 status_icon.x = cover_art.frame.x
 status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - status_icon.size)/2
 
-progress_bar.x = status_icon.x + status_icon.size + gaps.x
+-- Calculate progress bar position (x coordinate calculated in main func)
 progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height/2
 
 -- Calculate tags position (y coordinate calculated in main func)
 tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
 tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
-tags.position.x = progress_bar.x + progress_bar.width + 1.3*gaps.x
+
+-- Note: pos/len tags x,y coordinates calculated in main func
 
 ------------------------------------------------------------------------------
 -- LUA MODULES
@@ -145,6 +146,21 @@ require 'rsvg'
 ------------------------------------------------------------------------------
 function rgb_to_r_g_b(color, alpha)
 	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
+end
+
+function get_text_width(cr, font, font_size, text)
+	cairo_save(cr)
+
+	cairo_select_font_face(cr, font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, font_size)
+
+	local t_extents = cairo_text_extents_t:create()
+	tolua.takeownership(t_extents)
+	cairo_text_extents(cr, text, t_extents)
+
+	cairo_restore(cr)
+
+	return (t_extents.width - t_extents.x_bearing)
 end
 
 function get_font_height(cr, font, font_size)
@@ -313,10 +329,12 @@ function parse_metadata()
 	{{ position }}
 	{{ mpris:length }}
 	{{ duration(position) }}
+	{{ duration(mpris:length) }}
 	]]
 
 	local parse_mask = [[
 	file://(.-)
+	(.-)
 	(.-)
 	(.-)
 	(.-)
@@ -336,7 +354,7 @@ function parse_metadata()
 
 	-- Extract metadata tags
 	local s, f
-	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos, metadata.len, metadata.time = meta_text:find(parse_mask)
+	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos_raw, metadata.len_raw, metadata.pos, metadata.len = meta_text:find(parse_mask)
 
 	-- Fix artist (remove album artist)
 	if metadata.artist ~= "" then
@@ -362,20 +380,10 @@ function conky_main()
 	-- Parse metadata
 	local metadata = parse_metadata()
 
-	if metadata.len ~= nil then
+	if metadata.len_raw ~= nil then
 		local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 		local cr = cairo_create(cs)
-
-		-- Calculate tags y coordinate
-		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size)
-		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size)
-		local position_height = get_font_height(cr, tags.position.font, tags.position.font_size)
-		local tag_spacing = (cover_art.frame.size - title_height - artist_height)/3
-		
-		tags.title.y = cover_art.frame.y + title_height + tag_spacing
-		tags.artist.y = tags.title.y + artist_height + tag_spacing
-		tags.position.y = progress_bar.y + position_height/2
 
 		-- Draw header
 		draw_text(cr, tags.header)
@@ -388,31 +396,61 @@ function conky_main()
 		-- Draw vertical line
 		draw_rel_line(cr, divider)
 
-		-- Draw status icon
-		status_icon.file = ((metadata.status == "PAUSED") and status_icon.pause_icon or ((metadata.status == "PLAYING") and status_icon.play_icon or status_icon.stop_icon))
-
-		draw_svg_icon(cr, status_icon)
-
-		-- Draw progressbar
-		if (metadata.pos == nil or metadata.len == nil or metadata.len == 0) then
-			progress_bar.pct = 0
-		else
-			progress_bar.pct = tonumber(metadata.pos)/tonumber(metadata.len)
-		end
-
-		draw_bar(cr, progress_bar)
-
 		-- Draw tags
+		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size)
+		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size)
+
+		local tag_spacing = (cover_art.frame.size - title_height - artist_height)/3
+
+		tags.title.y = cover_art.frame.y + title_height + tag_spacing
+		tags.artist.y = tags.title.y + artist_height + tag_spacing
+
 		tags.title.text = metadata.title
 		tags.artist.text = metadata.artist
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
 
-		-- Draw position text
-		tags.position.text = metadata.time
+		-- Draw status icon
+		status_icon.file = ((metadata.status == "PAUSED") and status_icon.pause_icon or ((metadata.status == "PLAYING") and status_icon.play_icon or status_icon.stop_icon))
 
-		draw_text(cr, tags.position)
+		draw_svg_icon(cr, status_icon)
+
+		-- Draw progressbar
+		local time_space = get_text_width(cr, tags.time.font, tags.time.font_size, "00:00")
+
+		progress_bar.x = status_icon.x + status_icon.size + time_space + 2*gaps.x
+
+		if (metadata.pos_raw == nil or metadata.len_raw == nil or metadata.len_raw == 0) then
+			progress_bar.pct = 0
+		else
+			progress_bar.pct = tonumber(metadata.pos_raw)/tonumber(metadata.len_raw)
+		end
+
+		draw_bar(cr, progress_bar)
+
+		-- Draw pos text
+		local time_width = 0
+		local time_height = get_font_height(cr, tags.time.font, tags.time.font_size)
+		
+		tags.time.y = progress_bar.y + time_height/2
+
+		tags.time.text = metadata.pos
+
+		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
+
+		tags.time.x = status_icon.x + status_icon.size + time_space/2 - time_width/2 + gaps.x
+
+		draw_text(cr, tags.time)
+
+		-- Draw len text
+		tags.time.text = metadata.len
+
+		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
+
+		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.x
+
+		draw_text(cr, tags.time)
 
 		cairo_destroy(cr)
 		cairo_surface_destroy(cs)
