@@ -4,9 +4,6 @@
 -- Player name
 player_name = "Lollypop"
 
--- Alignment
-align_right = false
-
 -- Light/dark colors
 dark_colors = true
 
@@ -199,9 +196,7 @@ end
 ---------------------------------------
 function draw_cover(cr, pt)
 	-- Draw frame
-	local frame_x = (align_right and (conky_window.width - (pt.frame.x + pt.frame.size)) or pt.frame.x)
-
-	cairo_rectangle(cr, frame_x, pt.frame.y, pt.frame.size, pt.frame.size)
+	cairo_rectangle(cr, pt.frame.x, pt.frame.y, pt.frame.size, pt.frame.size)
 
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame.color, pt.frame.alpha))
 	cairo_fill(cr)
@@ -220,9 +215,7 @@ function draw_cover(cr, pt)
 		local w, h, em, ex = svgprop:get()
 	
 		-- Position and size SVG image
-		local icon_x = (align_right and (conky_window.width - (audio_icon.x + audio_icon.size)) or audio_icon.x)
-	
-		cairo_translate(cr, icon_x, audio_icon.y)
+		cairo_translate(cr, audio_icon,x, audio_icon.y)
 		cairo_scale(cr, audio_icon.size/w, audio_icon.size/h)
 	
 		-- Render SVG image on temporary canvas
@@ -247,15 +240,13 @@ function draw_cover(cr, pt)
 
 		imlib_context_set_image(image)
 
-		local image_x = (align_right and (conky_window.width - (pt.image.x + pt.image.size)) or pt.image.x)
-
 		local scaled = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(), imlib_image_get_height(), pt.image.size, pt.image.size)
 
 		imlib_free_image()
 
 		imlib_context_set_image(scaled)
 
-		imlib_render_image_on_drawable(image_x, pt.image.y)
+		imlib_render_image_on_drawable(pt.image.x, pt.image.y)
 
 		imlib_free_image()
 	end
@@ -265,9 +256,7 @@ end
 -- Function draw_rel_line
 ---------------------------------------
 function draw_rel_line(cr, pt)
-	local line_xs = (align_right and (conky_window.width - pt.xs) or pt.xs)
-
-	cairo_move_to(cr, line_xs, pt.ys)
+	cairo_move_to(cr, pt.xs, pt.ys)
 	cairo_rel_line_to(cr, pt.xr, pt.yr)
 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
@@ -287,16 +276,7 @@ function draw_text(cr, pt)
 	cairo_set_font_size(cr, pt.font_size)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
-	local text_x = pt.x
-
-	if align_right then
-		local extents = cairo_text_extents_t:create()
-		tolua.takeownership(extents)
-		cairo_text_extents(cr, pt.text, extents)
-		text_x = conky_window.width - pt.x - extents.width - extents.x_bearing
-	end
-
-	cairo_move_to(cr, text_x, pt.y)
+	cairo_move_to(cr, pt.x, pt.y)
 	cairo_show_text(cr, pt.text)
 	cairo_stroke(cr)
 end
@@ -317,9 +297,7 @@ function draw_svg_icon(cr, pt)
 	local w, h, em, ex = svgprop:get()
 
 	-- Position and size SVG image
-	local icon_x = (align_right and (conky_window.width - (pt.x + pt.size)) or pt.x)
-
-	cairo_translate(cr, icon_x, pt.y)
+	cairo_translate(cr, pt.x, pt.y)
 	cairo_scale(cr, pt.size/w, pt.size/h)
 
 	-- Render SVG image on temporary canvas
@@ -344,9 +322,7 @@ end
 -- Function draw_bar
 ---------------------------------------
 function draw_bar(cr, pt)
-	local bar_x = (align_right and (conky_window.width - (pt.x + pt.width)) or pt.x)
-
-	cairo_move_to(cr, bar_x, pt.y)
+	cairo_move_to(cr, pt.x, pt.y)
 	cairo_rel_line_to(cr, pt.width, 0)
 
 	cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
@@ -355,10 +331,10 @@ function draw_bar(cr, pt)
 	cairo_stroke(cr)
 
 	if progress_dot then
-		cairo_move_to(cr, bar_x + pt.width*pt.pct, pt.y)
+		cairo_move_to(cr, pt.x + pt.width*pt.pct, pt.y)
 		cairo_rel_line_to(cr, 0, 0)
 	else
-		cairo_move_to(cr, bar_x, pt.y)
+		cairo_move_to(cr, pt.x, pt.y)
 		cairo_rel_line_to(cr, pt.width*pt.pct, 0)
 	end
 	
