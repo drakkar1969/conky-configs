@@ -37,13 +37,12 @@ cover_art = {
 		color = main_color,
 		alpha = 0.1
 	},
-}
-
-audio_icon = {
-	size = 32,
-	color = main_color,
-	alpha = 1,
-	file = audio_icon
+	icon = {
+		size = 32,
+		color = main_color,
+		alpha = 1,
+		file = audio_icon
+	}		
 }
 
 -- Tags table
@@ -126,8 +125,8 @@ cover_art.frame.size = cover_art.image.size + 2*cover_art.frame.width
 cover_art.image.x = cover_art.frame.x + cover_art.frame.width
 cover_art.image.y = cover_art.frame.y + cover_art.frame.width
 
-audio_icon.x = cover_art.image.x + (cover_art.image.size - audio_icon.size)/2
-audio_icon.y = cover_art.image.y + (cover_art.image.size - audio_icon.size)/2
+cover_art.icon.x = cover_art.image.x + (cover_art.image.size - cover_art.icon.size)/2
+cover_art.icon.y = cover_art.image.y + (cover_art.image.size - cover_art.icon.size)/2
 
 -- Calculate vertical line position and dimensions
 divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.x + divider.width/2
@@ -200,7 +199,7 @@ end
 ---------------------------------------
 -- Function draw_cover
 ---------------------------------------
-function draw_cover(cr, pt, icn)
+function draw_cover(cr, pt)
 	-- Draw frame
 	cairo_rectangle(cr, pt.frame.x, pt.frame.y, pt.frame.size, pt.frame.size)
 
@@ -209,7 +208,7 @@ function draw_cover(cr, pt, icn)
 
 	-- Draw cover
 	if (show_cover_art == false or pt.file == nil or pt.file == "") then
-			draw_svg_icon(cr, icn)
+			draw_svg_icon(cr, pt.icon)
 	else
 		local image = imlib_load_image(pt.file)
 		if image == nil then return end
@@ -395,7 +394,7 @@ function conky_main()
 		-- Draw cover with frame
 		cover_art.file = metadata.art
 
-		draw_cover(cr, cover_art, audio_icon)
+		draw_cover(cr, cover_art)
 
 		-- Draw vertical line
 		draw_rel_line(cr, divider)
