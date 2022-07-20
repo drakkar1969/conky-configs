@@ -207,9 +207,10 @@ function draw_cover(cr, pt)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame.color, pt.frame.alpha))
 	cairo_fill(cr)
 
-	-- Draw cover
+	-- Draw audio icon
 	if (show_cover_art == false or pt.file == nil or pt.file == "") then
 			draw_svg_icon(cr, pt.icon)
+	-- Draw cover
 	else
 		local image = imlib_load_image(pt.file)
 		if image == nil then return end
