@@ -39,9 +39,9 @@ text_color = dark_colors and 0x241f31 or 0xc0bfbc
 -- Ring background/foreground colors
 rings_attr = {
 	bg_color = main_color,
-	bg_alpha = dark_colors and 0.2 or 0.3,
+	bg_alpha = dark_colors and 0.15 or 0.3,
 	fg_color = main_color,
-	fg_alpha = dark_colors and 0.6 or 0.8,
+	fg_alpha = dark_colors and 0.7 or 0.8,
 }
 
 ---------------------------------------
