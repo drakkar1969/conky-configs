@@ -2,7 +2,7 @@
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 -- Light/dark colors
-dark_colors = false
+dark_colors = true
 
 -- Font/color variables
 clock_font = 'Source Code Pro'
@@ -10,7 +10,7 @@ clock_fontsize = 32
 clock_bold = false
 clock_italic = false
 attr_on = dark_colors and { color = 0x3d3846, alpha = 1 } or { color = 0xdeddda, alpha = 1 }
-attr_off = dark_colors and { color = 0x3d3846, alpha = 0.25 } or { color = 0xdeddda, alpha = 0.15 }
+attr_off = dark_colors and { color = 0x3d3846, alpha = 0.1 } or { color = 0xdeddda, alpha = 0.15 }
 
 -- Row spacing
 row_spacing = 45
