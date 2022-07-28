@@ -256,7 +256,6 @@ extras.fs = {
 net_conn = '${wireless_essid '..net_interface..'}'
 
 extras.net = {
-	{ label = 'INTERFACE', value = net_interface },
 	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' },
 	{ label = 'NETWORK', value = net_conn }
 }
@@ -559,7 +558,7 @@ function conky_main()
 	local gw_up = tonumber(conky_parse('${if_up '..lan_interface..'}2${else}${if_up '..wifi_interface..'}1${else}0${endif}${endif}'))
 
 	local check_interface = ((gw_up == 2) and lan_interface or ((gw_up == 1) and wifi_interface or 'None'))
-	local check_conn = ((gw_up == 2) and 'LAN' or ((gw_up == 1) and '${wireless_essid '..check_interface..'}' or 'No Network'))
+	local check_conn = ((gw_up == 2) and 'Wired' or ((gw_up == 1) and '${wireless_essid '..check_interface..'}' or 'No Network'))
 
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
