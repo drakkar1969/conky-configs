@@ -105,8 +105,8 @@ clock_hands = {
 
 -- Name and path of two disks to display in disk rings/text
 disks = {
-	{ name = 'home', path = '/home' },
-	{ name = 'data', path = '/home/data'}
+	{ name = 'root', path = '/' },
+	{ name = 'home', path = '/home'}
 }
 
 -- Network interface variables
