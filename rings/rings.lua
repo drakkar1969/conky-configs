@@ -229,8 +229,8 @@ vars.bat = {
 		text = { label = '', value = '' }
 	},
 	{
-		ring = { value = '${battery_percent}', max = 100 },
-		text = { label = '', value = '${battery}' }
+		ring = { value = '${battery_percent BAT1}', max = 100 },
+		text = { label = '', value = '${battery BAT1}' }
 	}
 }
 

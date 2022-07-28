@@ -54,7 +54,7 @@ dials_table = {
 		index = 3, label = 'Root', name = 'fs_used_perc', arg = '/'
 	},
 	battery = {
-		index = 5, label = 'Battery', name = 'battery_percent'
+		index = 5, label = 'Battery', name = 'battery_percent', arg = 'BAT1'
 	},
 }
 
