@@ -48,10 +48,10 @@ dials_table = {
 		index = 2, label = 'Memory', name = 'memperc'
 	},
 	home = {
-		index = 3, label = 'Home', name = 'fs_used_perc', arg = '/home'
+		index = 4, label = 'Home', name = 'fs_used_perc', arg = '/home'
 	},
-	data = {
-		index = 4, label = 'Data', name = 'fs_used_perc', arg = '/home/data'
+	root = {
+		index = 3, label = 'Root', name = 'fs_used_perc', arg = '/'
 	},
 	battery = {
 		index = 5, label = 'Battery', name = 'battery_percent'
