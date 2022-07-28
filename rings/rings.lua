@@ -159,7 +159,7 @@ rings.bat = {
 -- NETWORK rings
 ---------------------------------------
 -- Network interface variables
-wifi_interface = 'wlp3s0'
+wifi_interface = 'wlo1'
 lan_interface = 'enp2s0'
 
 -- Initial value for network interface (automatically adjusted in main function)
