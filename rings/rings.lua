@@ -97,7 +97,7 @@ rings.cpu = {
 disks = {
 	{ name = 'home', path = '/home' },
 	{ name = 'root', path = '/'},
-	{ name = 'data', path = '/home/data'}
+	{ name = 'boot', path = '/boot'}
 }
 
 -- FILESYSTEM rings
