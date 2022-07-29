@@ -286,7 +286,7 @@ text_table['templabel'] = {
 }
 
 text_table['tempvalue'] = {
-	text = '${acpitemp}°C',
+	text = '${hwmon coretemp temp 1}°C',
 	font = text_attr.value.font,
 	fs = text_attr.value.fontsize,
 	color = text_attr.value.color,

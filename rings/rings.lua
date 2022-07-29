@@ -246,7 +246,7 @@ vars.net = {
 }
 
 extras.cpu = {
-	{ label = 'CORE TEMP', value = '${acpitemp}°C' }
+	{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 }
 
 extras.fs = {
