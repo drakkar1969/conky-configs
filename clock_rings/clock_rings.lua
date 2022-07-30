@@ -117,7 +117,7 @@ lan_interface = 'enp0s13f0u1'
 net_interface = wifi_interface
 
 -- Max download speed in KB/s
-net_max_down = 2700
+net_max_down = 2800
 
 ------------------------------------------------------------------------------
 -- BUILD VARIABLE TABLES

@@ -166,8 +166,8 @@ lan_interface = 'enp0s13f0u1'
 net_interface = wifi_interface
 
 -- Max download/upload speeds in KB/s
-net_max_down = 2700
-net_max_up = 270
+net_max_down = 2800
+net_max_up = 340
 
 -- NETWORK rings
 rings.net = {
