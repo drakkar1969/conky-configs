@@ -155,6 +155,13 @@ function conky_main()
 		cairo_stroke(cr)
 	end
 
+	-- Destroy structures
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
+
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
 end

@@ -546,6 +546,13 @@ function draw_text(cr, pt)
 	cairo_move_to(cr, text_x, text_y)
 	cairo_show_text(cr, text)
 	cairo_stroke(cr)
+
+	-- Destroy structures
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
 end
 
 ------------------------------------------------------------------------------

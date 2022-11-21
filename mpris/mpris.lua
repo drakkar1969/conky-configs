@@ -174,9 +174,14 @@ function get_text_width(cr, font, font_size, text)
 	tolua.takeownership(t_extents)
 	cairo_text_extents(cr, text, t_extents)
 
+	local retval = (t_extents.width - t_extents.x_bearing)
+
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
+
 	cairo_restore(cr)
 
-	return (t_extents.width - t_extents.x_bearing)
+	return retval
 end
 
 function get_font_height(cr, font, font_size)
@@ -189,9 +194,14 @@ function get_font_height(cr, font, font_size)
 	tolua.takeownership(f_extents)
 	cairo_font_extents(cr, f_extents)
 
+	local retval = (f_extents.height/2 - f_extents.descent)*2
+
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
 	cairo_restore(cr)
 
-	return (f_extents.height/2 - f_extents.descent)*2
+	return retval
 end
 
 ------------------------------------------------------------------------------

@@ -71,9 +71,14 @@ function get_font_height(cr, font, font_size)
 	tolua.takeownership(f_extents)
 	cairo_font_extents(cr, f_extents)
 
+	retval = (f_extents.height/2 - f_extents.descent)*2
+
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
 	cairo_restore(cr)
 
-	return (f_extents.height/2 - f_extents.descent)*2
+	return retval
 end
 
 ------------------------------------------------------------------------------
@@ -131,6 +136,10 @@ function draw_text(cr, pt)
 	cairo_move_to(cr, text_x, pt.y)
 	cairo_show_text(cr, pt.text)
 	cairo_stroke(cr)
+
+	-- Destroy structures
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
 end
 
 ------------------------------------------------------------------------------

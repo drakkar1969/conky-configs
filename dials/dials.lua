@@ -172,6 +172,13 @@ function draw_dial(cr, pt)
 	cairo_move_to(cr, dial_x - t_extents.width*0.5 - t_extents.x_bearing*0.5, pt.label_y + f_extents.height - f_extents.descent*2)
 	cairo_show_text(cr, pt.label)
 	cairo_stroke(cr)
+
+	-- Destroy structures
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
 end
 
 ------------------------------------------------------------------------------
