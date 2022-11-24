@@ -281,6 +281,8 @@ function draw_svg_icon(cr, pt)
 
 	-- Get SVG image dimensions
 	local svgrect = RsvgRectangle:create()
+	tolua.takeownership(svgrect)
+
 	svgrect.set(0, 0, pt.size, pt.size)
 
 	-- Position SVG image
@@ -291,6 +293,10 @@ function draw_svg_icon(cr, pt)
 	
 	cairo_push_group(cr)
 	rsvg_handle_render_document(handle, cr, svgrect, err)
+
+	-- Destroy objects
+	tolua.releaseownership(svgrect)
+	RsvgRectangle:destroy(svgrect)
 
 	-- Re-color and draw SVG image
 	local pattern = cairo_pop_group(cr)
