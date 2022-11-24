@@ -41,7 +41,7 @@ cover_art = {
 	icon = {
 		size = 32,
 		color = main_color,
-		alpha = 1,
+		alpha = 0.9,
 		file = audio_icon
 	}		
 }
@@ -84,7 +84,7 @@ tags = {
 	time = {
 		text = "0:00",
 		font = main_font,
-		font_size = 12,
+		font_size = 13,
 		bold = true,
 		italic = false,
 		color = main_color,
@@ -280,18 +280,17 @@ function draw_svg_icon(cr, pt)
 	local handle = rsvg_create_handle_from_file(pt.file)
 
 	-- Get SVG image dimensions
-	local svgprop = RsvgDimensionData:create()
-	rsvg_handle_get_dimensions(handle, svgprop)
+	local svgrect = RsvgRectangle:create()
+	svgrect.set(0, 0, pt.size, pt.size)
 
-	local w, h, em, ex = svgprop:get()
-
-	-- Position and size SVG image
+	-- Position SVG image
 	cairo_translate(cr, pt.x, pt.y)
-	cairo_scale(cr, pt.size/w, pt.size/h)
 
-	-- Render SVG image on temporary canvas
+	-- Render SVG image
+	local err
+	
 	cairo_push_group(cr)
-	rsvg_handle_render_cairo(handle, cr)
+	rsvg_handle_render_document(handle, cr, svgrect, err)
 
 	-- Re-color and draw SVG image
 	local pattern = cairo_pop_group(cr)
