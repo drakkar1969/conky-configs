@@ -25,7 +25,7 @@ main_color = dark_colors and 0x3d3846 or 0xdeddda
 hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 -- Element spacing
-gaps = { x = 14, y = 14 }
+gaps = { text = 14, progress = 10, y = 14 }
 
 -- Song cover art
 cover_art = {
@@ -130,7 +130,7 @@ cover_art.icon.x = cover_art.image.x + (cover_art.image.size - cover_art.icon.si
 cover_art.icon.y = cover_art.image.y + (cover_art.image.size - cover_art.icon.size)/2
 
 -- Calculate vertical line position and dimensions
-divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.x + divider.width/2
+divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.text + divider.width/2
 divider.ys = cover_art.frame.y
 divider.xr = 0
 divider.yr = cover_art.frame.size
@@ -145,8 +145,8 @@ status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height
 progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height/2
 
 -- Calculate tags position (y coordinate calculated in main func)
-tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
-tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.x
+tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.text
+tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.text
 
 -- Note: pos/len tags x,y coordinates calculated in main func
 
@@ -441,7 +441,7 @@ function conky_main()
 		-- Draw progressbar
 		local time_space = get_text_width(cr, tags.time.font, tags.time.font_size, "00:00")
 
-		progress_bar.x = status_icon.x + status_icon.size + time_space + 2*gaps.x
+		progress_bar.x = status_icon.x + status_icon.size + time_space + 2*gaps.progress + progress_bar.height/2
 
 		if (metadata.pos_raw == nil or metadata.len_raw == nil or metadata.len_raw == 0) then
 			progress_bar.pct = 0
@@ -461,7 +461,7 @@ function conky_main()
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
-		tags.time.x = status_icon.x + status_icon.size + time_space/2 - time_width/2 + gaps.x
+		tags.time.x = status_icon.x + status_icon.size + time_space/2 - time_width/2 + gaps.progress
 
 		draw_text(cr, tags.time)
 
@@ -470,7 +470,7 @@ function conky_main()
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
-		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.x
+		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.progress + progress_bar.height
 
 		draw_text(cr, tags.time)
 
