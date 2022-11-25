@@ -279,18 +279,18 @@ function draw_svg_icon(cr, pt)
 	-- Load SVG image from file
 	local handle = rsvg_create_handle_from_file(pt.file)
 
-	-- Get SVG image dimensions
+	-- Position and size SVG image
 	local svgrect = RsvgRectangle:create()
 	tolua.takeownership(svgrect)
 
-	svgrect.set(0, 0, pt.size, pt.size)
+	svgrect.x = pt.x
+	svgrect.y = pt.y
+	svgrect.width = pt.size
+	svgrect.height = pt.size
 
-	-- Position SVG image
-	cairo_translate(cr, pt.x, pt.y)
-
-	-- Render SVG image
+	-- Render SVG image on temporary canvas
 	local err
-	
+
 	cairo_push_group(cr)
 	rsvg_handle_render_document(handle, cr, svgrect, err)
 
