@@ -317,14 +317,17 @@ end
 -- Function draw_bar
 ---------------------------------------
 function draw_bar(cr, pt)
+	cairo_set_line_cap(cr, (progress_square == true and CAIRO_LINE_CAP_SQUARE or CAIRO_LINE_CAP_ROUND))
+	cairo_set_line_width(cr, pt.height)
+
+	-- Draw progress background
 	cairo_move_to(cr, pt.x, pt.y)
 	cairo_rel_line_to(cr, pt.width, 0)
 
-	cairo_set_line_cap(cr, (progress_square == true and CAIRO_LINE_CAP_SQUARE or CAIRO_LINE_CAP_ROUND))
-	cairo_set_line_width(cr, pt.height)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_bg, pt.alpha_bg))
 	cairo_stroke(cr)
 
+	-- Draw progress foreground
 	if progress_dot then
 		cairo_move_to(cr, pt.x + pt.width*pt.pct, pt.y)
 		cairo_rel_line_to(cr, 0, 0)
@@ -333,7 +336,6 @@ function draw_bar(cr, pt)
 		cairo_rel_line_to(cr, pt.width*pt.pct, 0)
 	end
 	
-	cairo_set_line_width(cr, pt.height)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color_fg, pt.alpha_fg))
 	cairo_stroke(cr)
 end
