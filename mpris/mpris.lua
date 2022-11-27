@@ -11,6 +11,10 @@ progress_square = false
 -- Show cover art
 show_cover_art = true
 
+-- Show shuffle/repeat icons
+show_shuffle = false
+show_repeat = false
+
 -- Assets
 icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
 icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
@@ -506,7 +510,7 @@ function conky_main()
 		-- Draw shuffle/repeat icons
 		local icon_x = tags.time.x + time_width + 2*gaps.progress
 
-		if metadata.shuffle == true then
+		if show_shuffle and metadata.shuffle == true then
 			shuffle_icon.x = icon_x
 
 			draw_svg_icon(cr, shuffle_icon)
@@ -514,7 +518,7 @@ function conky_main()
 			icon_x = icon_x + shuffle_icon.size + gaps.progress
 		end
 
-		if metadata.loop == "TRACK" or metadata.loop == "PLAYLIST" then
+		if show_repeat and (metadata.loop == "TRACK" or metadata.loop == "PLAYLIST") then
 			repeat_icon.x = icon_x
 
 			draw_svg_icon(cr, repeat_icon)
