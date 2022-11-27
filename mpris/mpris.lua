@@ -12,10 +12,12 @@ progress_square = false
 show_cover_art = true
 
 -- Assets
-play_icon = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
-pause_icon = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
-stop_icon = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
-audio_icon = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
+icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
+icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
+icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
+icon_repeat = string.gsub(conky_config, 'mpris.conf', 'icons/repeat.svg')
 
 -- Font/color variables
 main_font = "Ubuntu"
@@ -40,7 +42,7 @@ cover_art = {
 		size = 32,
 		color = main_color,
 		alpha = 0.9,
-		file = audio_icon
+		file = icon_audio
 	}		
 }
 
@@ -105,6 +107,22 @@ status_icon = {
 	file = ""
 }
 
+-- Shuffle icon
+shuffle_icon = {
+	size = 16,
+	color = main_color,
+	alpha = dark_col32ors and 0.85 or 0.9,
+	file = icon_shuffle
+}
+
+-- Repeat icons
+repeat_icon = {
+	size = 16,
+	color = main_color,
+	alpha = dark_colors and 0.85 or 0.9,
+	file = icon_repeat
+}
+
 -- Progress bar
 progress_bar = {
 	width = 200,
@@ -133,11 +151,15 @@ divider.ys = cover_art.frame.y
 divider.xr = 0
 divider.yr = cover_art.frame.size
 
--- Calculate status icon position
-temp_height = math.max(status_icon.size, progress_bar.height)
+-- Calculate icon positions (some x coordinates calculated in main function)
+temp_height = math.max(status_icon.size, shuffle_icon.size, repeat_icon.size, progress_bar.height)
 
 status_icon.x = cover_art.frame.x
 status_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - status_icon.size)/2
+
+shuffle_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - shuffle_icon.size)/2
+
+repeat_icon.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - repeat_icon.size)/2
 
 -- Calculate progress bar position (x coordinate calculated in main func)
 progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height/2
@@ -393,6 +415,8 @@ function parse_metadata()
 
 		metadata.status = string.upper(player.playback_status)
 		metadata.position = player.position
+		metadata.loop = player.loop_status
+		metadata.shuffle = player.shuffle
 	end
 
 	return metadata
@@ -439,7 +463,7 @@ function conky_main()
 		draw_text(cr, tags.artist)
 
 		-- Draw status icon
-		status_icon.file = ((metadata.status == "PAUSED") and pause_icon or ((metadata.status == "PLAYING") and play_icon or stop_icon))
+		status_icon.file = ((metadata.status == "PAUSED") and icon_pause or ((metadata.status == "PLAYING") and icon_play or icon_stop))
 
 		draw_svg_icon(cr, status_icon)
 
@@ -478,6 +502,23 @@ function conky_main()
 		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.progress + progress_bar.height
 
 		draw_text(cr, tags.time)
+
+		-- Draw shuffle/repeat icons
+		local icon_x = tags.time.x + time_width + 2*gaps.progress
+
+		if metadata.shuffle == true then
+			shuffle_icon.x = icon_x
+
+			draw_svg_icon(cr, shuffle_icon)
+
+			icon_x = icon_x + shuffle_icon.size + gaps.progress
+		end
+
+		if metadata.loop == "TRACK" or metadata.loop == "PLAYLIST" then
+			repeat_icon.x = icon_x
+
+			draw_svg_icon(cr, repeat_icon)
+		end
 
 		cairo_destroy(cr)
 		cairo_surface_destroy(cs)
