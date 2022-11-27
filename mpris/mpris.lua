@@ -1,6 +1,9 @@
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
+-- Player name
+player_name = "Lollypop"
+
 -- Light/dark colors
 dark_colors = true
 
@@ -389,6 +392,9 @@ function parse_metadata()
 
 	-- Initializa metadata table
 	local metadata = { player_name = player.player_name }
+
+	-- Check if selected player
+	if metadata.player_name ~= player_name then metadata.player_name = nil end
 
 	if metadata.player_name ~= nil then
 		for i, variant in ipairs(player.metadata) do
