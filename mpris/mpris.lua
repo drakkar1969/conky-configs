@@ -1,9 +1,6 @@
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
--- Player name
-player_name = "Lollypop"
-
 -- Light/dark colors
 dark_colors = true
 
@@ -340,53 +337,62 @@ end
 ------------------------------------------------------------------------------
 -- PARSE METADATA
 ------------------------------------------------------------------------------
+function microsecs_to_string(microsecs)
+	local secs = math.floor(microsecs/1000000)
+
+	local mins = math.floor(secs/60)
+	secs = math.floor(secs%60)
+
+	local hrs = math.floor(mins/60)
+	mins = math.floor(mins%60)
+
+	local str = ""
+
+	if hrs ~= 0 then
+		str = string.format("%d:%02d:%02d", hrs, mins, secs)
+	else
+		str = string.format("%d:%02d", mins, secs)
+	end
+
+	return str
+end
+
 function parse_metadata()
-	-- Metadata format
-	local meta_format = [[
-	{{ mpris:artUrl }}
-	{{ uc(title) }}
-	{{ uc(artist) }}
-	{{ uc(status) }}
-	{{ position }}
-	{{ mpris:length }}
-	{{ duration(position) }}
-	{{ duration(mpris:length) }}
-	]]
+	local lgi = require 'lgi'
+	local playerctl = lgi.Playerctl
 
-	local parse_mask = [[
-	file://(.-)
-	(.-)
-	(.-)
-	(.-)
-	(.-)
-	(.-)
-	(.-)
-	(.-)
-	]]
+	local player = playerctl.Player()
 
-	-- Read metadata
-	local metadata = {}
+	-- Initializa metadata table
+	local metadata = { player_name = player.player_name }
 
-	local handle = io.popen(string.format("playerctl metadata --player=%s --format='%s' 2>/dev/null", player_name, meta_format))
-	local meta_text = handle:read("*a")
-	handle:close()
+	if metadata.player_name ~= nil then
+		for i, variant in ipairs(player.metadata) do
+			-- Get key name
+			local key = variant[1]
 
-	if (meta_text == nil or meta_text == "") then return metadata end
+			-- Simplify key name
+			key = string.gsub(key, "xesam:", "")
+			key = string.gsub(key, "mpris:", "")
+	
+			-- If value is a list, get first element as value
+			if variant[2].type == "as" then
+				for j, value in ipairs(variant[2]) do
+					if j == 1 then metadata[key] = value end
+				end
+			-- Get value
+			else
+				metadata[key] = variant[2].value
 
-	-- Extract metadata tags
-	local s, f
-	s, f, metadata.art, metadata.title, metadata.artist, metadata.status, metadata.pos_raw, metadata.len_raw, metadata.pos, metadata.len = meta_text:find(parse_mask)
-
-	-- Fix artist (remove album artist)
-	if metadata.artist ~= "" then
-		artist_list = {}
-		separator = ", "
-
-		for match in (metadata.artist..separator):gmatch("(.-)"..separator) do
-			artist_list[#artist_list+1] = match
+				-- Get artUrl path
+				if key == "artUrl" then
+					metadata[key] = string.gsub(metadata[key], "file://", "")
+				end
+			end
 		end
 
-		metadata.artist = artist_list[1]
+		metadata.status = string.upper(player.playback_status)
+		metadata.position = player.position
 	end
 
 	return metadata
@@ -401,7 +407,7 @@ function conky_main()
 	-- Parse metadata
 	local metadata = parse_metadata()
 
-	if metadata.len_raw ~= nil then
+	if metadata.player_name ~= nil and metadata.trackid ~= "/org/mpris/MediaPlayer2/TrackList/NoTrack" then
 		local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 		local cr = cairo_create(cs)
@@ -410,7 +416,7 @@ function conky_main()
 		draw_text(cr, tags.header)
 
 		-- Draw cover with frame
-		cover_art.file = metadata.art
+		cover_art.file = metadata.artUrl
 
 		draw_cover(cr, cover_art)
 
@@ -426,8 +432,8 @@ function conky_main()
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
-		tags.title.text = metadata.title
-		tags.artist.text = metadata.artist
+		tags.title.text = string.upper(metadata.title)
+		tags.artist.text = string.upper(metadata.artist)
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
@@ -442,10 +448,10 @@ function conky_main()
 
 		progress_bar.x = status_icon.x + status_icon.size + time_space + 2*gaps.progress + progress_bar.height/2
 
-		if (metadata.pos_raw == nil or metadata.len_raw == nil or metadata.len_raw == 0) then
+		if metadata.length == 0 then
 			progress_bar.pct = 0
 		else
-			progress_bar.pct = tonumber(metadata.pos_raw)/tonumber(metadata.len_raw)
+			progress_bar.pct = tonumber(metadata.position)/tonumber(metadata.length)
 		end
 
 		draw_bar(cr, progress_bar)
@@ -456,7 +462,7 @@ function conky_main()
 		
 		tags.time.y = progress_bar.y + time_height/2
 
-		tags.time.text = metadata.pos
+		tags.time.text = microsecs_to_string(metadata.position)
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
@@ -465,7 +471,7 @@ function conky_main()
 		draw_text(cr, tags.time)
 
 		-- Draw len text
-		tags.time.text = metadata.len
+		tags.time.text = microsecs_to_string(metadata.length)
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
