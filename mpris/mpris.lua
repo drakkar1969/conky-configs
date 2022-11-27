@@ -29,7 +29,7 @@ main_color = dark_colors and 0x3d3846 or 0xdeddda
 hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 -- Element spacing
-gaps = { text = 14, progress = 10, y = 14 }
+gaps = { tags = 14, progress = 10, y = 14 }
 
 -- Song cover art
 cover_art = {
@@ -148,7 +148,7 @@ cover_art.icon.x = cover_art.image.x + (cover_art.image.size - cover_art.icon.si
 cover_art.icon.y = cover_art.image.y + (cover_art.image.size - cover_art.icon.size)/2
 
 -- Calculate vertical line position and dimensions
-divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.text + divider.width/2
+divider.xs = cover_art.frame.x + cover_art.frame.size + gaps.tags + divider.width/2
 divider.ys = cover_art.frame.y
 divider.xr = 0
 divider.yr = cover_art.frame.size
@@ -167,8 +167,8 @@ icons.loop.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height 
 progress_bar.y = cover_art.frame.y + cover_art.frame.size + gaps.y + temp_height/2
 
 -- Calculate tags position (y coordinate calculated in main func)
-tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.text
-tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.text
+tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.tags
+tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.tags
 
 -- Note: pos/len tags x,y coordinates calculated in main func
 
