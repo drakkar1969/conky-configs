@@ -390,41 +390,53 @@ function parse_metadata()
 
 	local player = playerctl.Player()
 
-	-- Initializa metadata table
-	local metadata = { player_name = player.player_name }
+	-- Initializa metadata table with default values
+	local metadata = {
+		player_name = (player.player_name == player_name and player.player_name or nil),
+		trackid = "/org/mpris/MediaPlayer2/TrackList/NoTrack",
+		artUrl = "",
+		title = "TRACK",
+		artist = "UNKNOWN",
+		status = "STOPPED",
+		position = 0,
+		length = 0,
+		shuffle = false,
+		loop = "NONE"
+	}
 
-	-- Check if selected player
-	if metadata.player_name ~= player_name then metadata.player_name = nil end
-
+	-- Parse metadata
 	if metadata.player_name ~= nil then
 		for i, variant in ipairs(player.metadata) do
-			-- Get key name
-			local key = variant[1]
+			-- If variant has key,value pair
+			if #variant == 2 then
+				-- Get key name (string)
+				local key = variant[1]
 
-			-- Simplify key name
-			key = string.gsub(key, "xesam:", "")
-			key = string.gsub(key, "mpris:", "")
-	
-			-- If value is a list, get first element as value
-			if variant[2].type == "as" then
-				for j, value in ipairs(variant[2]) do
-					if j == 1 then metadata[key] = value end
-				end
-			-- Get value
-			else
-				metadata[key] = variant[2].value
+				key = string.gsub(key, "mpris:", "")
+				key = string.gsub(key, "xesam:", "")
 
-				-- Get artUrl path
-				if key == "artUrl" then
-					metadata[key] = string.gsub(metadata[key], "file://", "")
+				-- If key is a string and is in default metadata table
+				if type(key) == "string" and metadata[key] ~= nil then
+					-- Get value (variant)
+					local value = variant[2]
+
+					-- If value is a list, get first element as value
+					if value.type == "as" then
+						if #value > 0 then
+							metadata[key] = value[1] or metadata[key]
+						end
+					-- Otherwise get value
+					else
+						metadata[key] = value.value or metadata[key]
+					end
 				end
 			end
 		end
 
-		metadata.status = string.upper(player.playback_status)
-		metadata.position = player.position
-		metadata.loop = player.loop_status
-		metadata.shuffle = player.shuffle
+		metadata.status = string.upper(player.playback_status) or metadata.status
+		metadata.position = player.position or metadata.position
+		metadata.shuffle = player.shuffle or metadata.shuffle
+		metadata.loop = player.loop_status or metadata.loop
 	end
 
 	return metadata
@@ -448,7 +460,7 @@ function conky_main()
 		draw_text(cr, tags.header)
 
 		-- Draw cover with frame
-		cover_art.file = metadata.artUrl
+		cover_art.file = string.gsub(metadata.artUrl, "file://", "")
 
 		draw_cover(cr, cover_art)
 
