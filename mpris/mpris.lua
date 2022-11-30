@@ -365,13 +365,13 @@ end
 -- PARSE METADATA
 ------------------------------------------------------------------------------
 function microsecs_to_string(microsecs)
-	local secs = math.floor(microsecs/1000000)
+	local secs = microsecs//1000000
 
-	local mins = math.floor(secs/60)
-	secs = math.floor(secs%60)
+	local mins = secs//60
+	secs = secs%60
 
-	local hrs = math.floor(mins/60)
-	mins = math.floor(mins%60)
+	local hrs = mins//60
+	mins = mins%60
 
 	local str = ""
 
