@@ -69,7 +69,7 @@ tags = {
 	},	
 	-- Song title
 	title = {
-		text = "UNKNOWN TRACK",
+		text = "",
 		font = main_font,
 		font_size = 23,
 		bold = true,
@@ -79,7 +79,7 @@ tags = {
 	},
 	-- Song artist
 	artist = {
-		text = "UNKNOWN ARTIST",
+		text = "",
 		font = main_font,
 		font_size = 15,
 		bold = false,
@@ -89,7 +89,7 @@ tags = {
 	},
 	-- Track position
 	time = {
-		text = "0:00",
+		text = "",
 		font = main_font,
 		font_size = 13,
 		bold = true,
