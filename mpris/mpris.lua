@@ -243,11 +243,11 @@ function draw_cover(cr, pt)
 	cairo_fill(cr)
 
 	-- Draw audio icon
-	if (show_cover_art == false or pt.file == nil or pt.file == "") then
+	if (show_cover_art == false or pt.image.file == nil or pt.image.file == "") then
 			draw_svg_icon(cr, pt.icon)
 	-- Draw cover
 	else
-		local image = imlib_load_image(pt.file)
+		local image = imlib_load_image(pt.image.file)
 		if image == nil then
 			draw_svg_icon(cr, pt.icon)
 		else
@@ -460,7 +460,7 @@ function conky_main()
 		draw_text(cr, tags.header)
 
 		-- Draw cover with frame
-		cover_art.file = string.gsub(metadata.artUrl, "file://", "")
+		cover_art.image.file = string.gsub(metadata.artUrl, "file://", "")
 
 		draw_cover(cr, cover_art)
 
