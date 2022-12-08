@@ -153,7 +153,7 @@ function conky_main()
 	local cr = cairo_create(cs)
 
 	-- Get avatar, user name and GNOME version
-	local user_name = conky_parse('${exec "id -un"}')
+	local user_name = conky_parse('${exec "getent passwd $USER | cut -d\':\' -f 5"}')
 	local user_icon = "/var/lib/AccountsService/icons/"..user_name
 	local gnome_version = conky_parse('${exec "gnome-shell --version"}')
 
