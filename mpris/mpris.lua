@@ -179,6 +179,7 @@ tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gap
 -- LUA MODULES
 ------------------------------------------------------------------------------
 require 'cairo'
+require 'cairo_xlib'
 require 'imlib2'
 require 'rsvg'
 
