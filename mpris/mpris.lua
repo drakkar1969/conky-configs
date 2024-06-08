@@ -139,6 +139,11 @@ progress_bar = {
 }
 
 ------------------------------------------------------------------------------
+-- MOUSE VARIABLES (DO NOT MODIFY)
+------------------------------------------------------------------------------
+play_button_down = false
+
+------------------------------------------------------------------------------
 -- VARIABLE INITIALIZATION
 ------------------------------------------------------------------------------
 -- Calculate cover image/frame position and dimensions
@@ -543,5 +548,37 @@ function conky_main()
 
 		cairo_destroy(cr)
 		cairo_surface_destroy(cs)
+	end
+end
+
+------------------------------------------------------------------------------
+-- MOUSE EVENTS
+------------------------------------------------------------------------------
+function mouse_in_play_button(x, y)
+	return x >= icons.status.x and x < icons.status.x + icons.status.size and y >= icons.status.y and y < icons.status.y + icons.status.size
+end
+
+function conky_mouse_events(event)
+	if event.mods ~= nil then
+		if event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
+			if event.type == "button_down" then
+				if mouse_in_play_button(event.x, event.y) then
+					play_button_down = true
+				end
+			end
+
+			if event.type == "button_up" and play_button_down == true then
+				if mouse_in_play_button(event.x, event.y) then
+					local lgi = require 'lgi'
+					local playerctl = lgi.Playerctl
+	
+					local player = playerctl.Player()
+	
+					player.play_pause(player)
+				end
+
+				play_button_down = false
+			end
+		end
 	end
 end
