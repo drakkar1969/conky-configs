@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
--- Allowed players
+-- Allowed players (higher number = preferred)
 allowed_players = {
-	Lollypop = 1,
+	Lollypop = 2,
 	G4Music = 1
 }
 -- Light/dark colors
@@ -391,49 +391,60 @@ function get_playing_info()
 			title = "TRACK",
 			artist = "UNKOWN ARTIST",
 			length = 0,
-		}
+		},
+		status = "STOPPED"
 	}
 
-	-- Cycle through active players
+	-- Find preferred player
+	local pref_player = nil
+	local top_rank = 0
+
 	for _, plr in pairs(Playerctl.list_players()) do
-		-- Find first allowed player
-		if allowed_players[plr.name] == 1 then
+		local player_rank = allowed_players[plr.name]
+
+		if player_rank ~= nil and player_rank > top_rank then
 			local player = Playerctl.Player.new_from_name(plr)
 
-			playing_info.player_name = player.player_name
-	
-			-- Parse metadata
-			for i, variant in ipairs(player.metadata) do
-				-- Get key name (string)
-				local key = variant[1]
+			if string.upper(player.playback_status) ~= playing_info.status then
+				pref_player = player
+				top_rank = player_rank
+			end
+		end
+	end
 
-				key = string.gsub(key, "mpris:", "")
-				key = string.gsub(key, "xesam:", "")
+	-- Get playing info
+	if pref_player ~= nil then
+		-- Get player name
+		playing_info.player_name = pref_player.player_name
 
+		-- Parse metadata
+		for i, variant in ipairs(pref_player.metadata) do
+			-- Get key name (string)
+			local key = variant[1]
 
-				-- If key is in default metadata table
-				if playing_info.metadata[key] ~= nil then
-					-- Get key value
-					local value = variant[2]
+			key = string.gsub(key, "mpris:", "")
+			key = string.gsub(key, "xesam:", "")
 
-					-- If value is a list, get first element as value
-					if value.type == "as" then
-						playing_info.metadata[key] = value[1] or playing_info.metadata[key]
-			-- 		-- Otherwise get value
-					else
-						playing_info.metadata[key] = value.value or playing_info.metadata[key]
-					end
+			-- If key is in default metadata table
+			if playing_info.metadata[key] ~= nil then
+				-- Get key value
+				local value = variant[2]
+
+				-- If value is a list, get first element as value
+				if value.type == "as" then
+					playing_info.metadata[key] = value[1] or playing_info.metadata[key]
+		 		-- Otherwise get value
+				else
+					playing_info.metadata[key] = value.value or playing_info.metadata[key]
 				end
 			end
-	
-			-- Get player status
-			playing_info.status = string.upper(player.playback_status) or "STOPPED"
-			playing_info.position = player.position or 0
-			playing_info.shuffle = player.shuffle or false
-			playing_info.loop = player.loop_status or "NONE"
-
-			break
 		end
+
+		-- Get player status
+		playing_info.status = string.upper(pref_player.playback_status) or "STOPPED"
+		playing_info.position = pref_player.position or 0
+		playing_info.shuffle = pref_player.shuffle or false
+		playing_info.loop = pref_player.loop_status or "NONE"
 	end
 
 	return playing_info
@@ -448,7 +459,7 @@ function conky_main()
 	-- Get playing info
 	local playing_info = get_playing_info()
 
-	if playing_info.player_name ~= nil and playing_info.status ~= "STOPPED" then
+	if playing_info.player_name ~= nil then
 		local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 		local cr = cairo_create(cs)
