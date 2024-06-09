@@ -157,8 +157,10 @@ progress_bar = {
 }
 
 ------------------------------------------------------------------------------
--- MOUSE VARIABLES (DO NOT MODIFY)
+-- PLAYERCTL VARIABLES (DO NOT MODIFY)
 ------------------------------------------------------------------------------
+active_player = nil
+
 play_button_down = false
 previous_button_down = false
 next_button_down = false
@@ -418,7 +420,7 @@ function get_playing_info()
 	}
 
 	-- Find preferred player
-	local pref_player = nil
+	active_player = nil
 	local top_rank = 0
 
 	for _, plr in pairs(Playerctl.list_players()) do
@@ -427,19 +429,19 @@ function get_playing_info()
 		if player_rank ~= nil and player_rank > top_rank then
 			local player = Playerctl.Player.new_from_name(plr)
 
-			pref_player = player
+			active_player = player
 			top_rank = player_rank
 		end
 	end
 
 	-- Get playing info
-	if pref_player ~= nil then
+	if active_player ~= nil then
 		-- Get player name
-		playing_info.player_name = pref_player.player_name
+		playing_info.player_name = active_player.player_name
 
 		-- Parse metadata
-		if string.upper(pref_player.playback_status) ~= playing_info.status then
-			for i, variant in ipairs(pref_player.metadata) do
+		if string.upper(active_player.playback_status) ~= playing_info.status then
+			for i, variant in ipairs(active_player.metadata) do
 				-- Get key name (string)
 				local key = variant[1]
 
@@ -463,12 +465,12 @@ function get_playing_info()
 		end
 
 		-- Get player status
-		playing_info.status = string.upper(pref_player.playback_status) or "STOPPED"
-		playing_info.position = pref_player.position or 0
-		playing_info.shuffle = pref_player.shuffle or false
-		playing_info.loop = pref_player.loop_status or "NONE"
-		playing_info.can_go_previous = pref_player.can_go_previous or false
-		playing_info.can_go_next = pref_player.can_go_next or false
+		playing_info.status = string.upper(active_player.playback_status) or "STOPPED"
+		playing_info.position = active_player.position or 0
+		playing_info.shuffle = active_player.shuffle or false
+		playing_info.loop = active_player.loop_status or "NONE"
+		playing_info.can_go_previous = active_player.can_go_previous or false
+		playing_info.can_go_next = active_player.can_go_next or false
 
 		if playing_info.status == "STOPPED" then
 			playing_info.metadata.title = "NO TRACK"
@@ -665,41 +667,26 @@ function conky_mouse_events(event)
 					play_button_down = true
 				end
 
-				if icons.previous.file == icon_previous and mouse_over_icon(event.x, event.y, icons.previous) then
+				if active_player.can_go_previous and mouse_over_icon(event.x, event.y, icons.previous) then
 					previous_button_down = true
 				end
 
-				if icons.next.file == icon_next and mouse_over_icon(event.x, event.y, icons.next) then
+				if active_player.can_go_next and mouse_over_icon(event.x, event.y, icons.next) then
 					next_button_down = true
 				end
 			end
 
 			if event.type == "button_up" then
-				if mouse_over_icon(event.x, event.y, icons.status) and play_button_down == true then
-					local lgi = require 'lgi'
-					local Playerctl = lgi.Playerctl
-	
-					local player = Playerctl.Player()
-	
-					player:play_pause()
+				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.status) and play_button_down == true then
+					active_player:play_pause()
 				end
 
-				if mouse_over_icon(event.x, event.y, icons.previous) and previous_button_down == true then
-					local lgi = require 'lgi'
-					local Playerctl = lgi.Playerctl
-	
-					local player = Playerctl.Player()
-	
-					player:previous()
+				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.previous) and previous_button_down == true then
+					active_player:previous()
 				end
 
-				if mouse_over_icon(event.x, event.y, icons.next) and next_button_down == true then
-					local lgi = require 'lgi'
-					local Playerctl = lgi.Playerctl
-	
-					local player = Playerctl.Player()
-	
-					player:next()
+				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.next) and next_button_down == true then
+					active_player:next()
 				end
 
 				play_button_down = false
