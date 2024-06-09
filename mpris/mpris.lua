@@ -1,9 +1,11 @@
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
--- Player name
-player_name = "Lollypop"
-
+-- Allowed players
+allowed_players = {
+	Lollypop = 1,
+	G4Music = 1
+}
 -- Light/dark colors
 dark_colors = true
 
@@ -18,13 +20,14 @@ show_cover_art = true
 show_shuffle = true
 show_loop = true
 
--- Assets
+-- Icon assets
 icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
 icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
 icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
 icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
 icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
-icon_loop = string.gsub(conky_config, 'mpris.conf', 'icons/loop.svg')
+icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg')
+icon_loop_playlist = string.gsub(conky_config, 'mpris.conf', 'icons/loop-playlist.svg')
 
 -- Font/color variables
 main_font = "Ubuntu"
@@ -34,7 +37,7 @@ hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 -- Element spacing
 gaps = { tags = 14, progress = 10, y = 14 }
 
--- Song cover art
+-- Cover art
 cover_art = {
 	image = {
 		size = 70
@@ -61,13 +64,13 @@ tags = {
 		y = 20,
 		text = "NOW PLAYING",
 		font = main_font,
-		font_size = 13,
+		font_size = 12,
 		bold = true,
 		italic = false,
 		color = main_color,
 		alpha = 0.5
 	},	
-	-- Song title
+	-- Track title
 	title = {
 		text = "",
 		font = main_font,
@@ -77,7 +80,7 @@ tags = {
 		color = main_color,
 		alpha = 1,
 	},
-	-- Song artist
+	-- Track artist
 	artist = {
 		text = "",
 		font = main_font,
@@ -117,14 +120,14 @@ icons = {
 	shuffle = {
 		size = 16,
 		color = main_color,
-		alpha = dark_col32ors and 0.85 or 0.9,
+		alpha = dark_colors and 0.85 or 0.9,
 		file = icon_shuffle
 	},
 	loop = {
 		size = 16,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
-		file = icon_loop
+		file = icon_loop_track
 	}
 }
 
@@ -354,7 +357,7 @@ function draw_bar(cr, pt)
 end
 
 ------------------------------------------------------------------------------
--- PARSE METADATA
+-- PLAYING INFO
 ------------------------------------------------------------------------------
 function microsecs_to_string(microsecs)
 	local secs = microsecs//1000000
@@ -376,62 +379,64 @@ function microsecs_to_string(microsecs)
 	return str
 end
 
-function parse_metadata()
+function get_playing_info()
 	local lgi = require 'lgi'
-	local playerctl = lgi.Playerctl
+	local Playerctl = lgi.Playerctl
 
-	local player = playerctl.Player()
-
-	-- Initializa metadata table with default values
-	local metadata = {
-		player_name = (player.player_name == player_name and player.player_name or nil),
-		trackid = "/org/mpris/MediaPlayer2/TrackList/NoTrack",
-		artUrl = "",
-		title = "TRACK",
-		artist = "UNKNOWN",
-		status = "STOPPED",
-		position = 0,
-		length = 0,
-		shuffle = false,
-		loop = "NONE"
+	-- Initalize playing info with default values
+	local playing_info = {
+		player_name = nil,
+		metadata = {
+			artUrl = "",
+			title = "TRACK",
+			artist = "UNKOWN ARTIST",
+			length = 0,
+		}
 	}
 
-	-- Parse metadata
-	if metadata.player_name ~= nil then
-		for i, variant in ipairs(player.metadata) do
-			-- If variant has key,value pair
-			if #variant == 2 then
+	-- Cycle through active players
+	for _, plr in pairs(Playerctl.list_players()) do
+		-- Find first allowed player
+		if allowed_players[plr.name] == 1 then
+			local player = Playerctl.Player.new_from_name(plr)
+
+			playing_info.player_name = player.player_name
+	
+			-- Parse metadata
+			for i, variant in ipairs(player.metadata) do
 				-- Get key name (string)
 				local key = variant[1]
 
 				key = string.gsub(key, "mpris:", "")
 				key = string.gsub(key, "xesam:", "")
 
-				-- If key is a string and is in default metadata table
-				if type(key) == "string" and metadata[key] ~= nil then
-					-- Get value (variant)
+
+				-- If key is in default metadata table
+				if playing_info.metadata[key] ~= nil then
+					-- Get key value
 					local value = variant[2]
 
 					-- If value is a list, get first element as value
 					if value.type == "as" then
-						if #value > 0 then
-							metadata[key] = value[1] or metadata[key]
-						end
-					-- Otherwise get value
+						playing_info.metadata[key] = value[1] or playing_info.metadata[key]
+			-- 		-- Otherwise get value
 					else
-						metadata[key] = value.value or metadata[key]
+						playing_info.metadata[key] = value.value or playing_info.metadata[key]
 					end
 				end
 			end
-		end
+	
+			-- Get player status
+			playing_info.status = string.upper(player.playback_status) or "STOPPED"
+			playing_info.position = player.position or 0
+			playing_info.shuffle = player.shuffle or false
+			playing_info.loop = player.loop_status or "NONE"
 
-		metadata.status = string.upper(player.playback_status) or metadata.status
-		metadata.position = player.position or metadata.position
-		metadata.shuffle = player.shuffle or metadata.shuffle
-		metadata.loop = player.loop_status or metadata.loop
+			break
+		end
 	end
 
-	return metadata
+	return playing_info
 end
 
 ------------------------------------------------------------------------------
@@ -440,19 +445,21 @@ end
 function conky_main()
 	if conky_window == nil then return end
 
-	-- Parse metadata
-	local metadata = parse_metadata()
+	-- Get playing info
+	local playing_info = get_playing_info()
 
-	if metadata.player_name ~= nil and metadata.trackid ~= "/org/mpris/MediaPlayer2/TrackList/NoTrack" then
+	if playing_info.player_name ~= nil and playing_info.status ~= "STOPPED" then
 		local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 		local cr = cairo_create(cs)
 
 		-- Draw header
+		tags.header.text = string.upper(playing_info.player_name)
+
 		draw_text(cr, tags.header)
 
 		-- Draw cover with frame
-		cover_art.image.file = string.gsub(metadata.artUrl, "file://", "")
+		cover_art.image.file = string.gsub(playing_info.metadata.artUrl, "file://", "")
 
 		draw_cover(cr, cover_art)
 
@@ -468,14 +475,14 @@ function conky_main()
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
-		tags.title.text = string.upper(metadata.title)
-		tags.artist.text = string.upper(metadata.artist)
+		tags.title.text = string.upper(playing_info.metadata.title)
+		tags.artist.text = string.upper(playing_info.metadata.artist)
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
 
 		-- Draw status icon
-		icons.status.file = ((metadata.status == "PAUSED") and icon_pause or ((metadata.status == "PLAYING") and icon_play or icon_stop))
+		icons.status.file = ((playing_info.status == "PAUSED") and icon_pause or ((playing_info.status == "PLAYING") and icon_play or icon_stop))
 
 		draw_svg_icon(cr, icons.status)
 
@@ -484,10 +491,10 @@ function conky_main()
 
 		progress_bar.x = icons.status.x + icons.status.size + time_space + 2*gaps.progress + progress_bar.height/2
 
-		if metadata.length == 0 then
+		if playing_info.metadata.length == 0 then
 			progress_bar.pct = 0
 		else
-			progress_bar.pct = tonumber(metadata.position)/tonumber(metadata.length)
+			progress_bar.pct = tonumber(playing_info.position)/tonumber(playing_info.metadata.length)
 		end
 
 		draw_bar(cr, progress_bar)
@@ -498,7 +505,7 @@ function conky_main()
 		
 		tags.time.y = progress_bar.y + time_height/2
 
-		tags.time.text = microsecs_to_string(metadata.position)
+		tags.time.text = microsecs_to_string(playing_info.position)
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
@@ -507,7 +514,7 @@ function conky_main()
 		draw_text(cr, tags.time)
 
 		-- Draw len text
-		tags.time.text = microsecs_to_string(metadata.length)
+		tags.time.text = microsecs_to_string(playing_info.metadata.length)
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.text)
 
@@ -515,10 +522,10 @@ function conky_main()
 
 		draw_text(cr, tags.time)
 
-		-- Draw shuffle/loop icons
+		-- Draw shuffle icon
 		local icon_x = tags.time.x + time_width + 2*gaps.progress
 
-		if show_shuffle and metadata.shuffle == true then
+		if show_shuffle and playing_info.shuffle == true then
 			icons.shuffle.x = icon_x
 
 			draw_svg_icon(cr, icons.shuffle)
@@ -526,8 +533,15 @@ function conky_main()
 			icon_x = icon_x + icons.shuffle.size + gaps.progress
 		end
 
-		if show_loop and (metadata.loop == "TRACK" or metadata.loop == "PLAYLIST") then
+		-- Draw loop icon
+		if show_loop and (playing_info.loop == "TRACK" or playing_info.loop == "PLAYLIST") then
 			icons.loop.x = icon_x
+
+			if playing_info.loop == "TRACK" then
+				icons.loop.file = icon_loop_track
+			else
+				icons.loop.file = icon_loop_playlist
+			end
 
 			draw_svg_icon(cr, icons.loop)
 		end
@@ -556,9 +570,9 @@ function conky_mouse_events(event)
 			if event.type == "button_up" and play_button_down == true then
 				if mouse_in_play_button(event.x, event.y) then
 					local lgi = require 'lgi'
-					local playerctl = lgi.Playerctl
+					local Playerctl = lgi.Playerctl
 	
-					local player = playerctl.Player()
+					local player = Playerctl.Player()
 	
 					player.play_pause(player)
 				end
