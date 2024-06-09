@@ -9,6 +9,9 @@ allowed_players = {
 -- Light/dark colors
 dark_colors = true
 
+-- Show album
+show_album = true
+
 -- Progress bar dot (false = full progress bar)
 progress_dot = false
 progress_square = false
@@ -408,6 +411,7 @@ function get_playing_info()
 			artUrl = "",
 			title = "TRACK",
 			artist = "UNKOWN ARTIST",
+			album = "UNKNOWN ALBUM",
 			length = 0,
 		},
 		status = "STOPPED"
@@ -551,6 +555,10 @@ function conky_main()
 		draw_rel_line(cr, divider)
 
 		-- Draw track title/artist tags
+		if show_album then
+			playing_info.metadata.artist = playing_info.metadata.artist.."  •  "..playing_info.metadata.album
+		end
+
 		title = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
 		artist = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
 
