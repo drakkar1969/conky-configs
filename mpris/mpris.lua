@@ -559,8 +559,8 @@ function conky_main()
 			playing_info.metadata.artist = playing_info.metadata.artist.."  •  "..playing_info.metadata.album
 		end
 
-		title = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
-		artist = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
+		local title = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
+		local artist = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
 
 		local title_height = get_font_height(cr, tags.title)
 		local artist_height = get_font_height(cr, tags.artist)
@@ -602,7 +602,7 @@ function conky_main()
 		draw_bar(cr, progress_bar)
 
 		-- Draw position text
-		position = microsecs_to_string(playing_info.position)
+		local position = microsecs_to_string(playing_info.position)
 
 		local time_width = get_text_width(cr, tags.time, position)
 		local time_height = get_font_height(cr, tags.time)
@@ -613,7 +613,7 @@ function conky_main()
 		draw_text(cr, tags.time, position)
 
 		-- Draw length text
-		length = microsecs_to_string(playing_info.metadata.length)
+		local length = microsecs_to_string(playing_info.metadata.length)
 
 		time_width = get_text_width(cr, tags.time, length)
 
