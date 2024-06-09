@@ -25,7 +25,9 @@ icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
 icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
 icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
 icon_previous = string.gsub(conky_config, 'mpris.conf', 'icons/previous.svg')
+icon_previous_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/previous-disabled.svg')
 icon_next = string.gsub(conky_config, 'mpris.conf', 'icons/next.svg')
+icon_next_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/next-disabled.svg')
 icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
 icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
 icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg')
@@ -123,13 +125,13 @@ icons = {
 		size = 16,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
-		file = icon_previous
+		file = icon_previous_disabled
 	},
 	next = {
 		size = 16,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
-		file = icon_next
+		file = icon_next_disabled
 	},
 	shuffle = {
 		size = 16,
@@ -465,6 +467,8 @@ function get_playing_info()
 		playing_info.position = pref_player.position or 0
 		playing_info.shuffle = pref_player.shuffle or false
 		playing_info.loop = pref_player.loop_status or "NONE"
+		playing_info.can_go_previous = pref_player.can_go_previous or false
+		playing_info.can_go_next = pref_player.can_go_next or false
 
 		if playing_info.status == "STOPPED" then
 			playing_info.metadata.title = "NO TRACK"
@@ -568,6 +572,8 @@ function conky_main()
 		draw_text(cr, tags.artist)
 
 		-- Draw previous icon
+		icons.previous.file = (playing_info.can_go_previous and icon_previous or icon_previous_disabled)
+
 		draw_svg_icon(cr, icons.previous)
 
 		-- Draw status icon
@@ -576,6 +582,8 @@ function conky_main()
 		draw_svg_icon(cr, icons.status)
 
 		-- Draw next icon
+		icons.next.file = (playing_info.can_go_next and icon_next or icon_next_disabled)
+
 		draw_svg_icon(cr, icons.next)
 
 		-- Draw progressbar
@@ -658,11 +666,11 @@ function conky_mouse_events(event)
 					play_button_down = true
 				end
 
-				if mouse_over_icon(event.x, event.y, icons.previous) then
+				if icons.previous.file == icon_previous and mouse_over_icon(event.x, event.y, icons.previous) then
 					previous_button_down = true
 				end
 
-				if mouse_over_icon(event.x, event.y, icons.next) then
+				if icons.next.file == icon_next and mouse_over_icon(event.x, event.y, icons.next) then
 					next_button_down = true
 				end
 			end
