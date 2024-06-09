@@ -74,7 +74,7 @@ tags = {
 	title = {
 		text = "",
 		font = main_font,
-		font_size = 25,
+		font_size = 24,
 		bold = false,
 		italic = false,
 		color = main_color,
@@ -146,6 +146,18 @@ progress_bar = {
 ------------------------------------------------------------------------------
 play_button_down = false
 
+------------------------------------------------------------------------------
+-- ACCENTED CHARACTER MAP (UPDATE AS NECESSARY)
+------------------------------------------------------------------------------
+accented_map = {
+	["á"] = "Á", ["é"] = "É", ["í"] = "Í", ["ó"] = "Ó", ["ú"] = "Ú",
+	["à"] = "À", ["è"] = "È", ["ì"] = "Ì", ["ò"] = "Ò", ["ù"] = "Ù",
+	["â"] = "Â", ["ê"] = "Ê", ["î"] = "Î", ["ô"] = "Ô", ["û"] = "Û",
+	["ä"] = "Ä", ["ë"] = "Ë", ["ï"] = "Ï", ["ö"] = "Ö", ["ü"] = "Ü",
+	["ã"] = "Ã", ["õ"] = "Õ",
+	["ñ"] = "Ñ",
+	["ç"] = "Ç"
+}
 ------------------------------------------------------------------------------
 -- VARIABLE INITIALIZATION
 ------------------------------------------------------------------------------
@@ -359,26 +371,6 @@ end
 ------------------------------------------------------------------------------
 -- PLAYING INFO
 ------------------------------------------------------------------------------
-function microsecs_to_string(microsecs)
-	local secs = microsecs//1000000
-
-	local mins = secs//60
-	secs = secs%60
-
-	local hrs = mins//60
-	mins = mins%60
-
-	local str = ""
-
-	if hrs ~= 0 then
-		str = string.format("%d:%02d:%02d", hrs, mins, secs)
-	else
-		str = string.format("%d:%02d", mins, secs)
-	end
-
-	return str
-end
-
 function get_playing_info()
 	local lgi = require 'lgi'
 	local Playerctl = lgi.Playerctl
@@ -451,6 +443,56 @@ function get_playing_info()
 end
 
 ------------------------------------------------------------------------------
+-- HELPER FUNCTIONS
+------------------------------------------------------------------------------
+function microsecs_to_string(microsecs)
+	local secs = microsecs//1000000
+
+	local mins = secs//60
+	secs = secs%60
+
+	local hrs = mins//60
+	mins = mins%60
+
+	local str = ""
+
+	if hrs ~= 0 then
+		str = string.format("%d:%02d:%02d", hrs, mins, secs)
+	else
+		str = string.format("%d:%02d", mins, secs)
+	end
+
+	return str
+end
+
+function accented_upper(text)
+	return (text:gsub("[%z\1-\127\194-\244][\128-\191]*", function(char)
+		return accented_map[char] or char
+	end))
+end
+
+function ellipsize_text(cr, font, font_size, text, max_width)
+	local out_text = string.upper(text)
+
+	-- If text fits within max width, return it as is
+	if get_text_width(cr, font, font_size, out_text) <= max_width then
+		return accented_upper(out_text)
+	end
+
+	-- Truncate text and add ellipsis
+	local ellipsis = "..."
+	local ellipsis_width = get_text_width(cr, font, font_size, ellipsis)
+
+	local truncated_text = out_text
+
+	while get_text_width(cr, font, font_size, truncated_text) + ellipsis_width > max_width and #truncated_text > 0 do
+		truncated_text = truncated_text:sub(1, -2)
+	end
+
+	return accented_upper(truncated_text)..ellipsis
+end
+
+------------------------------------------------------------------------------
 -- MAIN FUNCTION
 ------------------------------------------------------------------------------
 function conky_main()
@@ -486,8 +528,8 @@ function conky_main()
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
-		tags.title.text = string.upper(playing_info.metadata.title)
-		tags.artist.text = string.upper(playing_info.metadata.artist)
+		tags.title.text = ellipsize_text(cr, tags.title.font, tags.title.font_size, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
+		tags.artist.text = ellipsize_text(cr, tags.artist.font, tags.artist.font_size, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
