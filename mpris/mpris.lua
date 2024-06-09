@@ -614,37 +614,37 @@ end
 ------------------------------------------------------------------------------
 -- MOUSE EVENTS
 ------------------------------------------------------------------------------
-function mouse_over_icon(x, y, icon)
-	return x >= icon.x and x < icon.x + icon.size and y >= icon.y and y < icon.y + icon.size
+function mouse_over_icon(event, icon)
+	return event.x >= icon.x and event.x < icon.x + icon.size and event.y >= icon.y and event.y < icon.y + icon.size
 end
 
 function conky_mouse_events(event)
-	if event.mods ~= nil then
+	if active_player ~= nil then
 		if event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
 			if event.type == "button_down" then
-				if mouse_over_icon(event.x, event.y, icons.status) then
+				if mouse_over_icon(event, icons.status) then
 					play_button_down = true
 				end
 
-				if active_player.can_go_previous and mouse_over_icon(event.x, event.y, icons.previous) then
+				if active_player.can_go_previous and mouse_over_icon(event, icons.previous) then
 					previous_button_down = true
 				end
 
-				if active_player.can_go_next and mouse_over_icon(event.x, event.y, icons.next) then
+				if active_player.can_go_next and mouse_over_icon(event, icons.next) then
 					next_button_down = true
 				end
 			end
 
 			if event.type == "button_up" then
-				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.status) and play_button_down == true then
+				if mouse_over_icon(event, icons.status) and play_button_down == true then
 					active_player:play_pause()
 				end
 
-				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.previous) and previous_button_down == true then
+				if mouse_over_icon(event, icons.previous) and previous_button_down == true then
 					active_player:previous()
 				end
 
-				if active_player ~= nil and mouse_over_icon(event.x, event.y, icons.next) and next_button_down == true then
+				if mouse_over_icon(event, icons.next) and next_button_down == true then
 					active_player:next()
 				end
 
