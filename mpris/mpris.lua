@@ -235,14 +235,14 @@ function rgb_to_r_g_b(color, alpha)
 	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
 end
 
-function get_text_width(cr, font, font_size, italic, bold, text)
+function get_text_width(cr, pt, text)
 	cairo_save(cr)
 
-	local slant = (italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL)
-	local weight = (bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
+	local slant = (pt.italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL)
+	local weight = (pt.bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
 
-	cairo_select_font_face(cr, font, slant, weight)
-	cairo_set_font_size(cr, font_size)
+	cairo_select_font_face(cr, pt.font, slant, weight)
+	cairo_set_font_size(cr, pt.font_size)
 
 	local t_extents = cairo_text_extents_t:create()
 	tolua.takeownership(t_extents)
@@ -258,14 +258,14 @@ function get_text_width(cr, font, font_size, italic, bold, text)
 	return retval
 end
 
-function get_font_height(cr, font, font_size, italic, bold)
+function get_font_height(cr, pt)
 	cairo_save(cr)
 
-	local slant = (italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL)
-	local weight = (bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
+	local slant = (pt.italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL)
+	local weight = (pt.bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
 
-	cairo_select_font_face(cr, font, slant, weight)
-	cairo_set_font_size(cr, font_size)
+	cairo_select_font_face(cr, pt.font, slant, weight)
+	cairo_set_font_size(cr, pt.font_size)
 
 	local f_extents = cairo_font_extents_t:create()
 	tolua.takeownership(f_extents)
@@ -508,21 +508,21 @@ function accented_upper(text)
 	end))
 end
 
-function ellipsize_text(cr, font, font_size, italic, bold, text, max_width)
+function ellipsize_text(cr, pt, text, max_width)
 	local out_text = string.upper(text)
 
 	-- If text fits within max width, return it as is
-	if get_text_width(cr, font, font_size, italic, bold, out_text) <= max_width then
+	if get_text_width(cr, pt, out_text) <= max_width then
 		return accented_upper(out_text)
 	end
 
 	-- Truncate text and add ellipsis
 	local ellipsis = "..."
-	local ellipsis_width = get_text_width(cr, font, font_size, italic, bold, ellipsis)
+	local ellipsis_width = get_text_width(cr, pt, ellipsis)
 
 	local truncated_text = out_text
 
-	while get_text_width(cr, font, font_size, italic, bold, truncated_text) + ellipsis_width > max_width and #truncated_text > 0 do
+	while get_text_width(cr, pt, truncated_text) + ellipsis_width > max_width and #truncated_text > 0 do
 		truncated_text = truncated_text:sub(1, -2)
 	end
 
@@ -557,16 +557,16 @@ function conky_main()
 		draw_rel_line(cr, divider)
 
 		-- Draw tags
-		local title_height = get_font_height(cr, tags.title.font, tags.title.font_size, tags.title.italic, tags.title.bold)
-		local artist_height = get_font_height(cr, tags.artist.font, tags.artist.font_size, tags.artist.italic, tags.artist.bold)
+		local title_height = get_font_height(cr, tags.title)
+		local artist_height = get_font_height(cr, tags.artist)
 
 		local tag_spacing = (cover_art.frame.size - title_height - artist_height)/3
 
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
-		tags.title.text = ellipsize_text(cr, tags.title.font, tags.title.font_size, tags.title.italic, tags.title.bold, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
-		tags.artist.text = ellipsize_text(cr, tags.artist.font, tags.artist.font_size, tags.artist.italic, tags.artist.bold, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
+		tags.title.text = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
+		tags.artist.text = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
 
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
@@ -587,7 +587,7 @@ function conky_main()
 		draw_svg_icon(cr, icons.next)
 
 		-- Draw progressbar
-		local time_space = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold, "00:00")
+		local time_space = get_text_width(cr, tags.time, "00:00")
 
 		progress_bar.x = icons.next.x + icons.next.size + time_space + 3*gaps.progress + progress_bar.height/2
 
@@ -601,13 +601,13 @@ function conky_main()
 
 		-- Draw pos text
 		local time_width = 0
-		local time_height = get_font_height(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold)
+		local time_height = get_font_height(cr, tags.time)
 		
 		tags.time.y = progress_bar.y + time_height/2
 
 		tags.time.text = microsecs_to_string(playing_info.position)
 
-		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold, tags.time.text)
+		time_width = get_text_width(cr, tags.time, tags.time.text)
 
 		tags.time.x = icons.next.x + icons.next.size + time_space/2 - time_width/2 + 2*gaps.progress
 
@@ -616,7 +616,7 @@ function conky_main()
 		-- Draw len text
 		tags.time.text = microsecs_to_string(playing_info.metadata.length)
 
-		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold, tags.time.text)
+		time_width = get_text_width(cr, tags.time, tags.time.text)
 
 		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.progress + progress_bar.height
 
