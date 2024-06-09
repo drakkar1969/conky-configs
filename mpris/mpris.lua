@@ -681,7 +681,7 @@ function conky_mouse_events(event)
 	
 					local player = Playerctl.Player()
 	
-					player.play_pause(player)
+					player:play_pause()
 				end
 
 				if mouse_over_icon(event.x, event.y, icons.previous) and previous_button_down == true then
@@ -690,7 +690,7 @@ function conky_mouse_events(event)
 	
 					local player = Playerctl.Player()
 	
-					player.previous(player)
+					player:previous()
 				end
 
 				if mouse_over_icon(event.x, event.y, icons.next) and next_button_down == true then
@@ -699,7 +699,7 @@ function conky_mouse_events(event)
 	
 					local player = Playerctl.Player()
 	
-					player.next(player)
+					player:next()
 				end
 
 				play_button_down = false
