@@ -66,7 +66,6 @@ tags = {
 	header = {
 		x = 1,
 		y = 20,
-		text = "NOW PLAYING",
 		font = main_font,
 		font_size = 12,
 		bold = true,
@@ -76,7 +75,6 @@ tags = {
 	},	
 	-- Track title
 	title = {
-		text = "",
 		font = main_font,
 		font_size = 24,
 		bold = false,
@@ -86,7 +84,6 @@ tags = {
 	},
 	-- Track artist
 	artist = {
-		text = "",
 		font = main_font,
 		font_size = 15,
 		bold = false,
@@ -96,7 +93,6 @@ tags = {
 	},
 	-- Track position
 	time = {
-		text = "",
 		font = main_font,
 		font_size = 13,
 		bold = true,
@@ -544,9 +540,7 @@ function conky_main()
 		local cr = cairo_create(cs)
 
 		-- Draw header
-		tags.header.text = string.upper(playing_info.player_name)
-
-		draw_text(cr, tags.header, tags.header.text)
+		draw_text(cr, tags.header, string.upper(playing_info.player_name))
 
 		-- Draw cover with frame
 		cover_art.image.file = string.gsub(playing_info.metadata.artUrl, "file://", "")
@@ -556,7 +550,10 @@ function conky_main()
 		-- Draw vertical line
 		draw_rel_line(cr, divider)
 
-		-- Draw tags
+		-- Draw track title/artist tags
+		title = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
+		artist = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
+
 		local title_height = get_font_height(cr, tags.title)
 		local artist_height = get_font_height(cr, tags.artist)
 
@@ -565,11 +562,8 @@ function conky_main()
 		tags.title.y = cover_art.frame.y + title_height + tag_spacing
 		tags.artist.y = tags.title.y + artist_height + tag_spacing
 
-		tags.title.text = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
-		tags.artist.text = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
-
-		draw_text(cr, tags.title, tags.title.text)
-		draw_text(cr, tags.artist, tags.artist.text)
+		draw_text(cr, tags.title, title)
+		draw_text(cr, tags.artist, artist)
 
 		-- Draw previous icon
 		icons.previous.file = (playing_info.can_go_previous and icon_previous or icon_previous_disabled)
@@ -599,28 +593,25 @@ function conky_main()
 
 		draw_bar(cr, progress_bar)
 
-		-- Draw pos text
-		local time_width = 0
+		-- Draw position text
+		position = microsecs_to_string(playing_info.position)
+
+		local time_width = get_text_width(cr, tags.time, position)
 		local time_height = get_font_height(cr, tags.time)
 		
+		tags.time.x = icons.next.x + icons.next.size + time_space/2 - time_width/2 + 2*gaps.progress
 		tags.time.y = progress_bar.y + time_height/2
 
-		tags.time.text = microsecs_to_string(playing_info.position)
+		draw_text(cr, tags.time, position)
 
-		time_width = get_text_width(cr, tags.time, tags.time.text)
+		-- Draw length text
+		length = microsecs_to_string(playing_info.metadata.length)
 
-		tags.time.x = icons.next.x + icons.next.size + time_space/2 - time_width/2 + 2*gaps.progress
-
-		draw_text(cr, tags.time, tags.time.text)
-
-		-- Draw len text
-		tags.time.text = microsecs_to_string(playing_info.metadata.length)
-
-		time_width = get_text_width(cr, tags.time, tags.time.text)
+		time_width = get_text_width(cr, tags.time, length)
 
 		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.progress + progress_bar.height
 
-		draw_text(cr, tags.time, tags.time.text)
+		draw_text(cr, tags.time, length)
 
 		-- Draw shuffle icon
 		local icon_x = tags.time.x + time_width + 2*gaps.progress
