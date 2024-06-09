@@ -24,6 +24,8 @@ show_loop = true
 icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
 icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
 icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
+icon_previous = string.gsub(conky_config, 'mpris.conf', 'icons/previous.svg')
+icon_next = string.gsub(conky_config, 'mpris.conf', 'icons/next.svg')
 icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
 icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
 icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg')
@@ -117,6 +119,18 @@ icons = {
 		alpha = dark_colors and 0.85 or 0.9,
 		file = ""
 	},
+	previous = {
+		size = 16,
+		color = main_color,
+		alpha = dark_colors and 0.85 or 0.9,
+		file = icon_previous
+	},
+	next = {
+		size = 16,
+		color = main_color,
+		alpha = dark_colors and 0.85 or 0.9,
+		file = icon_next
+	},
 	shuffle = {
 		size = 16,
 		color = main_color,
@@ -145,6 +159,8 @@ progress_bar = {
 -- MOUSE VARIABLES (DO NOT MODIFY)
 ------------------------------------------------------------------------------
 play_button_down = false
+previous_button_down = false
+next_button_down = false
 
 ------------------------------------------------------------------------------
 -- ACCENTED CHARACTER MAP (UPDATE AS NECESSARY)
@@ -179,8 +195,14 @@ divider.yr = cover_art.frame.size
 -- Calculate icon positions (some x coordinates calculated in main function)
 temp_height = math.max(icons.status.size, icons.shuffle.size, icons.loop.size, progress_bar.height)
 
-icons.status.x = cover_art.frame.x
+icons.previous.x = cover_art.frame.x
+icons.previous.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - icons.previous.size)/2
+
+icons.status.x = icons.previous.x + icons.previous.size + gaps.progress
 icons.status.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - icons.status.size)/2
+
+icons.next.x = icons.status.x + icons.status.size + gaps.progress
+icons.next.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - icons.next.size)/2
 
 icons.shuffle.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - icons.shuffle.size)/2
 
@@ -403,10 +425,8 @@ function get_playing_info()
 		if player_rank ~= nil and player_rank > top_rank then
 			local player = Playerctl.Player.new_from_name(plr)
 
-			if string.upper(player.playback_status) ~= playing_info.status then
-				pref_player = player
-				top_rank = player_rank
-			end
+			pref_player = player
+			top_rank = player_rank
 		end
 	end
 
@@ -416,24 +436,26 @@ function get_playing_info()
 		playing_info.player_name = pref_player.player_name
 
 		-- Parse metadata
-		for i, variant in ipairs(pref_player.metadata) do
-			-- Get key name (string)
-			local key = variant[1]
+		if string.upper(pref_player.playback_status) ~= playing_info.status then
+			for i, variant in ipairs(pref_player.metadata) do
+				-- Get key name (string)
+				local key = variant[1]
 
-			key = string.gsub(key, "mpris:", "")
-			key = string.gsub(key, "xesam:", "")
+				key = string.gsub(key, "mpris:", "")
+				key = string.gsub(key, "xesam:", "")
 
-			-- If key is in default metadata table
-			if playing_info.metadata[key] ~= nil then
-				-- Get key value
-				local value = variant[2]
+				-- If key is in default metadata table
+				if playing_info.metadata[key] ~= nil then
+					-- Get key value
+					local value = variant[2]
 
-				-- If value is a list, get first element as value
-				if value.type == "as" then
-					playing_info.metadata[key] = value[1] or playing_info.metadata[key]
-		 		-- Otherwise get value
-				else
-					playing_info.metadata[key] = value.value or playing_info.metadata[key]
+					-- If value is a list, get first element as value
+					if value.type == "as" then
+						playing_info.metadata[key] = value[1] or playing_info.metadata[key]
+					-- Otherwise get value
+					else
+						playing_info.metadata[key] = value.value or playing_info.metadata[key]
+					end
 				end
 			end
 		end
@@ -443,6 +465,11 @@ function get_playing_info()
 		playing_info.position = pref_player.position or 0
 		playing_info.shuffle = pref_player.shuffle or false
 		playing_info.loop = pref_player.loop_status or "NONE"
+
+		if playing_info.status == "STOPPED" then
+			playing_info.metadata.title = "NO TRACK"
+			playing_info.metadata.artist = "(NONE)"
+		end
 	end
 
 	return playing_info
@@ -540,15 +567,21 @@ function conky_main()
 		draw_text(cr, tags.title)
 		draw_text(cr, tags.artist)
 
+		-- Draw previous icon
+		draw_svg_icon(cr, icons.previous)
+
 		-- Draw status icon
-		icons.status.file = ((playing_info.status == "PAUSED") and icon_pause or ((playing_info.status == "PLAYING") and icon_play or icon_stop))
+		icons.status.file = ((playing_info.status == "PAUSED") and icon_play or ((playing_info.status == "PLAYING") and icon_pause or icon_stop))
 
 		draw_svg_icon(cr, icons.status)
+
+		-- Draw next icon
+		draw_svg_icon(cr, icons.next)
 
 		-- Draw progressbar
 		local time_space = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold, "00:00")
 
-		progress_bar.x = icons.status.x + icons.status.size + time_space + 2*gaps.progress + progress_bar.height/2
+		progress_bar.x = icons.next.x + icons.next.size + time_space + 3*gaps.progress + progress_bar.height/2
 
 		if playing_info.metadata.length == 0 then
 			progress_bar.pct = 0
@@ -568,7 +601,7 @@ function conky_main()
 
 		time_width = get_text_width(cr, tags.time.font, tags.time.font_size, tags.time.italic, tags.time.bold, tags.time.text)
 
-		tags.time.x = icons.status.x + icons.status.size + time_space/2 - time_width/2 + gaps.progress
+		tags.time.x = icons.next.x + icons.next.size + time_space/2 - time_width/2 + 2*gaps.progress
 
 		draw_text(cr, tags.time)
 
@@ -613,21 +646,29 @@ end
 ------------------------------------------------------------------------------
 -- MOUSE EVENTS
 ------------------------------------------------------------------------------
-function mouse_in_play_button(x, y)
-	return x >= icons.status.x and x < icons.status.x + icons.status.size and y >= icons.status.y and y < icons.status.y + icons.status.size
+function mouse_over_icon(x, y, icon)
+	return x >= icon.x and x < icon.x + icon.size and y >= icon.y and y < icon.y + icon.size
 end
 
 function conky_mouse_events(event)
 	if event.mods ~= nil then
 		if event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
 			if event.type == "button_down" then
-				if mouse_in_play_button(event.x, event.y) then
+				if mouse_over_icon(event.x, event.y, icons.status) then
 					play_button_down = true
+				end
+
+				if mouse_over_icon(event.x, event.y, icons.previous) then
+					previous_button_down = true
+				end
+
+				if mouse_over_icon(event.x, event.y, icons.next) then
+					next_button_down = true
 				end
 			end
 
-			if event.type == "button_up" and play_button_down == true then
-				if mouse_in_play_button(event.x, event.y) then
+			if event.type == "button_up" then
+				if mouse_over_icon(event.x, event.y, icons.status) and play_button_down == true then
 					local lgi = require 'lgi'
 					local Playerctl = lgi.Playerctl
 	
@@ -636,7 +677,27 @@ function conky_mouse_events(event)
 					player.play_pause(player)
 				end
 
+				if mouse_over_icon(event.x, event.y, icons.previous) and previous_button_down == true then
+					local lgi = require 'lgi'
+					local Playerctl = lgi.Playerctl
+	
+					local player = Playerctl.Player()
+	
+					player.previous(player)
+				end
+
+				if mouse_over_icon(event.x, event.y, icons.next) and next_button_down == true then
+					local lgi = require 'lgi'
+					local Playerctl = lgi.Playerctl
+	
+					local player = Playerctl.Player()
+	
+					player.next(player)
+				end
+
 				play_button_down = false
+				previous_button_down = false
+				next_button_down = false
 			end
 		end
 	end
