@@ -319,7 +319,7 @@ end
 ---------------------------------------
 -- Function draw_text
 ---------------------------------------
-function draw_text(cr, pt)
+function draw_text(cr, pt, text)
 	local slant = (pt.italic and CAIRO_FONT_SLANT_ITALIC or CAIRO_FONT_SLANT_NORMAL)
 	local weight = (pt.bold and CAIRO_FONT_WEIGHT_BOLD or CAIRO_FONT_WEIGHT_NORMAL)
 
@@ -328,7 +328,7 @@ function draw_text(cr, pt)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
 	cairo_move_to(cr, pt.x, pt.y)
-	cairo_show_text(cr, pt.text)
+	cairo_show_text(cr, text)
 	cairo_stroke(cr)
 end
 
@@ -546,7 +546,7 @@ function conky_main()
 		-- Draw header
 		tags.header.text = string.upper(playing_info.player_name)
 
-		draw_text(cr, tags.header)
+		draw_text(cr, tags.header, tags.header.text)
 
 		-- Draw cover with frame
 		cover_art.image.file = string.gsub(playing_info.metadata.artUrl, "file://", "")
@@ -568,8 +568,8 @@ function conky_main()
 		tags.title.text = ellipsize_text(cr, tags.title, playing_info.metadata.title, conky_window.width - tags.title.x - 10)
 		tags.artist.text = ellipsize_text(cr, tags.artist, playing_info.metadata.artist, conky_window.width - tags.artist.x - 10)
 
-		draw_text(cr, tags.title)
-		draw_text(cr, tags.artist)
+		draw_text(cr, tags.title, tags.title.text)
+		draw_text(cr, tags.artist, tags.artist.text)
 
 		-- Draw previous icon
 		icons.previous.file = (playing_info.can_go_previous and icon_previous or icon_previous_disabled)
@@ -611,7 +611,7 @@ function conky_main()
 
 		tags.time.x = icons.next.x + icons.next.size + time_space/2 - time_width/2 + 2*gaps.progress
 
-		draw_text(cr, tags.time)
+		draw_text(cr, tags.time, tags.time.text)
 
 		-- Draw len text
 		tags.time.text = microsecs_to_string(playing_info.metadata.length)
@@ -620,7 +620,7 @@ function conky_main()
 
 		tags.time.x = progress_bar.x + progress_bar.width + time_space/2 - time_width/2 + gaps.progress + progress_bar.height
 
-		draw_text(cr, tags.time)
+		draw_text(cr, tags.time, tags.time.text)
 
 		-- Draw shuffle icon
 		local icon_x = tags.time.x + time_width + 2*gaps.progress
