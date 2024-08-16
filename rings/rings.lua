@@ -62,7 +62,7 @@ text_gap = 14
 -- CPU rings
 ---------------------------------------
 -- Number of CPU cores = number of CPU rings
-n_cpus = 8
+n_cpus = 12
 
 -- Number of top CPU processes
 top_count.cpu = 3
@@ -77,7 +77,7 @@ rings.cpu = {
 	-- Radius of inner ring
 	radius = 57,
 	-- Width of rings / gap between rings
-	width = 5, gap = 1,
+	width = 3, gap = 1,
 	-- Ring text position, width and fontsize. pos is one of TOP_LEFT, TOP_RIGHT,
 	-- BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 	text = { pos = TOP_LEFT, width = 68, fontsize = 10.5, fontsize_single= 20 },
