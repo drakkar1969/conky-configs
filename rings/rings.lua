@@ -175,7 +175,7 @@ rings.net = {
 	radius = 27,
 	width = 16, gap = 3,
 	text = { pos = BOTTOM_RIGHT, width = 153, fontsize = 13.5 },
-	header = { text = 'NETWORK', fontsize = 22, dx = 60, dy = -20 },
+	header = { text = 'INTERNET', fontsize = 22, dx = 65, dy = -25 },
 	extra = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 }
 }
 
@@ -256,8 +256,8 @@ extras.fs = {
 net_conn = '${wireless_essid '..net_interface..'}'
 
 extras.net = {
-	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' },
-	{ label = 'NETWORK', value = net_conn }
+	{ label = 'NETWORK', value = net_conn },
+	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' }
 }
 
 for i = 1, top_count.cpu do
