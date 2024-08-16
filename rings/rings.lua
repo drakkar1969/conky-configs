@@ -175,7 +175,7 @@ rings.net = {
 	radius = 27,
 	width = 16, gap = 3,
 	text = { pos = BOTTOM_RIGHT, width = 153, fontsize = 13.5 },
-	header = { text = 'INTERNET', fontsize = 22, dx = 65, dy = -25 },
+	header = { text = 'INTERNET', fontsize = 22, dx = 60, dy = -10 },
 	extra = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 }
 }
 
