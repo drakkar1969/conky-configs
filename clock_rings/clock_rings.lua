@@ -56,7 +56,7 @@ text_attr = {
 	label = { font = main_font, fontsize = 21, color = main_color, alpha = 1 },
 	value = { font = main_font, fontsize = 18, color = main_color, alpha = 1 },
 	time = { font = main_font, fontsize = 42, color = main_color, alpha = 1 },
-	date = { font = main_font, fontsize = 23, color = text_color, alpha = 0.8 },
+	date = { font = main_font, fontsize = 24, color = text_color, alpha = 0.8 },
 	top = { font = main_font, fontsize = 13.5, color = text_color, alpha = 1 }
 }
 
