@@ -46,7 +46,7 @@ rings_attr = {
 -- Text/header/extra/top font and colors
 text_attr = {
 	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
-	time = { font = 'Ubuntu', color = main_color, alpha = 1 },
+	time = { font = 'Roboto', color = main_color, alpha = 1 },
 	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
