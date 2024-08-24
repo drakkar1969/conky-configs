@@ -421,10 +421,7 @@ for id, widget in pairs(widgets) do
 			w = ring_w,
 			sa = ring_sa, ea = ring_ea,
 			ccw = ring_ccw,
-			bgc = rings_attr.bg_color,
-			bga = rings_attr.bg_alpha,
-			fgc = rings_attr.fg_color,
-			fga = rings_attr.fg_alpha
+			attr = rings_attr
 		}
 
 		if id == 'cpu' and single_cpu then
@@ -588,7 +585,7 @@ function draw_ring(cr, pt)
 
 	-- Draw background ring
 	cairo_arc(cr, pt.x, pt.y, pt.r, angle_0, angle_f)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.bgc, pt.bga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.bg_color, pt.attr.bg_alpha))
 	cairo_set_line_width(cr, pt.w)
 	cairo_stroke(cr)
 
@@ -598,7 +595,7 @@ function draw_ring(cr, pt)
 	else
 		cairo_arc(cr, pt.x, pt.y, pt.r, angle_0, angle_0 + t_arc)
 	end
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.fgc, pt.fga))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.fg_color, pt.attr.fg_alpha))
 	cairo_stroke(cr)
 end
 
