@@ -376,10 +376,8 @@ for id, widget in pairs(widgets) do
 	-- Add widget header to text table
 	text_table[id..'header'] = {
 		text = widget.header.text,
-		font = text_attr.header.font,
+		attr = text_attr.header,
 		fontsize = widget.header.fontsize,
-		color = text_attr.header.color,
-		alpha = text_attr.header.alpha,
 		x = widget.rings.x + widget.header.dx,
 		y = widget.rings.y + widget.header.dy,
 		align = ALIGNL
@@ -451,10 +449,8 @@ for id, widget in pairs(widgets) do
 				-- Add value text to table
 				text_table[id..i..'value'] = {
 					text = '${cpu cpu0}%',
-					font = text_attr.text.font,
+					attr = text_attr.text,
 					fontsize = widget.text.fontsize_single,
-					color = text_attr.text.color,
-					alpha = text_attr.text.alpha,
 					x = text_x, y = text_y,
 					align = text_align
 				}
@@ -486,10 +482,8 @@ for id, widget in pairs(widgets) do
 			-- Add label text to table
 			text_table[id..i..'label'] = {
 				text = value.label,
-				font = text_attr.text.font,
+				attr = text_attr.text,
 				fontsize = widget.text.fontsize,
-				color = text_attr.text.color,
-				alpha = text_attr.text.alpha,
 				x = label_x, y = text_y,
 				align = ALIGNL
 			}
@@ -497,10 +491,8 @@ for id, widget in pairs(widgets) do
 			-- Add value text to table
 			text_table[id..i..'value'] = {
 				text = value.value,
-				font = text_attr.text.font,
+				attr = text_attr.text,
 				fontsize = widget.text.fontsize,
-				color = text_attr.text.color,
-				alpha = text_attr.text.alpha,
 				x = value_x, y = text_y,
 				align = value_align
 			}
@@ -512,10 +504,8 @@ for id, widget in pairs(widgets) do
 			-- Add extra text label to table
 			text_table[id..'extralabel'..i] = {
 				text = value.label,
-				font = text_attr.extra.font,
+				attr = text_attr.extra,
 				fontsize = widget.extra_attr.fontsize,
-				color = text_attr.extra.color,
-				alpha = text_attr.extra.alpha,
 				x = widget.rings.x + widget.extra_attr.dx,
 				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
 				align = ALIGNL
@@ -524,10 +514,8 @@ for id, widget in pairs(widgets) do
 			-- Add extra text value to table
 			text_table[id..'extravalue'..i] = {
 				text = value.value,
-				font = text_attr.extra.font,
+				attr = text_attr.extra,
 				fontsize = widget.extra_attr.fontsize,
-				color = text_attr.extra.color,
-				alpha = text_attr.extra.alpha,
 				x = widget.rings.x + widget.extra_attr.dx + widget.extra_attr.width,
 				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
 				align = ALIGNL
@@ -544,10 +532,8 @@ for id, widget in pairs(widgets) do
 			-- Add top list label to table
 			text_table[id..'toplabel'..i] = {
 				text = value.label,
-				font = text_attr.top.font,
+				attr = text_attr.top,
 				fontsize = widget.top_attr.fontsize,
-				color = text_attr.top.color,
-				alpha = text_attr.top.alpha,
 				x = xi,
 				y = yi + (i-1)*widget.top_attr.spacing,
 				align = ALIGNL
@@ -556,10 +542,8 @@ for id, widget in pairs(widgets) do
 			-- Add top list value to table
 			text_table[id..'topvalue'..i] = {
 				text = value.value,
-				font = text_attr.top.font,
+				attr = text_attr.top,
 				fontsize = widget.top_attr.fontsize,
-				color = text_attr.top.color,
-				alpha = text_attr.top.alpha,
 				x = xi + widget.top_attr.width,
 				y = yi + (i-1)*widget.top_attr.spacing,
 				align = ALIGNR
@@ -623,9 +607,9 @@ end
 ---------------------------------------
 function draw_text(cr, pt)
 	-- Set text font/color
-	cairo_select_font_face(cr, pt.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_select_font_face(cr, pt.attr.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size(cr, pt.fontsize)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.color, pt.attr.alpha))
 
 	local text = conky_parse(pt.text)
 
