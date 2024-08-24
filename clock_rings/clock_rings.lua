@@ -169,7 +169,7 @@ rings_table['mem'] = {
 }
 
 rings_table['temp'] = {
-	name = 'acpitemp', arg = '', max = 100,
+	name = 'hwmon', arg = 'coretemp temp 1', max = 100,
 	bg_color = rings_attr.bg_color, bg_alpha = rings_attr.bg_alpha,
 	fg_color = rings_attr.fg_color, fg_alpha = rings_attr.fg_alpha,
 	x = rings.x, y = rings.y,
