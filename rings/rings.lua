@@ -230,7 +230,7 @@ time_format = '%R'
 -- TIME widget
 widgets.time = {
 	-- Header text, fontsize and offset from ring center
-	header = { text = '${time '..time_format..'}', fontsize = 36, dx = -115, dy = 12 },
+	header = { text = '${time '..time_format..'}', fontsize = 40, dx = -130, dy = 10 },
 	rings = {
 		-- Coordinates of ring center
 		x = 170, y = 310,
