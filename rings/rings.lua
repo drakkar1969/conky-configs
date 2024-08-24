@@ -335,7 +335,7 @@ widgets.net = {
 		x = 320, y = 440,
 		-- Radius of inner ring
 		radius = 27,
-		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
+		-- Width of rings / gap between rings
 		width = 16, gap = 3,
 	},
 	text = {
