@@ -46,6 +46,7 @@ rings_attr = {
 -- Text/header/extra/top font and colors
 text_attr = {
 	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
+	time = { font = 'Ubuntu', color = main_color, alpha = 1 },
 	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
@@ -376,7 +377,7 @@ for id, widget in pairs(widgets) do
 	-- Add widget header to text table
 	text_table[id..'header'] = {
 		text = widget.header.text,
-		attr = text_attr.header,
+		attr = id == 'time' and text_attr.time or text_attr.header,
 		fontsize = widget.header.fontsize,
 		x = widget.rings.x + widget.header.dx,
 		y = widget.rings.y + widget.header.dy,
