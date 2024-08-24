@@ -11,11 +11,7 @@ LTR, RTL = 0, 1
 ------------------------------------------------------------------------------
 -- TABLE VARIABLES - DO NOT DELETE
 ------------------------------------------------------------------------------
-rings = {}
-extras = {}
-tops = { cpu = {}, mem = {} }
-top_count = {}
-vars = { cpu = {}, fs = {}, mem = {}, time = {}, bat = {}, net = {} }
+widgets = {}
 rings_table = {}
 text_table = {}
 
@@ -49,8 +45,8 @@ rings_attr = {
 ---------------------------------------
 -- Text/header/extra/top font and colors
 text_attr = {
-	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
+	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
 }
@@ -59,39 +55,70 @@ text_attr = {
 text_gap = 14
 
 ---------------------------------------
--- CPU rings
+-- CPU widget
 ---------------------------------------
 -- Number of CPU cores = number of CPU rings
 n_cpus = 12
 
--- Number of top CPU processes
-top_count.cpu = 3
-
 -- Show global CPU percentage if true
 single_cpu = true
 
--- CPU rings
-rings.cpu = {
-	-- Coordinates of ring center
-	x = 182, y = 133,
-	-- Radius of inner ring
-	radius = 57,
-	-- Width of rings / gap between rings
-	width = 3, gap = 1,
-	-- Ring text position, width and fontsize. pos is one of TOP_LEFT, TOP_RIGHT,
-	-- BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
-	text = { pos = TOP_LEFT, width = 68, fontsize = 10.5, fontsize_single= 20 },
+-- CPU widget
+widgets.cpu = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'CPU', fontsize = 22, dx = -145, dy = 60 },
+	rings = {
+		-- Coordinates of ring center
+		x = 182, y = 133,
+		-- Radius of inner ring
+		radius = 57,
+		-- Width of rings / gap between rings
+		width = 3, gap = 1,
+	},
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = TOP_LEFT,
+		-- Text width
+		width = 68,
+		-- Text fontsize
+		fontsize = 10.5,
+		-- Text fontsize if single_cpu is true
+		fontsize_single= 20
+	},
+	-- Ring/text values (computed below based on number of cpus)
+	values = {},
 	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra = { fontsize = 15.5, dx = -109, dy = -125, width = 109, spacing = 20 },
-	-- Top list text position, fontsize, offset from ring center, width and space
-	-- between lines. pos is one of LTR, RTL
-	top = { pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 }
+	extra_attr = { fontsize = 15.5, dx = -109, dy = -125, width = 109, spacing = 20 },
+	-- Extra text values
+	extra_values = {
+		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
+	},
+	-- Top list text count, position, fontsize, offset from ring center, width and space between lines. pos is one of LTR, RTL
+	top_attr = { count = 3, pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 },
+	-- Top list values (computed below)
+	top_values = {}
 }
 
+-- Compute CPU ring values
+for i = 1, n_cpus do
+	widgets.cpu.values[i] = {
+		ring = '${cpu cpu'..i..'}',
+		max = 100,
+		label = 'CPU '..i,
+		value = '${cpu cpu'..i..'}%'
+	}
+end
+
+-- Compute CPU top list
+for i = 1, widgets.cpu.top_attr.count do
+	widgets.cpu.top_values[i] = {
+		label = '${top name '..i..'}',
+		value = '${top cpu '..i..'}%'
+	}
+end
+
 ---------------------------------------
--- FILESYSTEM rings
+-- FILESYSTEM widget
 ---------------------------------------
 -- Disks table: number of name/path pairs = number of FILESYSTEM rings
 disks = {
@@ -100,210 +127,298 @@ disks = {
 	{ name = 'boot', path = '/boot'}
 }
 
--- FILESYSTEM rings
-rings.fs = {
-	x = 370, y = 115,
-	radius = 27,
-	width = 14, gap = 3,
-	text = { pos = TOP_RIGHT, width = 180, fontsize = 13.5 },
+-- FILESYSTEM widget
+widgets.fs = {
+	-- Header text, fontsize and offset from ring center
 	header = { text = 'FILESYSTEM', fontsize = 22, dx = 70, dy = 20 },
-	extra = { fontsize = 15.5, dx = -52, dy = -91, width = 77, spacing = 20 }
+	rings = {
+		-- Coordinates of ring center
+		x = 370, y = 115,
+		-- Radius of inner ring
+		radius = 27,
+		-- Width of rings / gap between rings
+		width = 14, gap = 3,
+	},
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = TOP_RIGHT,
+		-- Text width
+		width = 180,
+		-- Text fontsize
+		fontsize = 13.5,
+	},
+	-- Ring/text values (computed below based on disks table)
+	values = {},
+	-- Extra text fontsize, offset from ring center, width and space between lines
+	extra_attr = { fontsize = 15.5, dx = -52, dy = -91, width = 77, spacing = 20 },
+	-- Extra text values
+	extra_values = {
+		{ label = 'DISK IO', value = '${diskio}/s' }
+	}
 }
 
----------------------------------------
--- MEMORY rings
----------------------------------------
--- Number of top MEMORY processes
-top_count.mem = 3
+-- Compute FILESYSTEM ring values
+for i, disk in pairs(disks) do
+	widgets.fs.values[i] = {
+		ring = '${fs_used_perc '..disk.path..'}',
+		max = 100,
+		label = disk.name,
+		value = '${fs_used '..disk.path..'} / ${fs_size '..disk.path..'}'
+	}
+end
 
--- MEMORY rings
-rings.mem = {
-	x = 325, y = 280,
-	radius = 55,
-	width = 17, gap = 3,
-	text = { pos = BOTTOM_RIGHT, width = 188, fontsize = 14 },
+---------------------------------------
+-- MEMORY widget
+---------------------------------------
+-- MEMORY widget
+widgets.mem = {
+	-- Header text, fontsize and offset from ring center
 	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
-	top = { pos = LTR, fontsize = 13.5, dx = -10, dy = 6, width = 195, spacing = 16 }
+	rings = {
+		-- Coordinates of ring center
+		x = 325, y = 280,
+		-- Radius of inner ring
+		radius = 55,
+		-- Width of rings / gap between rings
+		width = 17, gap = 3,
+	},
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = BOTTOM_RIGHT,
+		-- Text width
+		width = 188,
+		-- Text fontsize
+		fontsize = 14,
+	},
+	-- Ring/text values
+	values = {
+		{
+			ring = '${swapperc}',
+			max = 100,
+			label = 'SWAP',
+			value = '${swap} / ${swapmax}'
+		},
+		{
+			ring = '${memperc}',
+			max = 100,
+			label = 'RAM',
+			value = '${mem} / ${memmax}'
+		}
+	},
+	-- Top list text count, position, fontsize, offset from ring center, width and space between lines. pos is one of LTR, RTL
+	top_attr = { count = 3, pos = LTR, fontsize = 13.5, dx = -10, dy = 6, width = 195, spacing = 16 },
+	-- Top list values (computed below)
+	top_values = {}
 }
 
+-- Compute MEM top list
+for i = 1, widgets.mem.top_attr.count do
+	widgets.mem.top_values[i] = {
+		label = '${top_mem name '..i..'}',
+		value = '${top_mem mem_res '..i..'}'
+	}
+end
+
 ---------------------------------------
--- TIME rings
+-- TIME widget
 ---------------------------------------
 -- Date/time format
 date_format = '%a %d-%m-%Y'
 time_format = '%R'
 
--- TIME rings
-rings.time = {
-	x = 170, y = 310,
-	radius = 20,
-	-- Width requires 3 values: inner to outer ring from left to right
-	width = { 9, 11, 14 }, gap = 3,
-	text = { pos = BOTTOM_LEFT, width = 0, fontsize = 15 },
-	header = { text = '${time '..time_format..'}', fontsize = 36, dx = -115, dy = 12 }
+-- TIME widget
+widgets.time = {
+	-- Header text, fontsize and offset from ring center
+	header = { text = '${time '..time_format..'}', fontsize = 36, dx = -115, dy = 12 },
+	rings = {
+		-- Coordinates of ring center
+		x = 170, y = 310,
+		-- Radius of inner ring
+		radius = 20,
+		-- Width of rings (requires 3 values, inner ring to outer) / gap between rings
+		width = { 9, 11, 14 }, gap = 3,
+	},
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = BOTTOM_LEFT,
+		-- Text width
+		width = 0,
+		-- Text fontsize
+		fontsize = 15,
+	},
+	-- Ring/text values
+	values = {
+		{
+			ring = '${time %S}',
+			max = 60,
+			label = '',
+			value = ''
+		},
+		{
+			ring = '${time %M}',
+			max = 60,
+			label = '',
+			value = ''
+		},
+		{
+			ring = '${time %H}',
+			max = 24,
+			label = '',
+			value = '${time '..date_format..'}'
+		}
+	}
 }
 
 ---------------------------------------
--- BATTERY rings
+-- BATTERY widget
 ---------------------------------------
-rings.bat = {
-	x = 220, y = 410,
-	radius = 10,
-	-- Width requires 2 values: inner to outer ring from left to right
-	width = { 20, 12 }, gap = 3,
-	text = { pos = BOTTOM_LEFT, width = 0, fontsize = 13.5 },
-	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 }
+-- BATTERY widget
+widgets.bat = {
+	-- Header text, fontsize and offset from ring center
+	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 },
+	rings = {
+		-- Coordinates of ring center
+		x = 220, y = 410,
+		-- Radius of inner ring
+		radius = 10,
+		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
+		width = { 20, 12 }, gap = 3,
+	},
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = BOTTOM_LEFT,
+		-- Text width
+		width = 0,
+		-- Text fontsize
+		fontsize = 13.5,
+	},
+	-- Ring/text values
+	values = {
+		{
+			-- Dummy value in inner ring (no foreground ring)
+			ring = '0',
+			max = 100,
+			label = '',
+			value = ''
+		},
+		{
+			ring = '${battery_percent BAT1}',
+			max = 100,
+			label = '',
+			value = '${battery BAT1}'
+		}
+	}
 }
 
 ---------------------------------------
--- NETWORK rings
+-- NETWORK widget
 ---------------------------------------
 -- Network interface variables
 wifi_interface = 'wlo1'
 lan_interface = 'enp0s13f0u1'
 
--- Initial value for network interface (automatically adjusted in main function)
+-- Initial values for network interface and SSID (automatically adjusted in main function)
 net_interface = wifi_interface
+net_conn = '${wireless_essid '..net_interface..'}'
 
 -- Max download/upload speeds in KB/s
 net_max_down = 40000
 net_max_up = 4000
 
--- NETWORK rings
-rings.net = {
-	x = 320, y = 440,
-	radius = 27,
-	width = 16, gap = 3,
-	text = { pos = BOTTOM_RIGHT, width = 153, fontsize = 13.5 },
+-- NETWORK widget
+widgets.net = {
+	-- Header text, fontsize and offset from ring center
 	header = { text = 'INTERNET', fontsize = 22, dx = 60, dy = -10 },
-	extra = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 }
-}
-
-------------------------------------------------------------------------------
--- INITIALIZE RING/TEXT CONKY VARIABLES
-------------------------------------------------------------------------------
-for i = 1, n_cpus do
-	vars.cpu[i] = {
-		ring = { value = '${cpu cpu'..i..'}', max = 100 },
-		text = { label = 'CPU '..i, value = '${cpu cpu'..i..'}%' }
-	}
-end
-
-for i, disk in pairs(disks) do
-	vars.fs[i] = {
-		ring = { value = '${fs_used_perc '..disk.path..'}', max = 100 },
-		text = { label = disk.name, value = '${fs_used '..disk.path..'} / ${fs_size '..disk.path..'}' }
-	}
-end
-
-vars.mem = {
-	{
-		ring = { value = '${swapperc}', max = 100 },
-		text = { label = 'SWAP', value = '${swap} / ${swapmax}' }
+	rings = {
+		-- Coordinates of ring center
+		x = 320, y = 440,
+		-- Radius of inner ring
+		radius = 27,
+		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
+		width = 16, gap = 3,
 	},
-	{
-		ring = { value = '${memperc}', max = 100 },
-		text = { label = 'RAM', value = '${mem} / ${memmax}' }
+	text = {
+		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
+		pos = BOTTOM_RIGHT,
+		-- Text width
+		width = 153,
+		-- Text fontsize
+		fontsize = 13.5,
+	},
+	-- Ring/text values
+	values = {
+		{
+			ring = '${upspeedf '..net_interface..'}',
+			max = net_max_up,
+			label = 'Up',
+			value = '${upspeed '..net_interface..'}'
+		},
+		{
+			ring = '${downspeedf '..net_interface..'}',
+			max = net_max_down,
+			label = 'Down',
+			value = '${downspeed '..net_interface..'}'
+		}
+	},
+	-- Extra text fontsize, offset from ring center, width and space between lines
+	extra_attr = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 },
+	-- Extra text values
+	extra_values = {
+		{ label = 'NETWORK', value = net_conn },
+		{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' }
 	}
 }
-
-vars.time = {
-	{
-		ring = { value = '${time %S}', max = 60 },
-		text = { label = '', value = '' }
-	},
-	{
-		ring = { value = '${time %M}', max = 60 },
-		text = { label = '', value = '' }
-	},
-	{
-		ring = { value = '${time %H}', max = 24 },
-		text = { label = '', value = '${time '..date_format..'}' }
-	}
-}
-
-vars.bat = {
-	{
-		-- Dummy value in inner ring (no foreground ring)
-		ring = { value = '0', max = 100 },
-		text = { label = '', value = '' }
-	},
-	{
-		ring = { value = '${battery_percent BAT1}', max = 100 },
-		text = { label = '', value = '${battery BAT1}' }
-	}
-}
-
-vars.net = {
-	{
-		ring = { value = '${upspeedf '..net_interface..'}', max = net_max_up },
-		text = { label = 'Up', value = '${upspeed '..net_interface..'}' }
-	},
-	{
-		ring = { value = '${downspeedf '..net_interface..'}', max = net_max_down },
-		text = { label = 'Down', value = '${downspeed '..net_interface..'}' }
-	}
-}
-
-extras.cpu = {
-	{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
-}
-
-extras.fs = {
-	{ label = 'DISK IO', value = '${diskio}/s' }
-}
-
-net_conn = '${wireless_essid '..net_interface..'}'
-
-extras.net = {
-	{ label = 'NETWORK', value = net_conn },
-	{ label = 'LOCAL IP', value = '${addr '..net_interface..'}' }
-}
-
-for i = 1, top_count.cpu do
-	tops.cpu[i] = { label = '${top name '..i..'}', value = '${top cpu '..i..'}%' }
-end
-
-for i = 1, top_count.mem do
-	tops.mem[i] = { label = '${top_mem name '..i..'}', value = '${top_mem mem_res '..i..'}' }
-end
 
 ------------------------------------------------------------------------------
 -- BUILD RING/TEXT TABLES
 ------------------------------------------------------------------------------
-for id, table in pairs(vars) do
-	for i, var in pairs(table) do
+for id, widget in pairs(widgets) do
+	-- Add widget header to text table
+	text_table[id..'header'] = {
+		text = widget.header.text,
+		font = text_attr.header.font,
+		fontsize = widget.header.fontsize,
+		color = text_attr.header.color,
+		alpha = text_attr.header.alpha,
+		x = widget.rings.x + widget.header.dx,
+		y = widget.rings.y + widget.header.dy,
+		align = ALIGNL
+	}
+
+	for i, value in pairs(widget.values) do
 		local ring_r, ring_w, ring_sa, ring_ea, ring_ccw
 
 		-- Calculate radius of individual ring
-		ring_r = rings[id].radius
+		ring_r = widget.rings.radius
+
 		for j = 2, i do
-			ring_r = ring_r + ((type(rings[id].width) == 'table') and ((rings[id].width[j] + rings[id].width[j-1])/2) or rings[id].width) + rings[id].gap
+			ring_r = ring_r + ((type(widget.rings.width) == 'table') and ((widget.rings.width[j] + widget.rings.width[j-1])/2) or widget.rings.width) + widget.rings.gap
 		end
 
 		-- Calculate width of individual ring
-		ring_w = (type(rings[id].width) == 'table') and rings[id].width[i] or rings[id].width
+		ring_w = (type(widget.rings.width) == 'table') and widget.rings.width[i] or widget.rings.width
 
 		-- Calculate start/end angle and direction of ring
-		if rings[id].text.pos == TOP_LEFT then
+		if widget.text.pos == TOP_LEFT then
 			ring_sa, ring_ea, ring_ccw = 0, 235, false
-		elseif rings[id].text.pos == TOP_RIGHT then
+		elseif widget.text.pos == TOP_RIGHT then
 			ring_sa, ring_ea, ring_ccw = 125, 360, true
-		elseif rings[id].text.pos == BOTTOM_LEFT then
+		elseif widget.text.pos == BOTTOM_LEFT then
 			ring_sa, ring_ea, ring_ccw = -55, 180, true
-		elseif rings[id].text.pos == BOTTOM_RIGHT then
+		elseif widget.text.pos == BOTTOM_RIGHT then
 			ring_sa, ring_ea, ring_ccw = -180, 55, false
 		end
 
+		-- Correct start/end angle of ring for battery inner ring (is 360°)
 		if id == 'bat' and i == 1 then
 			ring_sa, ring_ea = 0, 360
 		end
 
-		-- Add ring to table
+		-- Add ring to rings table
 		rings_table[id..i] = {
-			value = var.ring.value,
-			max = var.ring.max,
-			x = rings[id].x, y = rings[id].y,
+			value = value.ring,
+			max = value.max,
+			x = widget.rings.x, y = widget.rings.y,
 			r = ring_r,
 			w = ring_w,
 			sa = ring_sa, ea = ring_ea,
@@ -314,30 +429,30 @@ for id, table in pairs(vars) do
 			fga = rings_attr.fg_alpha
 		}
 
-		if single_cpu and id == 'cpu' then
+		if id == 'cpu' and single_cpu then
 			if i == 1 then
 				-- Calculate text x,y coordinates and alignment
 				local ring_rs, text_x, text_y, text_align
 
-				if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
-					text_x = rings[id].x - text_gap
+				if widget.text.pos == TOP_LEFT or widget.text.pos == BOTTOM_LEFT then
+					text_x = widget.rings.x - text_gap
 					text_align = ALIGNR
 				else
-					text_x = rings[id].x + text_gap
+					text_x = widget.rings.x + text_gap
 					text_align = ALIGNL
 				end
 
-				if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
-					text_y = rings[id].y - rings[id].radius - (n_cpus - 1)*(rings[id].width + rings[id].gap)/2
+				if widget.text.pos == TOP_LEFT or widget.text.pos == TOP_RIGHT then
+					text_y = widget.rings.y - widget.rings.radius - (n_cpus - 1)*(widget.rings.width + widget.rings.gap)/2
 				else
-					text_y = rings[id].y + rings[id].radius + (n_cpus - 1)*(rings[id].width + rings[id].gap)/2
+					text_y = widget.rings.y + widget.rings.radius + (n_cpus - 1)*(widget.rings.width + widget.rings.gap)/2
 				end
 
 				-- Add value text to table
 				text_table[id..i..'value'] = {
 					text = '${cpu cpu0}%',
 					font = text_attr.text.font,
-					fs = rings[id].text.fontsize_single,
+					fontsize = widget.text.fontsize_single,
 					color = text_attr.text.color,
 					alpha = text_attr.text.alpha,
 					x = text_x, y = text_y,
@@ -348,31 +463,31 @@ for id, table in pairs(vars) do
 			-- Calculate text x,y coordinates and alignment
 			local label_x, value_x, text_y
 
-			if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == BOTTOM_LEFT then
-				label_x = rings[id].x - text_gap - rings[id].text.width
-				value_x = rings[id].x - text_gap
+			if widget.text.pos == TOP_LEFT or widget.text.pos == BOTTOM_LEFT then
+				label_x = widget.rings.x - text_gap - widget.text.width
+				value_x = widget.rings.x - text_gap
 			else
-				label_x = rings[id].x + text_gap
-				value_x = rings[id].x + text_gap + rings[id].text.width
+				label_x = widget.rings.x + text_gap
+				value_x = widget.rings.x + text_gap + widget.text.width
 			end
 
-			if rings[id].text.pos == TOP_LEFT or rings[id].text.pos == TOP_RIGHT then
-				text_y = rings[id].y - ring_r
+			if widget.text.pos == TOP_LEFT or widget.text.pos == TOP_RIGHT then
+				text_y = widget.rings.y - ring_r
 			else
-				text_y = rings[id].y + ring_r
+				text_y = widget.rings.y + ring_r
 			end
 
 			local value_align = ALIGNR
 
-			if var.text.label == "" and (rings[id].text.pos == TOP_RIGHT or rings[id].text.pos == BOTTOM_RIGHT) then
+			if value.label == "" and (widget.text.pos == TOP_RIGHT or widget.text.pos == BOTTOM_RIGHT) then
 				value_align = ALIGNL
 			end
 
 			-- Add label text to table
 			text_table[id..i..'label'] = {
-				text = var.text.label,
+				text = value.label,
 				font = text_attr.text.font,
-				fs = rings[id].text.fontsize,
+				fontsize = widget.text.fontsize,
 				color = text_attr.text.color,
 				alpha = text_attr.text.alpha,
 				x = label_x, y = text_y,
@@ -381,93 +496,77 @@ for id, table in pairs(vars) do
 
 			-- Add value text to table
 			text_table[id..i..'value'] = {
-				text = var.text.value,
+				text = value.value,
 				font = text_attr.text.font,
-				fs = rings[id].text.fontsize,
+				fontsize = widget.text.fontsize,
 				color = text_attr.text.color,
 				alpha = text_attr.text.alpha,
 				x = value_x, y = text_y,
 				align = value_align
 			}
 		end
+	end
 
-		-- Add ring header to table
-		if i == 1 then
-			text_table[id..'header'] = {
-				text = rings[id].header.text,
-				font = text_attr.header.font,
-				fs = rings[id].header.fontsize,
-				color = text_attr.header.color,
-				alpha = text_attr.header.alpha,
-				x = rings[id].x + rings[id].header.dx,
-				y = rings[id].y + rings[id].header.dy,
+	if widget.extra_values ~= nil then
+		for i, value in pairs(widget.extra_values) do
+			-- Add extra text label to table
+			text_table[id..'extralabel'..i] = {
+				text = value.label,
+				font = text_attr.extra.font,
+				fontsize = widget.extra_attr.fontsize,
+				color = text_attr.extra.color,
+				alpha = text_attr.extra.alpha,
+				x = widget.rings.x + widget.extra_attr.dx,
+				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
+				align = ALIGNL
+			}
+
+			-- Add extra text value to table
+			text_table[id..'extravalue'..i] = {
+				text = value.value,
+				font = text_attr.extra.font,
+				fontsize = widget.extra_attr.fontsize,
+				color = text_attr.extra.color,
+				alpha = text_attr.extra.alpha,
+				x = widget.rings.x + widget.extra_attr.dx + widget.extra_attr.width,
+				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
 				align = ALIGNL
 			}
 		end
 	end
-end
 
-for id, table in pairs(extras) do
-	for i, extra in pairs(table) do
-		-- Add extra text label to table
-		text_table[id..'extralabel'..i] = {
-			text = extra.label,
-			font = text_attr.extra.font,
-			fs = rings[id].extra.fontsize,
-			color = text_attr.extra.color,
-			alpha = text_attr.extra.alpha,
-			x = rings[id].x + rings[id].extra.dx,
-			y = rings[id].y + rings[id].extra.dy + (i-1)*rings[id].extra.spacing,
-			align = ALIGNL
-		}
+	if widget.top_values ~= nil then
+		-- Calculate initial coordinates of top list text
+		local xi = widget.rings.x + widget.top_attr.dx - (widget.top_attr.pos == RTL and widget.top_attr.width or 0)
+		local yi = widget.rings.y + widget.top_attr.dy - (widget.top_attr.count/2 - 0.5)*widget.top_attr.spacing
 
-		-- Add extra text value to table
-		text_table[id..'extravalue'..i] = {
-			text = extra.value,
-			font = text_attr.extra.font,
-			fs = rings[id].extra.fontsize,
-			color = text_attr.extra.color,
-			alpha = text_attr.extra.alpha,
-			x = rings[id].x + rings[id].extra.dx + rings[id].extra.width,
-			y = rings[id].y + rings[id].extra.dy + (i-1)*rings[id].extra.spacing,
-			align = ALIGNL
-		}
+		for i, value in pairs(widget.top_values) do
+			-- Add top list label to table
+			text_table[id..'toplabel'..i] = {
+				text = value.label,
+				font = text_attr.top.font,
+				fontsize = widget.top_attr.fontsize,
+				color = text_attr.top.color,
+				alpha = text_attr.top.alpha,
+				x = xi,
+				y = yi + (i-1)*widget.top_attr.spacing,
+				align = ALIGNL
+			}
+
+			-- Add top list value to table
+			text_table[id..'topvalue'..i] = {
+				text = value.value,
+				font = text_attr.top.font,
+				fontsize = widget.top_attr.fontsize,
+				color = text_attr.top.color,
+				alpha = text_attr.top.alpha,
+				x = xi + widget.top_attr.width,
+				y = yi + (i-1)*widget.top_attr.spacing,
+				align = ALIGNR
+			}
+		end
 	end
 end
-
-for id, temp in pairs(tops) do
-	-- Calculate initial coordinates of top list text
-	local xi = rings[id].x + rings[id].top.dx - (rings[id].top.pos == RTL and rings[id].top.width or 0)
-	local yi = rings[id].y + rings[id].top.dy - (top_count[id]/2 - 0.5)*rings[id].top.spacing
-
-	for i, top in pairs(temp) do
-		-- Add top list label to table
-		text_table[id..'toplabel'..i] = {
-			text = top.label,
-			font = text_attr.top.font,
-			fs = rings[id].top.fontsize,
-			color = text_attr.top.color,
-			alpha = text_attr.top.alpha,
-			x = xi,
-			y = yi + (i-1)*rings[id].top.spacing,
-			align = ALIGNL
-		}
-
-		-- Add top list value to table
-		text_table[id..'topvalue'..i] = {
-			text = top.value,
-			font = text_attr.top.font,
-			fs = rings[id].top.fontsize,
-			color = text_attr.top.color,
-			alpha = text_attr.top.alpha,
-			x = xi + rings[id].top.width,
-			y = yi + (i-1)*rings[id].top.spacing,
-			align = ALIGNR
-		}
-	end
-end
-
--- ring_x, ring_y = 0, 0
 
 ------------------------------------------------------------------------------
 -- LUA MODULES
@@ -525,7 +624,7 @@ end
 function draw_text(cr, pt)
 	-- Set text font/color
 	cairo_select_font_face(cr, pt.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, pt.fs)
+	cairo_set_font_size(cr, pt.fontsize)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
 	local text = conky_parse(pt.text)
@@ -578,6 +677,7 @@ function conky_main()
 			ring.value = ring.value:gsub(net_conn, check_conn)
 			ring.value = ring.value:gsub(net_interface, check_interface)
 		end
+
 		draw_ring(cr, ring)
 	end
 
@@ -587,6 +687,7 @@ function conky_main()
 			text.text = text.text:gsub(net_conn, check_conn)
 			text.text = text.text:gsub(net_interface, check_interface)
 		end
+
 		draw_text(cr, text)
 	end
 
