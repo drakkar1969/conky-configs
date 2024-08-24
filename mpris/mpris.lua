@@ -4,7 +4,7 @@
 -- Allowed players (higher number = preferred)
 allowed_players = {
 	Lollypop = 2,
-	G4Music = 1
+	Gapless = 1
 }
 -- Light/dark colors
 dark_colors = true
