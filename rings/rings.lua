@@ -67,14 +67,14 @@ single_cpu = true
 -- CPU widget
 widgets.cpu = {
 	-- Header text, fontsize and offset from ring center
-	header = { text = 'CPU', fontsize = 22, dx = -145, dy = 60 },
+	header = { text = 'CPU', fontsize = 22, dx = -155, dy = 62 },
 	rings = {
 		-- Coordinates of ring center
-		x = 182, y = 133,
+		x = 172, y = 143,
 		-- Radius of inner ring
-		radius = 57,
+		radius = 55,
 		-- Width of rings / gap between rings
-		width = 3, gap = 1,
+		width = 4, gap = 1,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
@@ -89,7 +89,7 @@ widgets.cpu = {
 	-- Ring/text values (computed below based on number of cpus)
 	values = {},
 	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra_attr = { fontsize = 15.5, dx = -109, dy = -125, width = 109, spacing = 20 },
+	extra_attr = { fontsize = 15.5, dx = -109, dy = -135, width = 109, spacing = 20 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
@@ -134,7 +134,7 @@ widgets.fs = {
 	header = { text = 'FILESYSTEM', fontsize = 22, dx = 70, dy = 20 },
 	rings = {
 		-- Coordinates of ring center
-		x = 370, y = 115,
+		x = 370, y = 135,
 		-- Radius of inner ring
 		radius = 27,
 		-- Width of rings / gap between rings
@@ -177,7 +177,7 @@ widgets.mem = {
 	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
 	rings = {
 		-- Coordinates of ring center
-		x = 325, y = 280,
+		x = 325, y = 300,
 		-- Radius of inner ring
 		radius = 55,
 		-- Width of rings / gap between rings
@@ -233,7 +233,7 @@ widgets.time = {
 	header = { text = '${time '..time_format..'}', fontsize = 40, dx = -130, dy = 10 },
 	rings = {
 		-- Coordinates of ring center
-		x = 170, y = 310,
+		x = 170, y = 330,
 		-- Radius of inner ring
 		radius = 20,
 		-- Width of rings (requires 3 values, inner ring to outer) / gap between rings
@@ -279,7 +279,7 @@ widgets.bat = {
 	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 },
 	rings = {
 		-- Coordinates of ring center
-		x = 220, y = 410,
+		x = 220, y = 430,
 		-- Radius of inner ring
 		radius = 10,
 		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
@@ -332,7 +332,7 @@ widgets.net = {
 	header = { text = 'INTERNET', fontsize = 22, dx = 60, dy = -10 },
 	rings = {
 		-- Coordinates of ring center
-		x = 320, y = 440,
+		x = 320, y = 460,
 		-- Radius of inner ring
 		radius = 27,
 		-- Width of rings / gap between rings
