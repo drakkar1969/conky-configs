@@ -619,8 +619,12 @@ function mouse_over_icon(event, icon)
 end
 
 function conky_mouse_events(event)
+	if event.type ~= "button_down" and event.type ~= "button_up" then
+		return
+	end
+
 	if active_player ~= nil then
-		if event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
+		if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
 			if event.type == "button_down" then
 				if mouse_over_icon(event, icons.status) then
 					play_button_down = true
@@ -633,9 +637,7 @@ function conky_mouse_events(event)
 				if active_player.can_go_next and mouse_over_icon(event, icons.next) then
 					next_button_down = true
 				end
-			end
-
-			if event.type == "button_up" then
+			elseif event.type == "button_up" then
 				if mouse_over_icon(event, icons.status) and play_button_down == true then
 					active_player:play_pause()
 				end
