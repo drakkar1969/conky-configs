@@ -111,7 +111,7 @@ disks = {
 }
 
 -- Network interface variables
-wifi_interface = 'wlo1'
+wifi_interface = 'wlp0s20f3'
 lan_interface = 'enp0s13f0u1'
 
 -- Initial value for network interface (automatically adjusted in main function)

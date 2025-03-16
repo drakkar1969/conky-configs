@@ -303,10 +303,10 @@ widgets.bat = {
 			value = ''
 		},
 		{
-			ring = '${battery_percent BAT1}',
+			ring = '${battery_percent BAT0}',
 			max = 100,
 			label = '',
-			value = '${battery BAT1}'
+			value = '${battery BAT0}'
 		}
 	}
 }
@@ -315,7 +315,7 @@ widgets.bat = {
 -- NETWORK widget
 ---------------------------------------
 -- Network interface variables
-wifi_interface = 'wlo1'
+wifi_interface = 'wlp0s20f3'
 lan_interface = 'enp0s13f0u1'
 
 -- Initial values for network interface and SSID (automatically adjusted in main function)
