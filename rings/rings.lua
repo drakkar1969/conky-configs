@@ -123,9 +123,9 @@ end
 ---------------------------------------
 -- Disks table: number of name/path pairs = number of FILESYSTEM rings
 disks = {
-	{ name = 'home', path = '/home' },
+	{ name = 'boot', path = '/boot'},
 	{ name = 'root', path = '/'},
-	{ name = 'boot', path = '/boot'}
+	{ name = 'home', path = '/home' }
 }
 
 -- FILESYSTEM widget
