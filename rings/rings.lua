@@ -46,7 +46,7 @@ rings_attr = {
 -- Text/header/extra/top font and colors
 text_attr = {
 	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
-	time = { font = 'Roboto', color = main_color, alpha = 1 },
+	time = { font = 'Aptos', color = main_color, alpha = 1 },
 	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
 	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
@@ -230,7 +230,7 @@ time_format = '%R'
 -- TIME widget
 widgets.time = {
 	-- Header text, fontsize and offset from ring center
-	header = { text = '${time '..time_format..'}', fontsize = 40, dx = -130, dy = 10 },
+	header = { text = '${time '..time_format..'}', fontsize = 48, dx = -145, dy = 10 },
 	rings = {
 		-- Coordinates of ring center
 		x = 170, y = 330,
