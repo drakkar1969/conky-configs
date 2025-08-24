@@ -123,7 +123,7 @@ end
 ---------------------------------------
 -- Disks table: number of name/path pairs = number of FILESYSTEM rings
 disks = {
-	{ name = 'boot', path = '/boot'},
+	{ name = 'esp', path = '/efi'},
 	{ name = 'root', path = '/'},
 	{ name = 'home', path = '/home' }
 }
