@@ -123,7 +123,7 @@ widgets.cpu = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_LEFT,
 		-- Text width
-		width = 72,
+		width = 80,
 	},
 	-- Ring/text values
 	values = {
