@@ -40,7 +40,7 @@ rings_attr = {
 text_attr = {
 	header = {
 		font = 'Adwaita',
-		fontsize = 22,
+		fontsize = 23,
 		color = main_color,
 		alpha = 1
 	},
@@ -110,7 +110,7 @@ widgets = {}
 ---------------------------------------
 widgets.cpu = {
 	-- Header text and offset from ring center
-	header = { text = 'CPU', dx = -142, dy = 60 },
+	header = { text = 'CORE', dx = -167, dy = 60 },
 	rings = {
 		-- Coordinates of ring center
 		x = 182, y = 155,
@@ -297,7 +297,7 @@ widgets.time = {
 ---------------------------------------
 widgets.bat = {
 	-- Header text and offset from ring center
-	header = { text = 'BATTERY', dx = -135, dy = 3 },
+	header = { text = 'BATTERY', dx = -145, dy = 3 },
 	rings = {
 		-- Coordinates of ring center
 		x = 220, y = 430,
