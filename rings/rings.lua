@@ -48,6 +48,22 @@ text_attr = {
 -- Horizontal gap between rings and text
 text_gap = 14
 
+---------------------------------------
+-- Disks table for FILESYSTEM widget
+---------------------------------------
+-- Disks table: number of name/path pairs = number of FILESYSTEM rings
+disks = {
+	{ name = 'esp', path = '/efi'},
+	{ name = 'root', path = '/'},
+	{ name = 'home', path = '/home' }
+}
+
+---------------------------------------
+-- Date/time format for TIME widget
+---------------------------------------
+date_format = '%a %d-%m-%Y'
+time_format = '%R'
+
 ------------------------------------------------------------------------------
 -- BUILD WIDGETS TABLE
 ------------------------------------------------------------------------------
@@ -56,7 +72,6 @@ widgets = {}
 ---------------------------------------
 -- CPU widget
 ---------------------------------------
--- CPU widget
 widgets.cpu = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'CPU', fontsize = 22, dx = -142, dy = 60 },
@@ -114,14 +129,6 @@ end
 ---------------------------------------
 -- FILESYSTEM widget
 ---------------------------------------
--- Disks table: number of name/path pairs = number of FILESYSTEM rings
-disks = {
-	{ name = 'esp', path = '/efi'},
-	{ name = 'root', path = '/'},
-	{ name = 'home', path = '/home' }
-}
-
--- FILESYSTEM widget
 widgets.fs = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'FILESYSTEM', fontsize = 22, dx = 70, dy = 20 },
@@ -164,7 +171,6 @@ end
 ---------------------------------------
 -- MEMORY widget
 ---------------------------------------
--- MEMORY widget
 widgets.mem = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
@@ -216,11 +222,6 @@ end
 ---------------------------------------
 -- TIME widget
 ---------------------------------------
--- Date/time format
-date_format = '%a %d-%m-%Y'
-time_format = '%R'
-
--- TIME widget
 widgets.time = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = '${time '..time_format..'}', fontsize = 48, dx = -145, dy = 10 },
@@ -266,7 +267,6 @@ widgets.time = {
 ---------------------------------------
 -- BATTERY widget
 ---------------------------------------
--- BATTERY widget
 widgets.bat = {
 	-- Header text, fontsize and offset from ring center
 	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 },
