@@ -113,7 +113,7 @@ widgets.cpu = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 4, pos = RTL, dx = 18, dy = -2, width = 171, spacing = 16 },
+	top_attr = { count = 3, pos = RTL, dx = 18, dy = -2, width = 171, spacing = 16 },
 	-- Top list values (computed below)
 	top_values = {}
 }
