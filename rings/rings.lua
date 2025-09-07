@@ -343,11 +343,11 @@ widgets.net = {
 	header = { text = 'INTERNET', dx = 60, dy = -10 },
 	rings = {
 		-- Coordinates of ring center
-		x = 320, y = 460,
+		x = 320, y = 458,
 		-- Radius of inner ring
 		radius = 27,
 		-- Width of rings / gap between rings
-		width = 16, gap = 3,
+		width = 15, gap = 3,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
