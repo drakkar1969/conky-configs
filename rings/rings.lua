@@ -52,7 +52,7 @@ text_attr = {
 	},
 	text = {
 		font = 'Adwaita',
-		fontsize = { cpu = 16, fs = 13, mem = 13.5, time = 13.5, bat = 13, net = 13 },
+		fontsize = { cpu = 15, fs = 13, mem = 13.5, time = 13.5, bat = 13, net = 13 },
 		color = text_color,
 		alpha = 1
 	},
