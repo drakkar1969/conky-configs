@@ -117,7 +117,7 @@ widgets.cpu = {
 		-- Radius of inner ring
 		radius = 80,
 		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
-		width = { 24, 5 }, gap = 3,
+		width = { 24, 4 }, gap = 3,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
