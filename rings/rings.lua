@@ -38,11 +38,36 @@ rings_attr = {
 ---------------------------------------
 -- Text/header/extra/top font and colors
 text_attr = {
-	header = { font = 'Ubuntu', fontsize = 22, color = main_color, alpha = 1 },
-	time = { font = 'Aptos', fontsize = 48, color = main_color, alpha = 1 },
-	text = { font = 'Ubuntu', fontsize = 0, color = text_color, alpha = 1 },
-	extra = { font = 'Ubuntu', fontsize = 15.5, color = text_color, alpha = 1 },
-	top = { font = 'Ubuntu', fontsize = 13.5, color = text_color, alpha = 1 }
+	header = {
+		font = 'Ubuntu',
+		fontsize = 22,
+		color = main_color,
+		alpha = 1
+	},
+	time = {
+		font = 'Aptos',
+		fontsize = 48,
+		color = main_color,
+		alpha = 1
+	},
+	text = {
+		font = 'Ubuntu',
+		fontsize = { cpu = 16, fs = 13.5, mem = 14, time = 15, bat = 13.5, net = 13.5 },
+		color = text_color,
+		alpha = 1
+	},
+	extra = {
+		font = 'Ubuntu',
+		fontsize = 15.5,
+		color = text_color,
+		alpha = 1
+	},
+	top = {
+		font = 'Ubuntu',
+		fontsize = 13.5,
+		color = text_color,
+		alpha = 1
+	}
 }
 
 -- Horizontal gap between rings and text
@@ -99,8 +124,6 @@ widgets.cpu = {
 		pos = TOP_LEFT,
 		-- Text width
 		width = 72,
-		-- Text fontsize
-		fontsize = 16,
 	},
 	-- Ring/text values
 	values = {
@@ -156,8 +179,6 @@ widgets.fs = {
 		pos = TOP_RIGHT,
 		-- Text width
 		width = 180,
-		-- Text fontsize
-		fontsize = 13.5,
 	},
 	-- Ring/text values (computed below based on disks table)
 	values = {},
@@ -198,8 +219,6 @@ widgets.mem = {
 		pos = BOTTOM_RIGHT,
 		-- Text width
 		width = 188,
-		-- Text fontsize
-		fontsize = 14,
 	},
 	-- Ring/text values
 	values = {
@@ -249,8 +268,6 @@ widgets.time = {
 		pos = BOTTOM_LEFT,
 		-- Text width
 		width = 0,
-		-- Text fontsize
-		fontsize = 15,
 	},
 	-- Ring/text values
 	values = {
@@ -294,8 +311,6 @@ widgets.bat = {
 		pos = BOTTOM_LEFT,
 		-- Text width
 		width = 0,
-		-- Text fontsize
-		fontsize = 13.5,
 	},
 	-- Ring/text values
 	values = {
@@ -339,8 +354,6 @@ widgets.net = {
 		pos = BOTTOM_RIGHT,
 		-- Text width
 		width = 153,
-		-- Text fontsize
-		fontsize = 13.5,
 	},
 	-- Ring/text values
 	values = {
@@ -452,7 +465,7 @@ for id, widget in pairs(widgets) do
 			text = value.label,
 			attr = {
 				font = text_attr.text.font,
-				fontsize = widget.text.fontsize,
+				fontsize = text_attr.text.fontsize[id],
 				color = text_attr.text.color,
 				alpha = text_attr.text.alpha
 			},
@@ -465,7 +478,7 @@ for id, widget in pairs(widgets) do
 			text = value.value,
 			attr = {
 				font = text_attr.text.font,
-				fontsize = widget.text.fontsize,
+				fontsize = text_attr.text.fontsize[id],
 				color = text_attr.text.color,
 				alpha = text_attr.text.alpha
 			},
