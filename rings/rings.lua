@@ -9,13 +9,6 @@ ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
 LTR, RTL = 0, 1
 
 ------------------------------------------------------------------------------
--- TABLE VARIABLES - DO NOT DELETE
-------------------------------------------------------------------------------
-widgets = {}
-rings_table = {}
-text_table = {}
-
-------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 ---------------------------------------
@@ -55,60 +48,60 @@ text_attr = {
 -- Horizontal gap between rings and text
 text_gap = 14
 
+------------------------------------------------------------------------------
+-- BUILD WIDGETS TABLE
+------------------------------------------------------------------------------
+widgets = {}
+
 ---------------------------------------
 -- CPU widget
 ---------------------------------------
--- Number of CPU cores = number of CPU rings
-n_cpus = 12
-
--- Show global CPU percentage if true
-single_cpu = true
-
 -- CPU widget
 widgets.cpu = {
 	-- Header text, fontsize and offset from ring center
-	header = { text = 'CPU', fontsize = 22, dx = -155, dy = 62 },
+	header = { text = 'CPU', fontsize = 22, dx = -142, dy = 60 },
 	rings = {
 		-- Coordinates of ring center
-		x = 172, y = 143,
+		x = 182, y = 155,
 		-- Radius of inner ring
-		radius = 55,
-		-- Width of rings / gap between rings
-		width = 4, gap = 1,
+		radius = 80,
+		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
+		width = { 24, 5 }, gap = 3,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_LEFT,
 		-- Text width
-		width = 68,
+		width = 72,
 		-- Text fontsize
-		fontsize = 10.5,
-		-- Text fontsize if single_cpu is true
-		fontsize_single= 20
+		fontsize = 16,
 	},
-	-- Ring/text values (computed below based on number of cpus)
-	values = {},
+	-- Ring/text values
+	values = {
+		{
+			ring = '${cpu cpu0}',
+			max = 100,
+			label = 'CPU',
+			value = '${cpu cpu0}%'
+		},
+		{
+			ring = '${hwmon coretemp temp 1}',
+			max = 100,
+			label = '',
+			value = ''
+		}
+	},
 	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra_attr = { fontsize = 15.5, dx = -109, dy = -135, width = 109, spacing = 20 },
+	extra_attr = { fontsize = 15.5, dx = -109, dy = -122, width = 109, spacing = 20 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
 	-- Top list text count, position, fontsize, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 },
+	top_attr = { count = 4, pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 },
 	-- Top list values (computed below)
 	top_values = {}
 }
-
--- Compute CPU ring values
-for i = 1, n_cpus do
-	widgets.cpu.values[i] = {
-		ring = '${cpu cpu'..i..'}',
-		max = 100,
-		label = 'CPU '..i,
-		value = '${cpu cpu'..i..'}%'
-	}
-end
 
 -- Compute CPU top list
 for i = 1, widgets.cpu.top_attr.count do
@@ -373,6 +366,10 @@ widgets.net = {
 ------------------------------------------------------------------------------
 -- BUILD RING/TEXT TABLES
 ------------------------------------------------------------------------------
+-- Create empty tables
+rings_table = {}
+text_table = {}
+
 for id, widget in pairs(widgets) do
 	-- Add widget header to text table
 	text_table[id..'header'] = {
@@ -425,76 +422,46 @@ for id, widget in pairs(widgets) do
 			attr = rings_attr
 		}
 
-		if id == 'cpu' and single_cpu then
-			if i == 1 then
-				-- Calculate text x,y coordinates and alignment
-				local ring_rs, text_x, text_y, text_align
+		-- Calculate text x,y coordinates and alignment
+		local label_x, value_x, text_y
 
-				if widget.text.pos == TOP_LEFT or widget.text.pos == BOTTOM_LEFT then
-					text_x = widget.rings.x - text_gap
-					text_align = ALIGNR
-				else
-					text_x = widget.rings.x + text_gap
-					text_align = ALIGNL
-				end
-
-				if widget.text.pos == TOP_LEFT or widget.text.pos == TOP_RIGHT then
-					text_y = widget.rings.y - widget.rings.radius - (n_cpus - 1)*(widget.rings.width + widget.rings.gap)/2
-				else
-					text_y = widget.rings.y + widget.rings.radius + (n_cpus - 1)*(widget.rings.width + widget.rings.gap)/2
-				end
-
-				-- Add value text to table
-				text_table[id..i..'value'] = {
-					text = '${cpu cpu0}%',
-					attr = text_attr.text,
-					fontsize = widget.text.fontsize_single,
-					x = text_x, y = text_y,
-					align = text_align
-				}
-			end
+		if widget.text.pos == TOP_LEFT or widget.text.pos == BOTTOM_LEFT then
+			label_x = widget.rings.x - text_gap - widget.text.width
+			value_x = widget.rings.x - text_gap
 		else
-			-- Calculate text x,y coordinates and alignment
-			local label_x, value_x, text_y
-
-			if widget.text.pos == TOP_LEFT or widget.text.pos == BOTTOM_LEFT then
-				label_x = widget.rings.x - text_gap - widget.text.width
-				value_x = widget.rings.x - text_gap
-			else
-				label_x = widget.rings.x + text_gap
-				value_x = widget.rings.x + text_gap + widget.text.width
-			end
-
-			if widget.text.pos == TOP_LEFT or widget.text.pos == TOP_RIGHT then
-				text_y = widget.rings.y - ring_r
-			else
-				text_y = widget.rings.y + ring_r
-			end
-
-			local value_align = ALIGNR
-
-			if value.label == "" and (widget.text.pos == TOP_RIGHT or widget.text.pos == BOTTOM_RIGHT) then
-				value_align = ALIGNL
-			end
-
-			-- Add label text to table
-			text_table[id..i..'label'] = {
-				text = value.label,
-				attr = text_attr.text,
-				fontsize = widget.text.fontsize,
-				x = label_x, y = text_y,
-				align = ALIGNL
-			}
-
-			-- Add value text to table
-			text_table[id..i..'value'] = {
-				text = value.value,
-				attr = text_attr.text,
-				fontsize = widget.text.fontsize,
-				x = value_x, y = text_y,
-				align = value_align
-			}
+			label_x = widget.rings.x + text_gap
+			value_x = widget.rings.x + text_gap + widget.text.width
 		end
+
+		if widget.text.pos == TOP_LEFT or widget.text.pos == TOP_RIGHT then
+			text_y = widget.rings.y - ring_r
+		else
+			text_y = widget.rings.y + ring_r
+		end
+
+		local value_align = ALIGNR
+
+		if value.label == "" and (widget.text.pos == TOP_RIGHT or widget.text.pos == BOTTOM_RIGHT) then
+			value_align = ALIGNL
+		end
+
+		-- Add label text to table
+		text_table[id..i..'label'] = {
+			text = value.label,
+			attr = text_attr.text,
+			fontsize = widget.text.fontsize,
+			x = label_x, y = text_y,
+			align = ALIGNL
+		}
+
+		-- Add value text to table
+		text_table[id..i..'value'] = {
+			text = value.value,
+			attr = text_attr.text,
+			fontsize = widget.text.fontsize,
+			x = value_x, y = text_y,
+			align = value_align
+		}
 	end
 
 	if widget.extra_values ~= nil then
