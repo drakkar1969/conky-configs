@@ -70,7 +70,7 @@ rings = {
 	-- Seconds ring: width and gap from CPU/memory/temp rings
 	sec = { width = 4, gap = 5 },
 	-- CPU rings: no. of CPU cores, width and gap of rings
-	cpu = { n = 12, width = 2, gap = 1 },
+	cpu = { n = 8, width = 3, gap = 1 },
 	-- Disks: width of rings, gap from CPU/memory/temp rings, vertical offset of
 	-- text from ring center, horiz gap between disk text at top and disks rings
 	disk = { width = 7, gap = 5, text_gap_x = 18, text_gap_y = 18 },
