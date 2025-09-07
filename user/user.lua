@@ -17,8 +17,8 @@ avatar = {
 
 -- User name
 username = {
-	font = 'Ubuntu',
-	font_size = 24,
+	font = 'Adwaita',
+	font_size = 23,
 	bold = true,
 	italic = false,
 	color = dark_colors and 0x3d3846 or 0xdeddda,
@@ -27,8 +27,8 @@ username = {
 
 -- GNOME version
 gnomever = {
-	font = 'Ubuntu',
-	font_size = 14,
+	font = 'Adwaita',
+	font_size = 13,
 	bold = false,
 	italic = false,
 	color = dark_colors and 0x3d3846 or 0xdeddda,
@@ -172,10 +172,10 @@ function conky_main()
 	-- Calculate text coordinates
 	local user_name_height = get_font_height(cr, username.font, username.font_size)
 	local gnome_version_height = get_font_height(cr, gnomever.font, gnomever.font_size)
-	local text_gap = (avatar.size - user_name_height - gnome_version_height)/3
+	local text_gap = (avatar.size - user_name_height - gnome_version_height)/5
 
 	username.x = avatar.x + avatar.size + avatar.margin
-	username.y = avatar.y + user_name_height + text_gap
+	username.y = avatar.y + user_name_height + 2 * text_gap
 
 	gnomever.x = username.x
 	gnomever.y = username.y + gnome_version_height + text_gap
