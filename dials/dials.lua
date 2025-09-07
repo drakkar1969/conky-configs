@@ -2,12 +2,12 @@
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 -- Light/dark colors
-dark_colors = false
+dark_colors = true
 
 -- Font/color variables
 main_color = dark_colors and 0x3d3846 or 0xdeddda
 text_color = dark_colors and 0x241f31 or 0xc0bfbc
-main_font = 'Ubuntu'
+main_font = 'Adwaita'
 
 -- Dial colors
 dials_attr = {
@@ -21,8 +21,8 @@ dials_attr = {
 
 -- Text font/colors
 text_attr = {
-	label = { font = main_font, fontsize = 15, color = text_color, alpha = 1 },
-	value = { font = main_font, fontsize = 24, color = main_color, alpha = 1 }
+	label = { font = main_font, fontsize = 14, color = text_color, alpha = 1 },
+	value = { font = main_font, fontsize = 22, color = main_color, alpha = 1 }
 }
 
 -- Dials
