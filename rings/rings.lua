@@ -39,7 +39,7 @@ rings_attr = {
 -- Text/header/extra/top font and colors
 text_attr = {
 	header = {
-		font = 'Ubuntu',
+		font = 'Adwaita',
 		fontsize = 22,
 		color = main_color,
 		alpha = 1
@@ -51,20 +51,20 @@ text_attr = {
 		alpha = 1
 	},
 	text = {
-		font = 'Ubuntu',
-		fontsize = { cpu = 16, fs = 13.5, mem = 14, time = 15, bat = 13.5, net = 13.5 },
+		font = 'Adwaita',
+		fontsize = { cpu = 16, fs = 13, mem = 13.5, time = 13.5, bat = 13, net = 13 },
 		color = text_color,
 		alpha = 1
 	},
 	extra = {
-		font = 'Ubuntu',
-		fontsize = 15.5,
+		font = 'Adwaita',
+		fontsize = 13.5,
 		color = text_color,
 		alpha = 1
 	},
 	top = {
-		font = 'Ubuntu',
-		fontsize = 13.5,
+		font = 'Adwaita',
+		fontsize = 12.5,
 		color = text_color,
 		alpha = 1
 	}
