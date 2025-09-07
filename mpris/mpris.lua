@@ -37,7 +37,7 @@ icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg'
 icon_loop_playlist = string.gsub(conky_config, 'mpris.conf', 'icons/loop-playlist.svg')
 
 -- Font/color variables
-main_font = "Ubuntu"
+main_font = "Adwaita"
 main_color = dark_colors and 0x3d3846 or 0xdeddda
 hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
@@ -70,7 +70,7 @@ tags = {
 		x = 1,
 		y = 20,
 		font = main_font,
-		font_size = 12,
+		font_size = 11.5,
 		bold = true,
 		italic = false,
 		color = main_color,
@@ -88,7 +88,7 @@ tags = {
 	-- Track artist
 	artist = {
 		font = main_font,
-		font_size = 15,
+		font_size = 14,
 		bold = false,
 		italic = false,
 		color = hilight_color,
@@ -97,7 +97,7 @@ tags = {
 	-- Track position
 	time = {
 		font = main_font,
-		font_size = 13,
+		font_size = 12,
 		bold = true,
 		italic = false,
 		color = main_color,
