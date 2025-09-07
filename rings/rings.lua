@@ -64,6 +64,17 @@ disks = {
 date_format = '%a %d-%m-%Y'
 time_format = '%R'
 
+---------------------------------------
+-- Parameters for NETWORK widget
+---------------------------------------
+-- Network interface variables
+wifi_interface = 'wlp0s20f3'
+lan_interface = 'enp0s13f0u1'
+
+-- Max download/upload speeds in KB/s
+net_max_down = 40000
+net_max_up = 4000
+
 ------------------------------------------------------------------------------
 -- BUILD WIDGETS TABLE
 ------------------------------------------------------------------------------
@@ -307,17 +318,9 @@ widgets.bat = {
 ---------------------------------------
 -- NETWORK widget
 ---------------------------------------
--- Network interface variables
-wifi_interface = 'wlp0s20f3'
-lan_interface = 'enp0s13f0u1'
-
 -- Initial values for network interface and SSID (automatically adjusted in main function)
 net_interface = wifi_interface
 net_conn = '${wireless_essid '..net_interface..'}'
-
--- Max download/upload speeds in KB/s
-net_max_down = 40000
-net_max_up = 4000
 
 -- NETWORK widget
 widgets.net = {
