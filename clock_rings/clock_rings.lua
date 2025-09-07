@@ -26,7 +26,7 @@ dark_colors = true
 ---------------------------------------
 main_color = dark_colors and 0x3d3846 or 0xdeddda
 text_color = dark_colors and 0x241f31 or 0xc0bfbc
-main_font = 'Ubuntu'
+main_font = 'Adwaita'
 time_font = 'Roboto'
 
 ---------------------------------------
@@ -53,12 +53,12 @@ other_attr = {
 -- Text fonts/colors
 ---------------------------------------
 text_attr = {
-	disk = { font = main_font, fontsize = 15.5, color = text_color, alpha = 1 },
-	label = { font = main_font, fontsize = 21, color = main_color, alpha = 1 },
-	value = { font = main_font, fontsize = 18, color = main_color, alpha = 1 },
+	disk = { font = main_font, fontsize = 14, color = text_color, alpha = 1 },
+	label = { font = main_font, fontsize = 18, color = main_color, alpha = 1 },
+	value = { font = main_font, fontsize = 16, color = main_color, alpha = 1 },
 	time = { font = time_font, fontsize = 42, color = main_color, alpha = 1 },
-	date = { font = main_font, fontsize = 24, color = text_color, alpha = 0.8 },
-	top = { font = main_font, fontsize = 13.5, color = text_color, alpha = 1 }
+	date = { font = main_font, fontsize = 22, color = text_color, alpha = 0.8 },
+	top = { font = main_font, fontsize = 12.5, color = text_color, alpha = 1 }
 }
 
 ---------------------------------------
@@ -256,7 +256,7 @@ text_table['time'] = {
 ---------------------------------------
 for i, disk in pairs(disks) do
 	text_table['disk'..i] = {
-		text = disk.name..'    ${fs_used '..disk.path..'}/${fs_size '..disk.path..'}',
+		text = disk.name..'   ${fs_used '..disk.path..'}/${fs_size '..disk.path..'}',
 		font = text_attr.disk.font,
 		fs = text_attr.disk.fontsize,
 		color = text_attr.disk.color,
