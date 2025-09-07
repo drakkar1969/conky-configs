@@ -38,11 +38,11 @@ rings_attr = {
 ---------------------------------------
 -- Text/header/extra/top font and colors
 text_attr = {
-	header = { font = 'Ubuntu', color = main_color, alpha = 1 },
-	time = { font = 'Aptos', color = main_color, alpha = 1 },
-	text = { font = 'Ubuntu', color = text_color, alpha = 1 },
-	extra = { font = 'Ubuntu', color = text_color, alpha = 1 },
-	top = { font = 'Ubuntu', color = text_color, alpha = 1 }
+	header = { font = 'Ubuntu', fontsize = 22, color = main_color, alpha = 1 },
+	time = { font = 'Aptos', fontsize = 48, color = main_color, alpha = 1 },
+	text = { font = 'Ubuntu', fontsize = 0, color = text_color, alpha = 1 },
+	extra = { font = 'Ubuntu', fontsize = 15.5, color = text_color, alpha = 1 },
+	top = { font = 'Ubuntu', fontsize = 13.5, color = text_color, alpha = 1 }
 }
 
 -- Horizontal gap between rings and text
@@ -73,8 +73,8 @@ widgets = {}
 -- CPU widget
 ---------------------------------------
 widgets.cpu = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = 'CPU', fontsize = 22, dx = -142, dy = 60 },
+	-- Header text and offset from ring center
+	header = { text = 'CPU', dx = -142, dy = 60 },
 	rings = {
 		-- Coordinates of ring center
 		x = 182, y = 155,
@@ -106,14 +106,14 @@ widgets.cpu = {
 			value = ''
 		}
 	},
-	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra_attr = { fontsize = 15.5, dx = -109, dy = -122, width = 109, spacing = 20 },
+	-- Extra text offset from ring center, width and space between lines
+	extra_attr = { dx = -109, dy = -122, width = 109, spacing = 20 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
-	-- Top list text count, position, fontsize, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 4, pos = RTL, fontsize = 13.5, dx = 18, dy = -2, width = 171, spacing = 16 },
+	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
+	top_attr = { count = 4, pos = RTL, dx = 18, dy = -2, width = 171, spacing = 16 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -130,8 +130,8 @@ end
 -- FILESYSTEM widget
 ---------------------------------------
 widgets.fs = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = 'FILESYSTEM', fontsize = 22, dx = 70, dy = 20 },
+	-- Header text and offset from ring center
+	header = { text = 'FILESYSTEM', dx = 70, dy = 20 },
 	rings = {
 		-- Coordinates of ring center
 		x = 370, y = 135,
@@ -150,8 +150,8 @@ widgets.fs = {
 	},
 	-- Ring/text values (computed below based on disks table)
 	values = {},
-	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra_attr = { fontsize = 15.5, dx = -52, dy = -91, width = 77, spacing = 20 },
+	-- Extra text offset from ring center, width and space between lines
+	extra_attr = { dx = -52, dy = -91, width = 77, spacing = 20 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'DISK IO', value = '${diskio}/s' }
@@ -172,8 +172,8 @@ end
 -- MEMORY widget
 ---------------------------------------
 widgets.mem = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = 'MEMORY', fontsize = 22, dx = 90, dy = -45 },
+	-- Header text and offset from ring center
+	header = { text = 'MEMORY', dx = 90, dy = -45 },
 	rings = {
 		-- Coordinates of ring center
 		x = 325, y = 300,
@@ -205,8 +205,8 @@ widgets.mem = {
 			value = '${mem} / ${memmax}'
 		}
 	},
-	-- Top list text count, position, fontsize, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = LTR, fontsize = 13.5, dx = -10, dy = 6, width = 195, spacing = 16 },
+	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
+	top_attr = { count = 3, pos = LTR, dx = -10, dy = 6, width = 195, spacing = 16 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -223,8 +223,8 @@ end
 -- TIME widget
 ---------------------------------------
 widgets.time = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = '${time '..time_format..'}', fontsize = 48, dx = -145, dy = 10 },
+	-- Header text and offset from ring center
+	header = { text = '${time '..time_format..'}', dx = -145, dy = 10 },
 	rings = {
 		-- Coordinates of ring center
 		x = 170, y = 330,
@@ -268,8 +268,8 @@ widgets.time = {
 -- BATTERY widget
 ---------------------------------------
 widgets.bat = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = 'BATTERY', fontsize = 22, dx = -135, dy = 3 },
+	-- Header text and offset from ring center
+	header = { text = 'BATTERY', dx = -135, dy = 3 },
 	rings = {
 		-- Coordinates of ring center
 		x = 220, y = 430,
@@ -321,8 +321,8 @@ net_max_up = 4000
 
 -- NETWORK widget
 widgets.net = {
-	-- Header text, fontsize and offset from ring center
-	header = { text = 'INTERNET', fontsize = 22, dx = 60, dy = -10 },
+	-- Header text and offset from ring center
+	header = { text = 'INTERNET', dx = 60, dy = -10 },
 	rings = {
 		-- Coordinates of ring center
 		x = 320, y = 460,
@@ -354,8 +354,8 @@ widgets.net = {
 			value = '${downspeed '..net_interface..'}'
 		}
 	},
-	-- Extra text fontsize, offset from ring center, width and space between lines
-	extra_attr = { fontsize = 15, dx = text_gap, dy = 80, width = 110, spacing = 20 },
+	-- Extra text offset from ring center, width and space between lines
+	extra_attr = { dx = text_gap, dy = 80, width = 110, spacing = 20 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'NETWORK', value = net_conn },
@@ -375,7 +375,6 @@ for id, widget in pairs(widgets) do
 	text_table[id..'header'] = {
 		text = widget.header.text,
 		attr = id == 'time' and text_attr.time or text_attr.header,
-		fontsize = widget.header.fontsize,
 		x = widget.rings.x + widget.header.dx,
 		y = widget.rings.y + widget.header.dy,
 		align = ALIGNL
@@ -448,8 +447,12 @@ for id, widget in pairs(widgets) do
 		-- Add label text to table
 		text_table[id..i..'label'] = {
 			text = value.label,
-			attr = text_attr.text,
-			fontsize = widget.text.fontsize,
+			attr = {
+				font = text_attr.text.font,
+				fontsize = widget.text.fontsize,
+				color = text_attr.text.color,
+				alpha = text_attr.text.alpha
+			},
 			x = label_x, y = text_y,
 			align = ALIGNL
 		}
@@ -457,8 +460,12 @@ for id, widget in pairs(widgets) do
 		-- Add value text to table
 		text_table[id..i..'value'] = {
 			text = value.value,
-			attr = text_attr.text,
-			fontsize = widget.text.fontsize,
+			attr = {
+				font = text_attr.text.font,
+				fontsize = widget.text.fontsize,
+				color = text_attr.text.color,
+				alpha = text_attr.text.alpha
+			},
 			x = value_x, y = text_y,
 			align = value_align
 		}
@@ -470,7 +477,6 @@ for id, widget in pairs(widgets) do
 			text_table[id..'extralabel'..i] = {
 				text = value.label,
 				attr = text_attr.extra,
-				fontsize = widget.extra_attr.fontsize,
 				x = widget.rings.x + widget.extra_attr.dx,
 				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
 				align = ALIGNL
@@ -480,7 +486,6 @@ for id, widget in pairs(widgets) do
 			text_table[id..'extravalue'..i] = {
 				text = value.value,
 				attr = text_attr.extra,
-				fontsize = widget.extra_attr.fontsize,
 				x = widget.rings.x + widget.extra_attr.dx + widget.extra_attr.width,
 				y = widget.rings.y + widget.extra_attr.dy + (i-1)*widget.extra_attr.spacing,
 				align = ALIGNL
@@ -498,7 +503,6 @@ for id, widget in pairs(widgets) do
 			text_table[id..'toplabel'..i] = {
 				text = value.label,
 				attr = text_attr.top,
-				fontsize = widget.top_attr.fontsize,
 				x = xi,
 				y = yi + (i-1)*widget.top_attr.spacing,
 				align = ALIGNL
@@ -508,7 +512,6 @@ for id, widget in pairs(widgets) do
 			text_table[id..'topvalue'..i] = {
 				text = value.value,
 				attr = text_attr.top,
-				fontsize = widget.top_attr.fontsize,
 				x = xi + widget.top_attr.width,
 				y = yi + (i-1)*widget.top_attr.spacing,
 				align = ALIGNR
@@ -573,7 +576,7 @@ end
 function draw_text(cr, pt)
 	-- Set text font/color
 	cairo_select_font_face(cr, pt.attr.font, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, pt.fontsize)
+	cairo_set_font_size(cr, pt.attr.fontsize)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.attr.color, pt.attr.alpha))
 
 	local text = conky_parse(pt.text)
