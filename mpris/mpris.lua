@@ -1,11 +1,18 @@
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
--- Allowed players (higher number = preferred)
-allowed_players = {
-	Lollypop = 2,
-	Gapless = 1
+-- Named players (higher number = preferred)
+named_players = {
+	["Lollypop"] = {
+		alias = "Lollypop",
+		rank = 2
+	},
+	["com.github.neithern.g4music"] = {
+		alias = "Gapless",
+		rank = 1
+	}
 }
+
 -- Light/dark colors
 dark_colors = true
 
@@ -160,6 +167,7 @@ progress_bar = {
 -- PLAYERCTL VARIABLES (DO NOT MODIFY)
 ------------------------------------------------------------------------------
 active_player = nil
+active_alias = nil
 
 play_button_down = false
 previous_button_down = false
@@ -458,16 +466,24 @@ function update_active_player()
 
 	-- Find preferred player
 	active_player = nil
-	local top_rank = 0
+	local top_rank = -1
 
-	for _, plr in pairs(Playerctl.list_players()) do
-		local player_rank = allowed_players[plr.name]
+	for _, player in pairs(Playerctl.list_players()) do
+		local rank = 0
+		local alias = player.instance
 
-		if player_rank ~= nil and player_rank > top_rank then
-			local player = Playerctl.Player.new_from_name(plr)
+		local item = named_players[player.instance]
 
-			active_player = player
-			top_rank = player_rank
+		if item ~= nil then
+			rank = item.rank
+			alias = item.alias
+		end
+
+		if rank > top_rank then
+			active_player = Playerctl.Player.new_from_name(player)
+			active_alias = alias
+
+			top_rank = rank
 		end
 	end
 end
@@ -487,7 +503,7 @@ function conky_main()
 		local cr = cairo_create(cs)
 
 		-- Draw header
-		draw_text(cr, tags.header, string.upper(active_player.player_name or "NOW PLAYING"))
+		draw_text(cr, tags.header, string.upper(active_alias or "NOW PLAYING"))
 
 		-- Draw cover with frame
 		local artUrl = active_player:print_metadata_prop("mpris:artUrl")
