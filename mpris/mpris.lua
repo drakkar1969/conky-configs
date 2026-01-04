@@ -2,7 +2,7 @@
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 -- Named players (higher number = preferred)
-named_players = {
+allowed_players = {
 	["Lollypop"] = {
 		alias = "Lollypop",
 		rank = 2
@@ -466,24 +466,17 @@ function update_active_player()
 
 	-- Find preferred player
 	active_player = nil
-	local top_rank = -1
+	active_alias = nil
+	local top_rank = 0
 
 	for _, player in pairs(Playerctl.list_players()) do
-		local rank = 0
-		local alias = player.instance
+		local item = allowed_players[player.instance]
 
-		local item = named_players[player.instance]
-
-		if item ~= nil then
-			rank = item.rank
-			alias = item.alias
-		end
-
-		if rank > top_rank then
+		if item ~= nil and item.rank > top_rank then
 			active_player = Playerctl.Player.new_from_name(player)
-			active_alias = alias
+			active_alias = item.alias
 
-			top_rank = rank
+			top_rank = item.rank
 		end
 	end
 end
