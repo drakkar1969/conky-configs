@@ -10,6 +10,10 @@ allowed_players = {
 	["com.github.neithern.g4music"] = {
 		alias = "Gapless",
 		rank = 1
+	},
+	["Riff"] = {
+		alias = "Spotify",
+		rank = 1
 	}
 }
 
