@@ -18,7 +18,7 @@ allowed_players = {
 }
 
 -- Light/dark colors
-dark_colors = true
+dark_colors = false
 
 -- Show album
 show_album = true

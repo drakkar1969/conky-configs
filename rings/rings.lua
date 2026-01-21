@@ -14,7 +14,7 @@ LTR, RTL = 0, 1
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = true
+dark_colors = false
 
 ---------------------------------------
 -- Font/color variables
