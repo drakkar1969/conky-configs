@@ -52,21 +52,21 @@ text_attr = {
 	},
 	text = {
 		font = 'Adwaita Sans',
-		fontsize = { cpu = 28, fs = 25, mem = 27, time = 27, bat = 25, net = 25 },
+		fontsize = { cpu = 32, fs = 26, mem = 29, time = 29, bat = 26, net = 26 },
 		color = text_color,
-		alpha = 1
+		alpha = 0.9
 	},
 	extra = {
 		font = 'Adwaita Sans',
 		fontsize = 28,
 		color = text_color,
-		alpha = 1
+		alpha = 0.9
 	},
 	top = {
 		font = 'Adwaita Sans',
-		fontsize = 23,
+		fontsize = 25,
 		color = text_color,
-		alpha = 1
+		alpha = 0.9
 	}
 }
 
@@ -123,7 +123,7 @@ widgets.cpu = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_LEFT,
 		-- Text width
-		width = 160,
+		width = 170,
 	},
 	-- Ring/text values
 	values = {
@@ -147,7 +147,7 @@ widgets.cpu = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = RTL, dx = 36, dy = -4, width = 342, spacing = 32 },
+	top_attr = { count = 3, pos = RTL, dx = 36, dy = -4, width = 350, spacing = 32 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -178,7 +178,7 @@ widgets.fs = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_RIGHT,
 		-- Text width
-		width = 335,
+		width = 355,
 	},
 	-- Ring/text values (computed below based on disks table)
 	values = {},
@@ -218,7 +218,7 @@ widgets.mem = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = BOTTOM_RIGHT,
 		-- Text width
-		width = 365,
+		width = 390,
 	},
 	-- Ring/text values
 	values = {
@@ -236,7 +236,7 @@ widgets.mem = {
 		}
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = LTR, dx = -20, dy = 12, width = 380, spacing = 32 },
+	top_attr = { count = 3, pos = LTR, dx = -20, dy = 12, width = 390, spacing = 32 },
 	-- Top list values (computed below)
 	top_values = {}
 }
