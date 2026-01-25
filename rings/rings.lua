@@ -52,7 +52,7 @@ text_attr = {
 	},
 	text = {
 		font = 'Adwaita Sans',
-		fontsize = { cpu = 32, fs = 26, mem = 29, time = 29, bat = 26, net = 26 },
+		fontsize = { cpu = 32, fs = 25, mem = 29, time = 30, bat = 26, net = 25 },
 		color = text_color,
 		alpha = 0.9
 	},
@@ -64,7 +64,7 @@ text_attr = {
 	},
 	top = {
 		font = 'Adwaita Sans',
-		fontsize = 25,
+		fontsize = 24,
 		color = text_color,
 		alpha = 0.9
 	}
@@ -147,7 +147,7 @@ widgets.cpu = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = RTL, dx = 36, dy = -4, width = 350, spacing = 32 },
+	top_attr = { count = 3, pos = RTL, dx = 36, dy = -4, width = 360, spacing = 32 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -297,7 +297,7 @@ widgets.time = {
 ---------------------------------------
 widgets.bat = {
 	-- Header text and offset from ring center
-	header = { text = 'BATTERY', dx = -290, dy = 6 },
+	header = { text = 'BATTERY', dx = -295, dy = 6 },
 	rings = {
 		-- Coordinates of ring center
 		x = 440, y = 860,
