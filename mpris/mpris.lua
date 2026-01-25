@@ -48,26 +48,26 @@ icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg'
 icon_loop_playlist = string.gsub(conky_config, 'mpris.conf', 'icons/loop-playlist.svg')
 
 -- Font/color variables
-main_font = "Adwaita"
+main_font = "Adwaita Sans"
 main_color = dark_colors and 0x3d3846 or 0xdeddda
 hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 -- Element spacing
-gaps = { tags = 14, progress = 10, y = 14 }
+gaps = { tags = 28, progress = 20, y = 28 }
 
 -- Cover art
 cover_art = {
 	image = {
-		size = 70
+		size = 140
 	},
 	frame = {
-		x = 10,
+		x = 20,
 		width = 0,
 		color = main_color,
 		alpha = 0.1
 	},
 	icon = {
-		size = 32,
+		size = 64,
 		color = main_color,
 		alpha = 0.9,
 		file = icon_audio
@@ -78,10 +78,10 @@ cover_art = {
 tags = {
 	-- "Now Playing" header
 	header = {
-		x = 1,
-		y = 20,
+		x = 2,
+		y = 40,
 		font = main_font,
-		font_size = 11.5,
+		font_size = 22,
 		bold = true,
 		italic = false,
 		color = main_color,
@@ -90,7 +90,7 @@ tags = {
 	-- Track title
 	title = {
 		font = main_font,
-		font_size = 24,
+		font_size = 46,
 		bold = false,
 		italic = false,
 		color = main_color,
@@ -99,26 +99,26 @@ tags = {
 	-- Track artist
 	artist = {
 		font = main_font,
-		font_size = 14,
+		font_size = 26,
 		bold = false,
 		italic = false,
 		color = hilight_color,
-		alpha = 1,
+		alpha = 0.8,
 	},
 	-- Track position
 	time = {
 		font = main_font,
-		font_size = 12,
+		font_size = 24,
 		bold = true,
 		italic = false,
 		color = main_color,
-		alpha = 1,
+		alpha = 0.8,
 	}
 }
 
 -- Vertical line between cover and tags
 divider = {
-	width = 1,
+	width = 2,
 	color = main_color,
 	alpha = 0.15
 }
@@ -126,31 +126,31 @@ divider = {
 -- Icons table
 icons = {
 	status = {
-		size = 16,
+		size = 32,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
 		file = ""
 	},
 	previous = {
-		size = 16,
+		size = 32,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
 		file = icon_previous_disabled
 	},
 	next = {
-		size = 16,
+		size = 32,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
 		file = icon_next_disabled
 	},
 	shuffle = {
-		size = 16,
+		size = 32,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
 		file = icon_shuffle
 	},
 	loop = {
-		size = 16,
+		size = 32,
 		color = main_color,
 		alpha = dark_colors and 0.85 or 0.9,
 		file = icon_loop_track
@@ -159,8 +159,8 @@ icons = {
 
 -- Progress bar
 progress_bar = {
-	width = 200,
-	height = 8,
+	width = 400,
+	height = 18,
 	color_bg = main_color,
 	color_fg = main_color,
 	alpha_bg = dark_colors and 0.15 or 0.2,
