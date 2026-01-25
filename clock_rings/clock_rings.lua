@@ -19,14 +19,14 @@ lines_table = {}
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = true
+dark_colors = false
 
 ---------------------------------------
 -- Font/color variables
 ---------------------------------------
 main_color = dark_colors and 0x3d3846 or 0xdeddda
 text_color = dark_colors and 0x241f31 or 0xc0bfbc
-main_font = 'Adwaita'
+main_font = 'Adwaita Sans'
 time_font = 'Roboto'
 
 ---------------------------------------
@@ -44,7 +44,7 @@ rings_attr = {
 -- Other colors
 ---------------------------------------
 other_attr = {
-	clock = { color = 0x1c71d8, alpha = 1 },
+	clock = { color = 0x0461be, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
 	dotline = { color = main_color, alpha = 0.6 }
 }
@@ -53,12 +53,12 @@ other_attr = {
 -- Text fonts/colors
 ---------------------------------------
 text_attr = {
-	disk = { font = main_font, fontsize = 14, color = text_color, alpha = 1 },
-	label = { font = main_font, fontsize = 18, color = main_color, alpha = 1 },
-	value = { font = main_font, fontsize = 16, color = main_color, alpha = 1 },
-	time = { font = time_font, fontsize = 42, color = main_color, alpha = 1 },
-	date = { font = main_font, fontsize = 22, color = text_color, alpha = 0.8 },
-	top = { font = main_font, fontsize = 12.5, color = text_color, alpha = 1 }
+	disk = { font = main_font, fontsize = 25, color = text_color, alpha = 0.9 },
+	label = { font = main_font, fontsize = 32, color = main_color, alpha = 0.7 },
+	value = { font = main_font, fontsize = 30, color = main_color, alpha = 1 },
+	time = { font = time_font, fontsize = 80, color = main_color, alpha = 1 },
+	date = { font = main_font, fontsize = 42, color = text_color, alpha = 0.9 },
+	top = { font = main_font, fontsize = 23, color = text_color, alpha = 1 }
 }
 
 ---------------------------------------
@@ -66,41 +66,41 @@ text_attr = {
 ---------------------------------------
 rings = {
 	-- Coordinates of center of ring and radius (of inner seconds ring)
-	x = 260, y = 230, radius = 70,
+	x = 520, y = 460, radius = 140,
 	-- Seconds ring: width and gap from CPU/memory/temp rings
-	sec = { width = 4, gap = 5 },
+	sec = { width = 8, gap = 10 },
 	-- CPU rings: no. of CPU cores, width and gap of rings
-	cpu = { n = 8, width = 3, gap = 1 },
+	cpu = { n = 12, width = 3, gap = 2 },
 	-- Disks: width of rings, gap from CPU/memory/temp rings, vertical offset of
 	-- text from ring center, horiz gap between disk text at top and disks rings
-	disk = { width = 7, gap = 5, text_gap_x = 18, text_gap_y = 18 },
+	disk = { width = 12, gap = 10, text_gap_x = 40, text_gap_y = 36 },
 	-- Dummy rings: width and gap on left/right of each ring
-	dummy = { width = 2, gap = 30 },
+	dummy = { width = 4, gap = 60 },
 	-- Graph: width/height of graph, width/gap of individual bars, log_scale
-	graph = { width = 400, height = 30, bar_w = 1, bar_gap = 0, log_scale = true },
+	graph = { width = 800, height = 60, bar_w = 2, bar_gap = 0, log_scale = true },
 	-- Main horizontal line: width and gap from disk rings
-	line = { width = 2, gap = 7 },
+	line = { width = 4, gap = 16 },
 	-- Temperature text: gap between text and disks ring along angle, width of text
-	temp = { text_gap_r = 25, text_angle = 57, text_w = 165 },
+	temp = { text_gap_r = 50, text_angle = 57, text_w = 315 },
 	-- Date text: vertical offset from main line
-	date = { text_gap_y = 20 },
+	date = { text_gap_y = 40 },
 	-- NET text: vertical offset from main line, width of text
-	net = { text_gap_y = 15, text_w = 130 },
+	net = { text_gap_y = 30, text_w = 240 },
 	-- Top CPU/MEM lists: no. of items, gap between title text and disks ring along 
 	-- angle, width of text, width of line, vertical gap between line and text,
 	-- vertical distance between text lines
-	topcpu = { n = 4, text_gap_r = 30, text_angle = 145, text_w = 190, line_w = 1, line_gap_y = 13.5, text_space_y = 16 },
-	topmem = { n = 4, text_gap_r = 128, text_angle = 234, text_w = 190, line_w = 1, line_gap_y = 13.5, text_space_y = 16 }
+	topcpu = { n = 4, text_gap_r = 60, text_angle = 145, text_w = 380, line_w = 2, line_gap_y = 28, text_space_y = 34 },
+	topmem = { n = 4, text_gap_r = 256, text_angle = 234, text_w = 380, line_w = 2, line_gap_y = 28, text_space_y = 34 }
 }
 
 -- Clock hands: width and gap between individual hands and inner seconds ring
 clock_hands = {
-	hrs_width = 5,
-	hrs_gap = 14,
-	min_width = 3,
-	min_gap = 5,
-	sec_width = 1,
-	sec_gap = 3,
+	hrs_width = 8,
+	hrs_gap = 36,
+	min_width = 4,
+	min_gap = 10,
+	sec_width = 2,
+	sec_gap = 6,
 	show_seconds = true
 }
 
