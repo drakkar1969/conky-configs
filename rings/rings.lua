@@ -39,39 +39,39 @@ rings_attr = {
 -- Text/header/extra/top font and colors
 text_attr = {
 	header = {
-		font = 'Adwaita',
-		fontsize = 23,
+		font = 'Adwaita Sans',
+		fontsize = 46,
 		color = main_color,
 		alpha = 1
 	},
 	time = {
-		font = 'Aptos',
-		fontsize = 48,
+		font = 'Adwaita Sans',
+		fontsize = 84,
 		color = main_color,
 		alpha = 1
 	},
 	text = {
-		font = 'Adwaita',
-		fontsize = { cpu = 15, fs = 13, mem = 13.5, time = 13.5, bat = 13, net = 13 },
+		font = 'Adwaita Sans',
+		fontsize = { cpu = 28, fs = 25, mem = 27, time = 27, bat = 25, net = 25 },
 		color = text_color,
 		alpha = 1
 	},
 	extra = {
-		font = 'Adwaita',
-		fontsize = 13.5,
+		font = 'Adwaita Sans',
+		fontsize = 28,
 		color = text_color,
 		alpha = 1
 	},
 	top = {
-		font = 'Adwaita',
-		fontsize = 12.5,
+		font = 'Adwaita Sans',
+		fontsize = 23,
 		color = text_color,
 		alpha = 1
 	}
 }
 
 -- Horizontal gap between rings and text
-text_gap = 14
+text_gap = 28
 
 ---------------------------------------
 -- Disks table for FILESYSTEM widget
@@ -110,20 +110,20 @@ widgets = {}
 ---------------------------------------
 widgets.cpu = {
 	-- Header text and offset from ring center
-	header = { text = 'CORE', dx = -167, dy = 60 },
+	header = { text = 'CORE', dx = -340, dy = 120 },
 	rings = {
 		-- Coordinates of ring center
-		x = 182, y = 155,
+		x = 364, y = 310,
 		-- Radius of inner ring
-		radius = 82,
+		radius = 164,
 		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
-		width = { 20, 4 }, gap = 3,
+		width = { 40, 8 }, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_LEFT,
 		-- Text width
-		width = 80,
+		width = 160,
 	},
 	-- Ring/text values
 	values = {
@@ -141,13 +141,13 @@ widgets.cpu = {
 		}
 	},
 	-- Extra text offset from ring center, width and space between lines
-	extra_attr = { dx = -109, dy = -122, width = 109, spacing = 20 },
+	extra_attr = { dx = -208, dy = -244, width = 210, spacing = 40 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'CORE TEMP', value = '${hwmon coretemp temp 1}°C' }
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = RTL, dx = 18, dy = -2, width = 171, spacing = 16 },
+	top_attr = { count = 3, pos = RTL, dx = 36, dy = -4, width = 342, spacing = 32 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -165,25 +165,25 @@ end
 ---------------------------------------
 widgets.fs = {
 	-- Header text and offset from ring center
-	header = { text = 'FILESYSTEM', dx = 70, dy = 20 },
+	header = { text = 'FILESYSTEM', dx = 140, dy = 40 },
 	rings = {
 		-- Coordinates of ring center
-		x = 370, y = 135,
+		x = 740, y = 270,
 		-- Radius of inner ring
-		radius = 27,
+		radius = 54,
 		-- Width of rings / gap between rings
-		width = 14, gap = 3,
+		width = 28, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = TOP_RIGHT,
 		-- Text width
-		width = 180,
+		width = 335,
 	},
 	-- Ring/text values (computed below based on disks table)
 	values = {},
 	-- Extra text offset from ring center, width and space between lines
-	extra_attr = { dx = -52, dy = -91, width = 77, spacing = 20 },
+	extra_attr = { dx = -100, dy = -182, width = 150, spacing = 40 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'DISK IO', value = '${diskio}/s' }
@@ -205,20 +205,20 @@ end
 ---------------------------------------
 widgets.mem = {
 	-- Header text and offset from ring center
-	header = { text = 'MEMORY', dx = 90, dy = -45 },
+	header = { text = 'MEMORY', dx = 180, dy = -90 },
 	rings = {
 		-- Coordinates of ring center
-		x = 325, y = 300,
+		x = 650, y = 600,
 		-- Radius of inner ring
-		radius = 55,
+		radius = 110,
 		-- Width of rings / gap between rings
-		width = 17, gap = 3,
+		width = 34, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = BOTTOM_RIGHT,
 		-- Text width
-		width = 188,
+		width = 365,
 	},
 	-- Ring/text values
 	values = {
@@ -236,7 +236,7 @@ widgets.mem = {
 		}
 	},
 	-- Top list text count, position, offset from ring center, width and space between lines. pos is one of LTR, RTL
-	top_attr = { count = 3, pos = LTR, dx = -10, dy = 6, width = 195, spacing = 16 },
+	top_attr = { count = 3, pos = LTR, dx = -20, dy = 12, width = 380, spacing = 32 },
 	-- Top list values (computed below)
 	top_values = {}
 }
@@ -254,14 +254,14 @@ end
 ---------------------------------------
 widgets.time = {
 	-- Header text and offset from ring center
-	header = { text = '${time '..time_format..'}', dx = -145, dy = 10 },
+	header = { text = '${time '..time_format..'}', dx = -290, dy = 20 },
 	rings = {
 		-- Coordinates of ring center
-		x = 170, y = 330,
+		x = 340, y = 660,
 		-- Radius of inner ring
-		radius = 20,
+		radius = 40,
 		-- Width of rings (requires 3 values, inner ring to outer) / gap between rings
-		width = { 9, 11, 14 }, gap = 3,
+		width = { 18, 22, 28 }, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
@@ -297,14 +297,14 @@ widgets.time = {
 ---------------------------------------
 widgets.bat = {
 	-- Header text and offset from ring center
-	header = { text = 'BATTERY', dx = -145, dy = 3 },
+	header = { text = 'BATTERY', dx = -290, dy = 6 },
 	rings = {
 		-- Coordinates of ring center
-		x = 220, y = 430,
+		x = 440, y = 860,
 		-- Radius of inner ring
-		radius = 10,
+		radius = 20,
 		-- Width of rings (requires 2 values, inner ring to outer) / gap between rings
-		width = { 20, 12 }, gap = 3,
+		width = { 40, 24 }, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
@@ -340,20 +340,20 @@ net_conn = '${wireless_essid '..net_interface..'}'
 -- NETWORK widget
 widgets.net = {
 	-- Header text and offset from ring center
-	header = { text = 'INTERNET', dx = 60, dy = -10 },
+	header = { text = 'INTERNET', dx = 110, dy = -20 },
 	rings = {
 		-- Coordinates of ring center
-		x = 320, y = 458,
+		x = 640, y = 916,
 		-- Radius of inner ring
-		radius = 27,
+		radius = 54,
 		-- Width of rings / gap between rings
-		width = 15, gap = 3,
+		width = 30, gap = 6,
 	},
 	text = {
 		-- Text position. pos is one of TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT and determines position/orientation of rings
 		pos = BOTTOM_RIGHT,
 		-- Text width
-		width = 153,
+		width = 306,
 	},
 	-- Ring/text values
 	values = {
@@ -371,7 +371,7 @@ widgets.net = {
 		}
 	},
 	-- Extra text offset from ring center, width and space between lines
-	extra_attr = { dx = text_gap, dy = 80, width = 110, spacing = 20 },
+	extra_attr = { dx = text_gap, dy = 160, width = 210, spacing = 40 },
 	-- Extra text values
 	extra_values = {
 		{ label = 'NETWORK', value = net_conn },
