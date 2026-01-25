@@ -118,7 +118,7 @@ tags = {
 
 -- Vertical line between cover and tags
 divider = {
-	width = 2,
+	width = 1,
 	color = main_color,
 	alpha = 0.15
 }
@@ -160,7 +160,7 @@ icons = {
 -- Progress bar
 progress_bar = {
 	width = 400,
-	height = 18,
+	height = 16,
 	color_bg = main_color,
 	color_fg = main_color,
 	alpha_bg = dark_colors and 0.15 or 0.2,
