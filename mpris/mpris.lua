@@ -341,8 +341,10 @@ function draw_text(cr, pt, text)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 
 	cairo_move_to(cr, pt.x, pt.y)
-	cairo_show_text(cr, text)
-	cairo_stroke(cr)
+	cairo_text_path(cr, text)
+	cairo_set_line_width(cr, 0.3)
+	cairo_stroke_preserve(cr)
+	cairo_fill(cr)
 end
 
 ---------------------------------------

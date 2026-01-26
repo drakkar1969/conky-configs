@@ -612,8 +612,10 @@ function draw_text(cr, pt)
 
 	-- Draw text
 	cairo_move_to(cr, text_x, text_y)
-	cairo_show_text(cr, text)
-	cairo_stroke(cr)
+	cairo_text_path(cr, text)
+	cairo_set_line_width(cr, 0.3)
+	cairo_stroke_preserve(cr)
+	cairo_fill(cr)
 
 	-- Destroy structures
 	tolua.releaseownership(f_extents)
