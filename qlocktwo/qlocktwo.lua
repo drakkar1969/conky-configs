@@ -5,15 +5,15 @@
 dark_colors = true
 
 -- Font/color variables
-clock_font = 'Source Code Pro'
-clock_fontsize = 32
+clock_font = 'Adwaita Mono'
+clock_fontsize = 60
 clock_bold = false
 clock_italic = false
 attr_on = dark_colors and { color = 0x3d3846, alpha = 1 } or { color = 0xdeddda, alpha = 1 }
 attr_off = dark_colors and { color = 0x3d3846, alpha = 0.1 } or { color = 0xdeddda, alpha = 0.15 }
 
 -- Row spacing
-row_spacing = 45
+row_spacing = 80
 
 ------------------------------------------------------------------------------
 -- LUA MODULES
@@ -152,8 +152,10 @@ function conky_main()
 	
 		cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.color, pt.alpha))
 		cairo_move_to(cr, x, y)
-		cairo_show_text(cr, pt.text)
-		cairo_stroke(cr)
+		cairo_text_path(cr, pt.text)
+		cairo_set_line_width(cr, 0.5)
+		cairo_stroke_preserve(cr)
+		cairo_fill(cr)
 	end
 
 	-- Destroy structures
