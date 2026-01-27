@@ -254,7 +254,7 @@ end
 ---------------------------------------
 widgets.time = {
 	-- Header text and offset from ring center
-	header = { text = '${time '..time_format..'}', dx = -290, dy = 20 },
+	header = { text = '${time '..time_format..'}', dx = -310, dy = 20 },
 	rings = {
 		-- Coordinates of ring center
 		x = 340, y = 660,
