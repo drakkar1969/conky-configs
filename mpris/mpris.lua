@@ -1,8 +1,17 @@
 ------------------------------------------------------------------------------
+-- LUA MODULES
+------------------------------------------------------------------------------
+require 'cairo'
+require 'cairo_xlib'
+require 'cairo_imlib2_helper'
+require 'imlib2'
+require 'rsvg'
+
+------------------------------------------------------------------------------
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 -- Named players (higher number = preferred)
-allowed_players = {
+local allowed_players = {
 	["Lollypop"] = {
 		alias = "Lollypop",
 		rank = 2
@@ -18,45 +27,45 @@ allowed_players = {
 }
 
 -- Light/dark colors
-dark_colors = false
+local dark_colors = false
 
 -- Show album
-show_album = true
+local show_album = true
 
 -- Progress bar dot (false = full progress bar)
-progress_dot = false
-progress_square = false
+local progress_dot = false
+local progress_square = false
 
 -- Show cover art
-show_cover_art = true
+local show_cover_art = true
 
 -- Show shuffle/loop icons
-show_shuffle = true
-show_loop = true
+local show_shuffle = true
+local show_loop = true
 
 -- Icon assets
-icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
-icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
-icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
-icon_previous = string.gsub(conky_config, 'mpris.conf', 'icons/previous.svg')
-icon_previous_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/previous-disabled.svg')
-icon_next = string.gsub(conky_config, 'mpris.conf', 'icons/next.svg')
-icon_next_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/next-disabled.svg')
-icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
-icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
-icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg')
-icon_loop_playlist = string.gsub(conky_config, 'mpris.conf', 'icons/loop-playlist.svg')
+local icon_play = string.gsub(conky_config, 'mpris.conf', 'icons/play.svg')
+local icon_pause = string.gsub(conky_config, 'mpris.conf', 'icons/pause.svg')
+local icon_stop = string.gsub(conky_config, 'mpris.conf', 'icons/stop.svg')
+local icon_previous = string.gsub(conky_config, 'mpris.conf', 'icons/previous.svg')
+local icon_previous_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/previous-disabled.svg')
+local icon_next = string.gsub(conky_config, 'mpris.conf', 'icons/next.svg')
+local icon_next_disabled = string.gsub(conky_config, 'mpris.conf', 'icons/next-disabled.svg')
+local icon_audio = string.gsub(conky_config, 'mpris.conf', 'icons/audio.svg')
+local icon_shuffle = string.gsub(conky_config, 'mpris.conf', 'icons/shuffle.svg')
+local icon_loop_track = string.gsub(conky_config, 'mpris.conf', 'icons/loop-track.svg')
+local icon_loop_playlist = string.gsub(conky_config, 'mpris.conf', 'icons/loop-playlist.svg')
 
 -- Font/color variables
-main_font = "Adwaita Sans"
-main_color = dark_colors and 0x3d3846 or 0xdeddda
-hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
+local main_font = "Adwaita Sans"
+local main_color = dark_colors and 0x3d3846 or 0xdeddda
+local hilight_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 -- Element spacing
-gaps = { tags = 28, progress = 20, y = 28 }
+local gaps = { tags = 28, progress = 20, y = 28 }
 
 -- Cover art
-cover_art = {
+local cover_art = {
 	image = {
 		size = 140
 	},
@@ -75,7 +84,7 @@ cover_art = {
 }
 
 -- Tags table
-tags = {
+local tags = {
 	-- "Now Playing" header
 	header = {
 		x = 2,
@@ -117,14 +126,14 @@ tags = {
 }
 
 -- Vertical line between cover and tags
-divider = {
+local divider = {
 	width = 1,
 	color = main_color,
 	alpha = 0.15
 }
 
 -- Icons table
-icons = {
+local icons = {
 	status = {
 		size = 32,
 		color = main_color,
@@ -158,7 +167,7 @@ icons = {
 }
 
 -- Progress bar
-progress_bar = {
+local progress_bar = {
 	width = 400,
 	height = 16,
 	color_bg = main_color,
@@ -170,17 +179,17 @@ progress_bar = {
 ------------------------------------------------------------------------------
 -- PLAYERCTL VARIABLES (DO NOT MODIFY)
 ------------------------------------------------------------------------------
-active_player = nil
-active_alias = nil
+local active_player = nil
+local active_alias = nil
 
-play_button_down = false
-previous_button_down = false
-next_button_down = false
+local play_button_down = false
+local previous_button_down = false
+local next_button_down = false
 
 ------------------------------------------------------------------------------
 -- ACCENTED CHARACTER MAP (UPDATE AS NECESSARY)
 ------------------------------------------------------------------------------
-accented_map = {
+local accented_map = {
 	["á"] = "Á", ["é"] = "É", ["í"] = "Í", ["ó"] = "Ó", ["ú"] = "Ú",
 	["à"] = "À", ["è"] = "È", ["ì"] = "Ì", ["ò"] = "Ò", ["ù"] = "Ù",
 	["â"] = "Â", ["ê"] = "Ê", ["î"] = "Î", ["ô"] = "Ô", ["û"] = "Û",
@@ -208,7 +217,7 @@ divider.xr = 0
 divider.yr = cover_art.frame.size
 
 -- Calculate icon positions (some x coordinates calculated in main function)
-temp_height = math.max(icons.status.size, icons.shuffle.size, icons.loop.size, progress_bar.height)
+local temp_height = math.max(icons.status.size, icons.shuffle.size, icons.loop.size, progress_bar.height)
 
 icons.previous.x = cover_art.frame.x
 icons.previous.y = cover_art.frame.y + cover_art.frame.size + gaps.y + (temp_height - icons.previous.size)/2
@@ -231,15 +240,6 @@ tags.title.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps
 tags.artist.x = cover_art.frame.x + cover_art.frame.size + divider.width + 2*gaps.tags
 
 -- Note: pos/len tags x,y coordinates calculated in main func
-
-------------------------------------------------------------------------------
--- LUA MODULES
-------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
-require 'cairo_imlib2_helper'
-require 'imlib2'
-require 'rsvg'
 
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
