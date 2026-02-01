@@ -1,12 +1,18 @@
 ------------------------------------------------------------------------------
+-- LUA MODULES
+------------------------------------------------------------------------------
+require 'cairo'
+require 'cairo_xlib'
+
+------------------------------------------------------------------------------
 -- CONSTANTS - DO NOT DELETE
 ------------------------------------------------------------------------------
 -- Alignment of ring text
-TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT = 0, 1, 2, 3
+local TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT = 0, 1, 2, 3
 -- Text justification
-ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
+local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
 -- Alignment of top lists
-LTR, RTL = 0, 1
+local LTR, RTL = 0, 1
 
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
@@ -14,19 +20,19 @@ LTR, RTL = 0, 1
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = false
+local dark_colors = false
 
 ---------------------------------------
 -- Font/color variables
 ---------------------------------------
-main_color = dark_colors and 0x3d3846 or 0xdeddda
-text_color = dark_colors and 0x241f31 or 0xc0bfbc
+local main_color = dark_colors and 0x3d3846 or 0xdeddda
+local text_color = dark_colors and 0x241f31 or 0xc0bfbc
 
 ---------------------------------------
 -- Ring colors
 ---------------------------------------
 -- Ring background/foreground colors
-rings_attr = {
+local rings_attr = {
 	bg_color = main_color,
 	bg_alpha = dark_colors and 0.15 or 0.3,
 	fg_color = main_color,
@@ -37,7 +43,7 @@ rings_attr = {
 -- Text font/colors
 ---------------------------------------
 -- Text/header/extra/top font and colors
-text_attr = {
+local text_attr = {
 	header = {
 		font = 'Adwaita Sans',
 		fontsize = 46,
@@ -71,13 +77,13 @@ text_attr = {
 }
 
 -- Horizontal gap between rings and text
-text_gap = 28
+local text_gap = 28
 
 ---------------------------------------
 -- Disks table for FILESYSTEM widget
 ---------------------------------------
 -- Disks table: number of name/path pairs = number of FILESYSTEM rings
-disks = {
+local disks = {
 	{ name = 'esp', path = '/efi'},
 	{ name = 'root', path = '/'},
 	{ name = 'home', path = '/home' }
@@ -86,24 +92,24 @@ disks = {
 ---------------------------------------
 -- Date/time format for TIME widget
 ---------------------------------------
-date_format = '%a %d-%m-%Y'
-time_format = '%R'
+local date_format = '%a %d-%m-%Y'
+local time_format = '%R'
 
 ---------------------------------------
 -- Parameters for NETWORK widget
 ---------------------------------------
 -- Network interface variables
-wifi_interface = 'wlp0s20f3'
-lan_interface = 'enp0s13f0u1'
+local wifi_interface = 'wlp0s20f3'
+local lan_interface = 'enp0s13f0u1'
 
 -- Max download/upload speeds in KB/s
-net_max_down = 36000
-net_max_up = 4000
+local net_max_down = 36000
+local net_max_up = 4000
 
 ------------------------------------------------------------------------------
 -- BUILD WIDGETS TABLE
 ------------------------------------------------------------------------------
-widgets = {}
+local widgets = {}
 
 ---------------------------------------
 -- CPU widget
@@ -334,8 +340,8 @@ widgets.bat = {
 -- NETWORK widget
 ---------------------------------------
 -- Initial values for network interface and SSID (automatically adjusted in main function)
-net_interface = wifi_interface
-net_conn = '${wireless_essid '..net_interface..'}'
+local net_interface = wifi_interface
+local net_conn = '${wireless_essid '..net_interface..'}'
 
 -- NETWORK widget
 widgets.net = {
@@ -383,8 +389,8 @@ widgets.net = {
 -- BUILD RING/TEXT TABLES
 ------------------------------------------------------------------------------
 -- Create empty tables
-rings_table = {}
-text_table = {}
+local rings_table = {}
+local text_table = {}
 
 for id, widget in pairs(widgets) do
 	-- Add widget header to text table
@@ -535,12 +541,6 @@ for id, widget in pairs(widgets) do
 		end
 	end
 end
-
-------------------------------------------------------------------------------
--- LUA MODULES
-------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
 
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
