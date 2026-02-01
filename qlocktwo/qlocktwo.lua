@@ -1,25 +1,25 @@
 ------------------------------------------------------------------------------
--- USER CONFIGURATION
-------------------------------------------------------------------------------
--- Light/dark colors
-dark_colors = true
-
--- Font/color variables
-clock_font = 'Adwaita Mono'
-clock_fontsize = 60
-clock_bold = false
-clock_italic = false
-attr_on = dark_colors and { color = 0x3d3846, alpha = 1 } or { color = 0xdeddda, alpha = 1 }
-attr_off = dark_colors and { color = 0x3d3846, alpha = 0.1 } or { color = 0xdeddda, alpha = 0.15 }
-
--- Row spacing
-row_spacing = 80
-
-------------------------------------------------------------------------------
 -- LUA MODULES
 ------------------------------------------------------------------------------
 require 'cairo'
 require 'cairo_xlib'
+
+------------------------------------------------------------------------------
+-- USER CONFIGURATION
+------------------------------------------------------------------------------
+-- Light/dark colors
+local dark_colors = true
+
+-- Font/color variables
+local clock_font = 'Adwaita Mono'
+local clock_fontsize = 60
+local clock_bold = false
+local clock_italic = false
+local attr_on = dark_colors and { color = 0x3d3846, alpha = 1 } or { color = 0xdeddda, alpha = 1 }
+local attr_off = dark_colors and { color = 0x3d3846, alpha = 0.1 } or { color = 0xdeddda, alpha = 0.15 }
+
+-- Row spacing
+local row_spacing = 80
 
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
