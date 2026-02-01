@@ -1,17 +1,23 @@
 ------------------------------------------------------------------------------
+-- LUA MODULES
+------------------------------------------------------------------------------
+require 'cairo'
+require 'cairo_xlib'
+
+------------------------------------------------------------------------------
 -- CONSTANTS - DO NOT DELETE
 ------------------------------------------------------------------------------
 -- Text justification
-ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
-ALIGNT, ALIGNM, ALIGNB = 0, 1, 2
+local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
+local ALIGNT, ALIGNM, ALIGNB = 0, 1, 2
 
 ------------------------------------------------------------------------------
 -- TABLE VARIABLES - DO NOT DELETE
 ------------------------------------------------------------------------------
-rings_table = {}
-text_table = {}
-graphs_table = {}
-lines_table = {}
+local rings_table = {}
+local text_table = {}
+local graphs_table = {}
+local lines_table = {}
 
 ------------------------------------------------------------------------------
 -- USER CONFIGURATION
@@ -19,20 +25,20 @@ lines_table = {}
 ---------------------------------------
 -- Light/dark colors
 ---------------------------------------
-dark_colors = false
+local dark_colors = false
 
 ---------------------------------------
 -- Font/color variables
 ---------------------------------------
-main_color = dark_colors and 0x3d3846 or 0xdeddda
-text_color = dark_colors and 0x241f31 or 0xc0bfbc
-main_font = 'Adwaita Sans'
-time_font = 'Roboto'
+local main_color = dark_colors and 0x3d3846 or 0xdeddda
+local text_color = dark_colors and 0x241f31 or 0xc0bfbc
+local main_font = 'Adwaita Sans'
+local time_font = 'Roboto'
 
 ---------------------------------------
 -- Ring colors
 ---------------------------------------
-rings_attr = {
+local rings_attr = {
 	bg_color = main_color,
 	bg_alpha = dark_colors and 0.15 or 0.3,
 	fg_color = main_color,
@@ -43,7 +49,7 @@ rings_attr = {
 ---------------------------------------
 -- Other colors
 ---------------------------------------
-other_attr = {
+local other_attr = {
 	clock = { color = 0x0461be, alpha = 1 },
 	graph = { color = main_color, alpha = dark_colors and 0.7 or 0.8 },
 	dotline = { color = main_color, alpha = 0.6 }
@@ -52,7 +58,7 @@ other_attr = {
 ---------------------------------------
 -- Text fonts/colors
 ---------------------------------------
-text_attr = {
+local text_attr = {
 	disk = { font = main_font, fontsize = 25, color = text_color, alpha = 0.9 },
 	label = { font = main_font, fontsize = 32, color = main_color, alpha = 0.7 },
 	value = { font = main_font, fontsize = 30, color = main_color, alpha = 1 },
@@ -64,7 +70,7 @@ text_attr = {
 ---------------------------------------
 -- Rings
 ---------------------------------------
-rings = {
+local rings = {
 	-- Coordinates of center of ring and radius (of inner seconds ring)
 	x = 520, y = 460, radius = 140,
 	-- Seconds ring: width and gap from CPU/memory/temp rings
@@ -94,7 +100,7 @@ rings = {
 }
 
 -- Clock hands: width and gap between individual hands and inner seconds ring
-clock_hands = {
+local clock_hands = {
 	hrs_width = 8,
 	hrs_gap = 36,
 	min_width = 4,
@@ -105,20 +111,20 @@ clock_hands = {
 }
 
 -- Name and path of two disks to display in disk rings/text
-disks = {
+local disks = {
 	{ name = 'root', path = '/' },
 	{ name = 'home', path = '/home'}
 }
 
 -- Network interface variables
-wifi_interface = 'wlp0s20f3'
-lan_interface = 'enp0s13f0u1'
+local wifi_interface = 'wlp0s20f3'
+local lan_interface = 'enp0s13f0u1'
 
 -- Initial value for network interface (automatically adjusted in main function)
-net_interface = wifi_interface
+local net_interface = wifi_interface
 
 -- Max download speed in KB/s
-net_max_down = 2800
+local net_max_down = 2800
 
 ------------------------------------------------------------------------------
 -- BUILD VARIABLE TABLES
@@ -271,8 +277,8 @@ end
 ---------------------------------------
 -- Core Temp text
 ---------------------------------------
-temp_x = math.floor(rings.x + (rings_ext_r + rings.temp.text_gap_r)*math.sin(rings.temp.text_angle*(2*math.pi/360)))
-temp_y = math.floor(rings.y - (rings_ext_r + rings.temp.text_gap_r)*math.cos(rings.temp.text_angle*(2*math.pi/360)))
+local temp_x = math.floor(rings.x + (rings_ext_r + rings.temp.text_gap_r)*math.sin(rings.temp.text_angle*(2*math.pi/360)))
+local temp_y = math.floor(rings.y - (rings_ext_r + rings.temp.text_gap_r)*math.cos(rings.temp.text_angle*(2*math.pi/360)))
 
 text_table['templabel'] = {
 	text = 'CORE TEMP',
@@ -317,7 +323,7 @@ text_table['date'] = {
 ---------------------------------------
 -- NET text
 ---------------------------------------
-max_x = rings.x + rings_ext_r + rings.dummy.gap*4 + rings.dummy.width*2 + rings.graph.width
+local max_x = rings.x + rings_ext_r + rings.dummy.gap*4 + rings.dummy.width*2 + rings.graph.width
 
 text_table['netlabel'] = {
 	text = 'NET',
@@ -360,8 +366,8 @@ lines_table['main'] = {
 ---------------------------------------
 -- CPU top list
 ---------------------------------------
-topcpu_x = math.floor(rings.x + (rings_ext_r + rings.topcpu.text_gap_r)*math.sin(rings.topcpu.text_angle*(2*math.pi/360)))
-topcpu_y = math.floor(rings.y - (rings_ext_r + rings.topcpu.text_gap_r)*math.cos(rings.topcpu.text_angle*(2*math.pi/360)))
+local topcpu_x = math.floor(rings.x + (rings_ext_r + rings.topcpu.text_gap_r)*math.sin(rings.topcpu.text_angle*(2*math.pi/360)))
+local topcpu_y = math.floor(rings.y - (rings_ext_r + rings.topcpu.text_gap_r)*math.cos(rings.topcpu.text_angle*(2*math.pi/360)))
 
 text_table['topcpulabel'] = {
 	text = 'CPU',
@@ -453,8 +459,8 @@ end
 ---------------------------------------
 -- MEM top list
 ---------------------------------------
-topmem_x = math.floor(rings.x + (rings_ext_r + rings.topmem.text_gap_r)*math.sin(rings.topmem.text_angle*(2*math.pi/360)))
-topmem_y = math.floor(rings.y - (rings_ext_r + rings.topmem.text_gap_r)*math.cos(rings.topmem.text_angle*(2*math.pi/360)))
+local topmem_x = math.floor(rings.x + (rings_ext_r + rings.topmem.text_gap_r)*math.sin(rings.topmem.text_angle*(2*math.pi/360)))
+local topmem_y = math.floor(rings.y - (rings_ext_r + rings.topmem.text_gap_r)*math.cos(rings.topmem.text_angle*(2*math.pi/360)))
 
 text_table['topmemlabel'] = {
 	text = 'RAM',
@@ -518,12 +524,6 @@ for i = 1, rings.topmem.n do
 end
 
 ------------------------------------------------------------------------------
--- LUA MODULES
-------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
-
-------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
@@ -537,7 +537,6 @@ end
 -- Function get_conky_value
 ---------------------------------------
 function get_conky_value(name, arg)
-
 	local str = string.format('${%s %s}', name, arg)
 	str = conky_parse(str)
 
