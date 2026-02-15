@@ -1,0 +1,478 @@
+------------------------------------------------------------------------------
+-- LUA MODULES
+------------------------------------------------------------------------------
+require 'cairo'
+require 'cairo_xlib'
+
+------------------------------------------------------------------------------
+-- CONSTANTS - DO NOT DELETE
+------------------------------------------------------------------------------
+local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
+
+------------------------------------------------------------------------------
+-- COLOR PALETTE
+------------------------------------------------------------------------------
+local palette = {
+	adwaita_blue = 0x81d0ff,
+	adwaita_teal = 0x7bdff4,
+	adwaita_green = 0x8de698,
+	adwaita_yellow = 0xffc057,
+	adwaita_orange = 0xff9c5b,
+	adwaita_red = 0xff888c,
+	adwaita_pink = 0xffa0d8,
+	adwaita_purple = 0xfba7ff,
+	adwaita_slate = 0xbbd1e5,
+
+	nothing_orange = 0xfb4620
+}
+
+------------------------------------------------------------------------------
+-- USER CONFIGURATION
+------------------------------------------------------------------------------
+---------------------------------------
+-- Weather variables
+---------------------------------------
+local weather_interval = 900
+local weather_id = 'b1b61a08efe33de67901d98c4f5711f5'
+local weather_city = '3094802' --Krakow
+
+---------------------------------------
+-- Font/color variables
+---------------------------------------
+local background_color = 0x28282c
+local header_color = 0xaaaaaa
+local default_color = 0xffffff
+local subtext_color = 0xbbbbbb
+local accent_color = palette.adwaita_green
+
+local style = {
+	header = {
+		fface = 'Ndot 55', fsize = 36, stroke = 0, color = header_color
+	},
+	ring = {
+		fface = 'Ndot 57', fsize = 32, stroke = 0.5, color = accent_color
+	},
+	text = {
+		fface = 'Inter', fsize = 25, stroke = 0.6, color = default_color
+	},
+	subtext = {
+		fface = 'Inter', fsize = 23, stroke = 0.4, color = subtext_color
+	},
+	time = {
+		fface = 'Ndot77JPExtended', fsize = 84, stroke = 0.6, color = accent_color
+	},
+	weather = {
+		fface = 'Ndot77JPExtended', fsize = 60, stroke = 0.3, color = accent_color
+	}
+}
+
+------------------------------------------------------------------------------
+-- DEFINE WIDGETS
+------------------------------------------------------------------------------
+local border_radius = 36
+local margin_x = 40
+local margin_y = 40
+
+local line_spacing = 22
+
+---------------------------------------
+-- CPU widget
+---------------------------------------
+local cpu = {
+	background = {
+		x = 0,
+		y = 0
+	},
+	header = {
+		label = 'CPU'
+	},
+	ring = {
+		start_angle = -90,
+		end_angle = 90,
+		step = 9,
+		padding_x = 0,
+		outer_radius = 100,
+		mark_width = 16,
+		mark_thickness = 5,
+		label = '${cpu cpu0}%',
+		value = '${cpu cpu0}',
+		value_max = 100
+	},
+	text = {
+		items = {
+			{ label = 'CORE', value = '${hwmon coretemp temp 1}°C' }
+		}
+	}
+}
+
+---------------------------------------
+-- MEMORY widget
+---------------------------------------
+local mem = {
+	background = {
+		x = 305,
+		y = 0
+	},
+	header = {
+		label = 'MEMORY'
+	},
+	ring = {
+		start_angle = -90,
+		end_angle = 90,
+		step = 9,
+		padding_x = 0,
+		outer_radius = 100,
+		mark_width = 16,
+		mark_thickness = 5,
+		label = '${memperc}%',
+		value = '${memperc}',
+		value_max = 100
+	},
+	text = {
+		items = {
+			{ label = 'SWAP', value = '${swap}' }
+		}
+	}
+}
+
+---------------------------------------
+-- DISK widget
+---------------------------------------
+local disk = {
+	background = {
+		x = 0,
+		y = 330
+	},
+	header = {
+		label = 'DISK'
+	},
+	ring = {
+		start_angle = -90,
+		end_angle = 90,
+		step = 9,
+		padding_x = 0,
+		outer_radius = 100,
+		mark_width = 16,
+		mark_thickness = 5,
+		label = '${fs_used_perc /home}%',
+		value = '${fs_used_perc /home}',
+		value_max = 100
+	},
+	text = {
+		items = {
+			{ label = 'IO', value = '${diskio}' }
+		}
+	}
+}
+
+---------------------------------------
+-- WIFI widget
+---------------------------------------
+local interface = 'wlp0s20f3'
+local wifi_max = 36000
+
+local wifi = {
+	background = {
+		x = 305,
+		y = 330
+	},
+	header = {
+		label = 'WIRELESS'
+	},
+	ring = {
+		start_angle = -90,
+		end_angle = 90,
+		step = 9,
+		padding_x = 0,
+		outer_radius = 100,
+		mark_width = 16,
+		mark_thickness = 5,
+		label = '${downspeed '..interface..'}',
+		value = '${downspeedf '..interface..'}',
+		value_max = wifi_max
+	},
+	text = {
+		items = {
+			{ label = '${wireless_essid '..interface..'}', value = '' }
+		}
+	}
+}
+
+---------------------------------------
+-- TIME widget
+---------------------------------------
+time = {
+	background = {
+		x = 0,
+		y = 660,
+		width = 590
+	}
+}
+
+------------------------------------------------------------------------------
+-- COMPUTE WIDGET VALUES
+------------------------------------------------------------------------------
+for i, w in pairs({cpu, mem, disk, wifi}) do
+	w.background.width = (margin_x + w.ring.padding_x + w.ring.outer_radius) * 2
+
+	w.header.x = w.background.x + w.background.width / 2
+
+	w.ring.x = w.header.x
+	w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width
+
+	w.text.xs = w.background.x + margin_x
+	w.text.xe = w.background.x + w.background.width - margin_x
+end
+
+------------------------------------------------------------------------------
+-- AUXILIARY FUNCTIONS
+------------------------------------------------------------------------------
+function rgb_to_r_g_b(color, alpha)
+	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
+end
+
+function ar_to_xy(xc, yc, angle, radius)
+	local radians = (math.pi / 180) * angle
+
+	local x = xc + radius * (math.sin(radians))
+	local y = yc - radius * (math.cos(radians))
+
+	return x, y
+end
+
+function font_height(cr, style)
+	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, style.fsize)
+
+	local f_extents = cairo_font_extents_t:create()
+	tolua.takeownership(f_extents)
+	cairo_font_extents(cr, f_extents)
+
+	local height = f_extents.height - f_extents.descent * 2
+
+	tolua.releaseownership(f_extents)
+	cairo_font_extents_t:destroy(f_extents)
+
+	return height
+end
+
+------------------------------------------------------------------------------
+-- DRAWING FUNCTIONS
+------------------------------------------------------------------------------
+---------------------------------------
+-- Function draw_background
+---------------------------------------
+function draw_background(cr, pt)
+	local conv = math.pi / 180
+
+	cairo_new_sub_path(cr)
+	cairo_arc(cr, pt.x + pt.width - border_radius, pt.y + border_radius, border_radius, -90 * conv, 0)
+	cairo_arc(cr, pt.x + pt.width - border_radius, pt.y + pt.height - border_radius, border_radius, 0, 90 * conv)
+	cairo_arc(cr, pt.x + border_radius, pt.y + pt.height - border_radius, border_radius, 90 * conv, 180 * conv);
+	cairo_arc(cr, pt.x + border_radius, pt.y + border_radius, border_radius, 180 * conv, 270 * conv);
+	cairo_close_path(cr)
+
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(background_color, 1))
+	cairo_fill(cr)
+end
+
+---------------------------------------
+-- Function draw_text
+---------------------------------------
+function draw_text(cr, style, align, x, y, text, len)
+	text = string.upper(conky_parse(text))
+
+	-- Ellipsize text if necessary
+	if len ~= nil and string.len(text) > len then
+		text = string.sub(text, 1, len - 1)..'…'
+	end
+
+	-- Set font/color
+	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, style.fsize)
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(style.color, 1))
+
+	-- Calculate text extents
+	local t_extents = cairo_text_extents_t:create()
+	tolua.takeownership(t_extents)
+	cairo_text_extents(cr, text, t_extents)
+
+	local text_w = t_extents.width + t_extents.x_bearing
+
+	local text_x = ((align == ALIGNR) and (x - text_w) or ((align == ALIGNC) and (x - text_w * 0.5) or x))
+
+	-- Draw text
+	cairo_move_to(cr, text_x, y)
+	cairo_text_path(cr, text)
+	cairo_set_line_width(cr, style.stroke)
+	cairo_stroke_preserve(cr)
+	cairo_fill(cr)
+
+	-- Destroy variables
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
+
+	return text_w
+end
+
+---------------------------------------
+-- Function draw_ring
+---------------------------------------
+function draw_ring(cr, pt)
+	local str = conky_parse(pt.value)
+
+	-- Calculate ring value
+	local value = tonumber(str)
+	if value == nil then value = 0 end
+
+	local pct = value/pt.value_max
+	pct = (pct > 1 and 1 or pct)
+
+	local value_angle = pct * (pt.end_angle - pt.start_angle) + pt.start_angle
+
+	-- Draw ring marks
+	for angle = pt.start_angle, pt.end_angle, pt.step do
+		local xs, ys = ar_to_xy(pt.x, pt.y, angle, pt.outer_radius)
+
+		cairo_move_to(cr, xs, ys)
+
+		local xe, ye = ar_to_xy(pt.x, pt.y, angle, pt.inner_radius)
+
+		cairo_line_to(cr, xe, ye)
+
+		if angle <= value_angle then
+			cairo_set_source_rgba(cr, rgb_to_r_g_b(accent_color, 1))
+		else
+			cairo_set_source_rgba(cr, rgb_to_r_g_b(default_color, 0.05))
+		end
+		cairo_set_line_width(cr, pt.mark_thickness)
+		cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+		cairo_stroke(cr)
+	end
+
+	-- Draw ring text
+	draw_text(cr, style.ring, ALIGNC, pt.x, pt.y, pt.label)
+end
+
+------------------------------------------------------------------------------
+-- WEATHER FUNCTION
+------------------------------------------------------------------------------
+local city = '---'
+local description = '---'
+local temperature = '-'
+local feels_like = '-'
+
+function update_weather()
+	local json = require("dkjson")
+
+	-- Download weather data
+	local url = 'api.openweathermap.org/data/2.5/weather?id='..weather_city..'&appid='..weather_id..'&units=metric'
+
+	local handle = io.popen('curl -s "'..url..'"')
+	local str = handle:read("*a")
+	handle:close()
+
+	-- Decode weather data from json
+	local data, pos, err = json.decode(str, 1, nil)
+
+	local weather = data ~= nil and data.weather[1] or nil
+
+	city = (data ~= nil and data.name or '---')
+	description = (weather ~= nil and weather.main or '---')
+	temperature = (weather ~= nil and (data.main ~= nil and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-') or '-')
+	feels_like = (weather ~= nil and (data.main ~= nil and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-') or '-')
+end
+
+------------------------------------------------------------------------------
+-- MAIN FUNCTION
+------------------------------------------------------------------------------
+function conky_main()
+	if conky_window == nil then return end
+
+	-- Create cairo context
+	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
+
+	local cr = cairo_create(cs)
+
+	-- Draw ring widgets
+	local text_height = font_height(cr, style.text)
+	local header_height = font_height(cr, style.header)
+
+	for i, w in pairs({cpu, mem, disk, wifi}) do
+		-- Compute widget values
+		w.background.height = header_height + line_spacing + w.ring.outer_radius + (line_spacing + text_height) * #w.text.items + line_spacing * 2 + margin_y * 2
+		w.header.y = w.background.y + margin_y + header_height
+		w.ring.y = w.header.y + line_spacing * 2 + w.ring.outer_radius
+
+		-- Draw background
+		draw_background(cr, w.background)
+
+		-- Draw header
+		draw_text(cr, style.header, ALIGNC, w.header.x, w.header.y, w.header.label)
+
+		-- Draw ring with text
+		draw_ring(cr, w.ring)
+
+		-- Draw text
+		local len = 11
+
+		for i, item in pairs(w.text.items) do
+			local y = w.ring.y + line_spacing + (line_spacing + text_height) * i
+
+			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, len)
+			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, len)
+		end
+	end
+
+	-- Update weather if necessary
+	local updates = tonumber(conky_parse("${updates}"))
+
+	if updates == 2 or updates % weather_interval == 0 then
+		update_weather()
+	end
+
+	-- Draw time/weather widget
+	local weather_height = font_height(cr, style.weather)
+	local time_height = font_height(cr, style.time)
+
+	-- Compute widget values
+	time.background.height = line_spacing * 4 + text_height * 3 + time_height + margin_y * 2
+
+	-- Draw background
+	draw_background(cr, time.background)
+
+	-- Draw text
+	local xs = time.background.x + margin_x
+	local xe = time.background.x + time.background.width - margin_x
+	local y = time.background.y + margin_y + weather_height + line_spacing * 0.5
+
+	draw_text(cr, style.weather, ALIGNL, xs, y, temperature..'°C')
+
+	if feels_like ~= '-' then
+		y = y + line_spacing * 1.25 + text_height
+
+		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..feels_like..'°C')
+	end
+
+	y = time.background.y + margin_y + text_height
+
+	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
+
+	y = y + line_spacing + time_height
+
+	draw_text(cr, style.time, ALIGNR, xe, y, '${time %R}')
+
+	y = y + line_spacing * 2 + text_height
+
+	draw_text(cr, style.text, ALIGNL, xs, y, description)
+	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
+
+	y = y + line_spacing + text_height
+
+	draw_text(cr, style.subtext, ALIGNL, xs, y, city)
+	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
+
+	-- Destroy cairo context
+	cairo_destroy(cr)
+	cairo_surface_destroy(cs)
+end
