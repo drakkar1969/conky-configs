@@ -421,7 +421,7 @@ function conky_main()
 		draw_ring(cr, w.ring)
 
 		-- Draw text
-		local len = 11
+		local len = 14
 
 		for i, item in pairs(w.text.items) do
 			local y = w.ring.y + line_spacing + (line_spacing + text_height) * i
