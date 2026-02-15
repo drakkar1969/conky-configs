@@ -3,6 +3,7 @@
 ------------------------------------------------------------------------------
 require 'cairo'
 require 'cairo_xlib'
+require 'cairo_imlib2_helper'
 
 ------------------------------------------------------------------------------
 -- CONSTANTS - DO NOT DELETE
@@ -30,13 +31,6 @@ local palette = {
 -- USER CONFIGURATION
 ------------------------------------------------------------------------------
 ---------------------------------------
--- Weather variables
----------------------------------------
-local weather_interval = 900
-local weather_id = 'b1b61a08efe33de67901d98c4f5711f5'
-local weather_city = '3094802' --Krakow
-
----------------------------------------
 -- Font/color variables
 ---------------------------------------
 local background_color = 0x28282c
@@ -62,8 +56,25 @@ local style = {
 		fface = 'Ndot77JPExtended', fsize = 84, stroke = 0.6, color = accent_color
 	},
 	weather = {
-		fface = 'Ndot77JPExtended', fsize = 60, stroke = 0.3, color = accent_color
+		fface = 'Ndot77JPExtended', fsize = 56, stroke = 0.3, color = accent_color
 	}
+}
+
+---------------------------------------
+-- Weather variables
+---------------------------------------
+local weather = {
+	app_id = 'b1b61a08efe33de67901d98c4f5711f5',
+	city = 'Krakow,PL',
+	interval = 900,
+	icon_size = 64,
+	icon_gap = 20,
+	icon_dy = 2,
+	icon = '',
+	location = '',
+	description = '',
+	temperature = '-',
+	feels_like = '-'
 }
 
 ------------------------------------------------------------------------------
@@ -355,18 +366,13 @@ function draw_ring(cr, pt)
 end
 
 ------------------------------------------------------------------------------
--- WEATHER FUNCTION
+-- WEATHER FUNCTIONS
 ------------------------------------------------------------------------------
-local city = '---'
-local description = '---'
-local temperature = '-'
-local feels_like = '-'
-
 function update_weather()
 	local json = require("dkjson")
 
 	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?id='..weather_city..'&appid='..weather_id..'&units=metric'
+	local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
 
 	local handle = io.popen('curl -s "'..url..'"')
 	local str = handle:read("*a")
@@ -375,12 +381,13 @@ function update_weather()
 	-- Decode weather data from json
 	local data, pos, err = json.decode(str, 1, nil)
 
-	local weather = data ~= nil and data.weather[1] or nil
+	weather.location = (data ~= nil and data.name or '')
+	weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
+	weather.temperature = (data.main ~= nil and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	weather.feels_like = (data.main ~= nil and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
-	city = (data ~= nil and data.name or '---')
-	description = (weather ~= nil and weather.main or '---')
-	temperature = (weather ~= nil and (data.main ~= nil and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-') or '-')
-	feels_like = (weather ~= nil and (data.main ~= nil and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-') or '-')
+	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
+	weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
 end
 
 ------------------------------------------------------------------------------
@@ -427,7 +434,7 @@ function conky_main()
 	-- Update weather if necessary
 	local updates = tonumber(conky_parse("${updates}"))
 
-	if updates == 2 or updates % weather_interval == 0 then
+	if updates ~= 0 and (updates == 2 or updates % weather.interval == 0) then
 		update_weather()
 	end
 
@@ -446,12 +453,16 @@ function conky_main()
 	local xe = time.background.x + time.background.width - margin_x
 	local y = time.background.y + margin_y + weather_height + line_spacing * 0.5
 
-	draw_text(cr, style.weather, ALIGNL, xs, y, temperature..'°C')
+	if weather.icon ~= '' then
+		cairo_place_image(weather.icon, cr, xs, y - weather_height/2 - weather.icon_size/2 + weather.icon_dy, weather.icon_size, weather.icon_size, 1)
+	end
 
-	if feels_like ~= '-' then
+	draw_text(cr, style.weather, ALIGNL, xs + weather.icon_size + weather.icon_gap, y, weather.temperature..'°C')
+
+	if weather.feels_like ~= '-' then
 		y = y + line_spacing * 1.25 + text_height
 
-		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..feels_like..'°C')
+		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..weather.feels_like..'°C')
 	end
 
 	y = time.background.y + margin_y + text_height
@@ -464,12 +475,12 @@ function conky_main()
 
 	y = y + line_spacing * 2 + text_height
 
-	draw_text(cr, style.text, ALIGNL, xs, y, description)
+	draw_text(cr, style.text, ALIGNL, xs, y, weather.description)
 	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
 
 	y = y + line_spacing + text_height
 
-	draw_text(cr, style.subtext, ALIGNL, xs, y, city)
+	draw_text(cr, style.subtext, ALIGNL, xs, y, weather.location)
 	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
 
 	-- Destroy cairo context
