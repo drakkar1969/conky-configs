@@ -56,7 +56,7 @@ local style = {
 		fface = 'Ndot77JPExtended', fsize = 84, stroke = 0.6, color = accent_color
 	},
 	weather = {
-		fface = 'Ndot77JPExtended', fsize = 56, stroke = 0.3, color = accent_color
+		fface = 'Ndot77JPExtended', fsize = 52, stroke = 0.3, color = accent_color
 	}
 }
 
@@ -82,7 +82,7 @@ local weather = {
 ------------------------------------------------------------------------------
 local border_radius = 36
 local margin_x = 40
-local margin_y = 40
+local margin_y = 50
 
 local line_spacing = 22
 
@@ -102,7 +102,7 @@ local cpu = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 105,
 		mark_width = 16,
 		mark_thickness = 5,
 		label = '${cpu cpu0}%',
@@ -121,7 +121,7 @@ local cpu = {
 ---------------------------------------
 local mem = {
 	background = {
-		x = 305,
+		x = 315,
 		y = 0
 	},
 	header = {
@@ -132,7 +132,7 @@ local mem = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 105,
 		mark_width = 16,
 		mark_thickness = 5,
 		label = '${memperc}%',
@@ -152,7 +152,7 @@ local mem = {
 local disk = {
 	background = {
 		x = 0,
-		y = 330
+		y = 355
 	},
 	header = {
 		label = 'DISK'
@@ -162,7 +162,7 @@ local disk = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 105,
 		mark_width = 16,
 		mark_thickness = 5,
 		label = '${fs_used_perc /home}%',
@@ -184,8 +184,8 @@ local wifi_max = 36000
 
 local wifi = {
 	background = {
-		x = 305,
-		y = 330
+		x = 315,
+		y = 355
 	},
 	header = {
 		label = 'WIRELESS'
@@ -195,7 +195,7 @@ local wifi = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 105,
 		mark_width = 16,
 		mark_thickness = 5,
 		label = '${downspeed '..interface..'}',
@@ -215,8 +215,8 @@ local wifi = {
 time = {
 	background = {
 		x = 0,
-		y = 660,
-		width = 590
+		y = 710,
+		width = 605
 	}
 }
 
