@@ -37,7 +37,7 @@ local background_color = 0x28282c
 local header_color = 0xaaaaaa
 local default_color = 0xffffff
 local subtext_color = 0xbbbbbb
-local accent_color = palette.adwaita_green
+local accent_color = palette.adwaita_yellow
 
 local style = {
 	header = {
@@ -391,6 +391,14 @@ function update_weather()
 end
 
 ------------------------------------------------------------------------------
+-- STARTUP FUNCTION
+------------------------------------------------------------------------------
+function conky_startup()
+	-- Update weather data
+	update_weather()
+end
+
+------------------------------------------------------------------------------
 -- MAIN FUNCTION
 ------------------------------------------------------------------------------
 function conky_main()
@@ -401,14 +409,17 @@ function conky_main()
 
 	local cr = cairo_create(cs)
 
-	-- Draw ring widgets
-	local text_height = font_height(cr, style.text)
-	local header_height = font_height(cr, style.header)
+	-- Compute style font heights
+	style.text.height = font_height(cr, style.text)
+	style.header.height = font_height(cr, style.header)
+	style.weather.height = font_height(cr, style.weather)
+	style.time.height = font_height(cr, style.time)
 
+	-- Draw ring widgets
 	for i, w in pairs({cpu, mem, disk, wifi}) do
 		-- Compute widget values
-		w.background.height = header_height + line_spacing + w.ring.outer_radius + (line_spacing + text_height) * #w.text.items + line_spacing * 2 + margin_y * 2
-		w.header.y = w.background.y + margin_y + header_height
+		w.background.height = style.header.height + line_spacing + w.ring.outer_radius + (line_spacing + style.text.height) * #w.text.items + line_spacing * 2 + margin_y * 2
+		w.header.y = w.background.y + margin_y + style.header.height
 		w.ring.y = w.header.y + line_spacing * 2 + w.ring.outer_radius
 
 		-- Draw background
@@ -417,14 +428,14 @@ function conky_main()
 		-- Draw header
 		draw_text(cr, style.header, ALIGNC, w.header.x, w.header.y, w.header.label)
 
-		-- Draw ring with text
+		-- Draw ring with label
 		draw_ring(cr, w.ring)
 
 		-- Draw text
 		local len = 14
 
 		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + line_spacing + (line_spacing + text_height) * i
+			local y = w.ring.y + line_spacing + (line_spacing + style.text.height) * i
 
 			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, len)
 			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, len)
@@ -434,51 +445,48 @@ function conky_main()
 	-- Update weather if necessary
 	local updates = tonumber(conky_parse("${updates}"))
 
-	if updates ~= 0 and (updates == 2 or updates % weather.interval == 0) then
+	if updates ~= 0 and updates % weather.interval == 0 then
 		update_weather()
 	end
 
-	-- Draw time/weather widget
-	local weather_height = font_height(cr, style.weather)
-	local time_height = font_height(cr, style.time)
+	-- Compute time widget values
+	time.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
 
-	-- Compute widget values
-	time.background.height = line_spacing * 4 + text_height * 3 + time_height + margin_y * 2
-
-	-- Draw background
+	-- Draw time widget background
 	draw_background(cr, time.background)
 
-	-- Draw text
+	-- Draw weather icon
 	local xs = time.background.x + margin_x
 	local xe = time.background.x + time.background.width - margin_x
-	local y = time.background.y + margin_y + weather_height + line_spacing * 0.5
+	local y = time.background.y + margin_y + style.weather.height + line_spacing * 0.5
 
 	if weather.icon ~= '' then
-		cairo_place_image(weather.icon, cr, xs, y - weather_height/2 - weather.icon_size/2 + weather.icon_dy, weather.icon_size, weather.icon_size, 1)
+		cairo_place_image(weather.icon, cr, xs, y - style.weather.height/2 - weather.icon_size/2 + weather.icon_dy, weather.icon_size, weather.icon_size, 1)
 	end
 
+	-- Draw time widget text
 	draw_text(cr, style.weather, ALIGNL, xs + weather.icon_size + weather.icon_gap, y, weather.temperature..'°C')
 
 	if weather.feels_like ~= '-' then
-		y = y + line_spacing * 1.25 + text_height
+		y = y + line_spacing * 1.25 + style.text.height
 
 		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..weather.feels_like..'°C')
 	end
 
-	y = time.background.y + margin_y + text_height
+	y = time.background.y + margin_y + style.text.height
 
 	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
 
-	y = y + line_spacing + time_height
+	y = y + line_spacing + style.time.height
 
 	draw_text(cr, style.time, ALIGNR, xe, y, '${time %R}')
 
-	y = y + line_spacing * 2 + text_height
+	y = y + line_spacing * 2 + style.text.height
 
 	draw_text(cr, style.text, ALIGNL, xs, y, weather.description)
 	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
 
-	y = y + line_spacing + text_height
+	y = y + line_spacing + style.text.height
 
 	draw_text(cr, style.subtext, ALIGNL, xs, y, weather.location)
 	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
