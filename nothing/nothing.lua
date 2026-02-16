@@ -60,7 +60,7 @@ local style = {
 		fface = 'Ndot77JPExtended', fsize = 52, stroke = 0.3, color = accent_color
 	},
 	audio_title = {
-		fface = 'Ndot77JPExtended', fsize = 42, stroke = 0.3, color = accent_color
+		fface = 'Ndot77JPExtended', fsize = 44, stroke = 0.3, color = accent_color
 	},
 	audio_subtitle = {
 		fface = 'Inter', fsize = 25, stroke = 0.6, color = default_color
@@ -72,7 +72,7 @@ local style = {
 ------------------------------------------------------------------------------
 local border_radius = 36
 local margin_x = 40
-local margin_y = 50
+local margin_y = 40
 
 local line_spacing = 22
 
@@ -142,7 +142,7 @@ local mem = {
 local disk = {
 	background = {
 		x = 0,
-		y = 355
+		y = 335
 	},
 	header = {
 		label = 'DISK'
@@ -175,7 +175,7 @@ local wifi_max = 36000
 local wifi = {
 	background = {
 		x = 315,
-		y = 355
+		y = 335
 	},
 	header = {
 		label = 'WIRELESS'
@@ -205,7 +205,7 @@ local wifi = {
 time = {
 	background = {
 		x = 0,
-		y = 710,
+		y = 670,
 		width = 605
 	},
 	weather = {
@@ -236,20 +236,20 @@ local named_players = {
 audio = {
 	player = nil,
 	alias = nil,
+	gap_x = 32,
 	background = {
 		x = 0,
-		y = 1050,
+		y = 980,
 		width = 800
 	},
 	cover = {
 		show = true,
-		gap_x = 32,
 		icon_size = 64
 	},
 	ring = {
-		start_angle = -180,
+		start_angle = -200,
 		end_angle = -40,
-		step = 7,
+		step = 6,
 		padding_x = 0,
 		outer_radius = 40,
 		mark_width = 6,
@@ -326,7 +326,7 @@ function text_width(cr, style, text)
 	tolua.takeownership(t_extents)
 	cairo_text_extents(cr, text, t_extents)
 
-	local width = t_extents.width - t_extents.x_bearing
+	local width = t_extents.x_advance
 
 	tolua.releaseownership(t_extents)
 	cairo_text_extents_t:destroy(t_extents)
@@ -493,7 +493,7 @@ function draw_text(cr, style, align, x, y, text, max_width)
 	tolua.takeownership(t_extents)
 	cairo_text_extents(cr, text, t_extents)
 
-	local text_w = t_extents.width + t_extents.x_bearing
+	local text_w = t_extents.x_advance
 
 	local text_x = ((align == ALIGNR) and (x - text_w) or ((align == ALIGNC) and (x - text_w * 0.5) or x))
 
@@ -703,11 +703,11 @@ function draw_audio_widget(cr)
 	-- Get player metadata
 	local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
 
-	local subtitle = audio.player.playback_status == "STOPPED" and "(None)" or (audio.player:get_artist() or "Unknown Artist")
+	local subtitle = audio.player.playback_status == "STOPPED" and "---" or (audio.player:get_artist() or "Unknown Artist")
 
 	local album = audio.player:get_album()
 
-	if album ~= nil then
+	if subtitle ~= nil and subtitle ~= '---' and album ~= nil and album ~= "" then
 		subtitle = subtitle.."  •  "..album
 	end
 
@@ -717,26 +717,20 @@ function draw_audio_widget(cr)
 	local len = len_str ~= nil and tonumber(len_str) or 0
 
 	-- Compute widget values
-	audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
+	audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height * 2 + line_spacing * 4
 
-	audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
+	audio.ring.inner_radius = audio.cover.size/2 + audio.gap_x/2
 	audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width + audio.ring.mark_thickness
 	audio.ring.value = (len == 0 and 0 or pos/len * 100)
 
-	audio.background.height = style.subtext.height + line_spacing * 0.5 + audio.ring.outer_radius * 2 + margin_y * 2
+	audio.background.height = audio.ring.outer_radius + audio.cover.size/2 + margin_y * 2
 
 	-- Draw background
 	draw_background(cr, audio.background)
 
-	-- Draw heading
-	local x = audio.background.x + margin_x
-	local y = audio.background.y + margin_y + style.subtext.height
-
-	draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
-
 	-- Draw ring
-	x = x + audio.ring.outer_radius
-	y = y + audio.ring.outer_radius + line_spacing * 0.5
+	local x = audio.background.x + margin_x + audio.ring.outer_radius
+	local y = audio.background.y + margin_y + audio.cover.size/2
 
 	audio.ring.x = x
 	audio.ring.y = y
@@ -749,24 +743,40 @@ function draw_audio_widget(cr)
 
 	draw_audio_cover(cr, x, y, audio.cover)
 
+	-- Draw heading
+	x = x + audio.cover.size + audio.gap_x
+	y = y + style.subtext.height
+
+	draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
+
 	-- Draw metadata
-	x = x + audio.cover.size + audio.cover.gap_x
-	y = y + style.audio_title.height + line_spacing * 0.5
+	y = y + style.audio_title.height + line_spacing * 1.5
 
 	local max_width = audio.background.width - x - margin_x
 
 	draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
 
-	y = y + line_spacing * 1.5 + style.audio_subtitle.height
+	y = y + line_spacing + style.audio_subtitle.height
 
 	draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
 
 	-- Draw status
-	local status = audio.player.playback_status.."  •  "..microsecs_to_string(pos)..' / '..microsecs_to_string(len)
+	local time_w = text_width(cr, style.subtext, '0:00')
+	local stopped_w = text_width(cr, style.subtext, 'STOPPED')
 
-	y = y + line_spacing + style.subtext.height
+	y = y + line_spacing * 1.5 + style.subtext.height
 
-	draw_text(cr, style.subtext, ALIGNL, x, y, status)
+	draw_text(cr, style.subtext, ALIGNL, x, y, audio.player.playback_status)
+
+	x = x + stopped_w + audio.gap_x + time_w
+
+	draw_text(cr, style.subtext, ALIGNR, x, y, microsecs_to_string(pos))
+
+	local dx = draw_text(cr, style.subtext, ALIGNL, x, y, '  •  ')
+
+	x = x + dx
+
+	draw_text(cr, style.subtext, ALIGNL, x, y, microsecs_to_string(len))
 end
 
 ------------------------------------------------------------------------------
