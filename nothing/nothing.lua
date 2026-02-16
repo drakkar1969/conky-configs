@@ -383,8 +383,8 @@ function update_weather()
 
 	weather.location = (data ~= nil and data.name or '')
 	weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
-	weather.temperature = (data.main ~= nil and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	weather.feels_like = (data.main ~= nil and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+	weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
 	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
 	weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
