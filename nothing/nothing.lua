@@ -698,7 +698,12 @@ end
 function draw_audio_widget(cr)
 	-- Get player cover art
 	local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
-	audio.cover.file = string.gsub(cover_url, "file://", "")
+
+	if string.find(cover_url, "^http") then
+		audio.cover.file = nil
+	else
+		audio.cover.file = string.gsub(cover_url, "file://", "")
+	end
 
 	-- Get player metadata
 	local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
