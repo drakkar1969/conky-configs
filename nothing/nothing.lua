@@ -424,7 +424,7 @@ function update_weather()
 	time.weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
 	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
-	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
+	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
 end
 
 ---------------------------------------
@@ -595,7 +595,7 @@ end
 function draw_audio_cover(cr, x, y, cover)
 	-- Draw audio icon
 	if (cover.show == false or cover.file == nil or cover.file == "") then
-		local icon = string.gsub(conky_config, 'nothing.conf', 'icons/audio.svg')
+		local icon = string.gsub(conky_config, 'nothing.conf', 'audio/audio.svg')
 
 		local xi = x + (cover.size - cover.icon_size)/2
 		local yi = y + (cover.size - cover.icon_size)/2
