@@ -4,6 +4,7 @@
 require 'cairo'
 require 'cairo_xlib'
 require 'cairo_imlib2_helper'
+require 'rsvg'
 
 ------------------------------------------------------------------------------
 -- CONSTANTS - DO NOT DELETE
@@ -241,7 +242,9 @@ audio = {
 		width = 800
 	},
 	cover = {
-		gap_x = 32
+		show = true,
+		gap_x = 32,
+		icon_size = 64
 	},
 	ring = {
 		start_angle = -180,
@@ -397,6 +400,59 @@ function microsecs_to_string(microsecs)
 end
 
 ------------------------------------------------------------------------------
+-- WEATHER/PLAYER FUNCTIONS
+------------------------------------------------------------------------------
+---------------------------------------
+-- Function update_weather
+---------------------------------------
+function update_weather()
+	local json = require("dkjson")
+
+	-- Download weather data
+	local url = 'api.openweathermap.org/data/2.5/weather?q='..time.weather.city..'&appid='..time.weather.app_id..'&units=metric'
+
+	local handle = io.popen('curl -s "'..url..'"')
+	local str = handle:read("*a")
+	handle:close()
+
+	-- Decode weather data from json
+	local data, pos, err = json.decode(str, 1, nil)
+
+	time.weather.location = (data ~= nil and data.name or '')
+	time.weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
+	time.weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	time.weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+
+	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
+	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
+end
+
+---------------------------------------
+-- Function update_player
+---------------------------------------
+function update_player()
+	local lgi = require 'lgi'
+	local Playerctl = lgi.Playerctl
+
+	-- Find preferred player
+	local rank = 0
+
+	audio.player = nil
+	audio.alias = nil
+
+	for _, p in pairs(Playerctl.list_players()) do
+		local named = named_players[p.instance]
+
+		if named ~= nil and named.rank > rank then
+			audio.player = Playerctl.Player.new_from_name(p)
+			audio.alias = named.alias or p.instance
+
+			rank = named.rank
+		end
+	end
+end
+
+------------------------------------------------------------------------------
 -- DRAWING FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
@@ -495,78 +551,63 @@ function draw_ring(cr, pt)
 end
 
 ---------------------------------------
+-- Function draw_svg_icon
+---------------------------------------
+function draw_svg_icon(cr, file, x, y, size)
+	cairo_save(cr)
+
+	-- Load SVG image from file
+	local handle = rsvg_create_handle_from_file(file)
+
+	-- Position and size SVG image
+	local svg_rect = RsvgRectangle:create()
+	tolua.takeownership(svg_rect)
+
+	svg_rect:set(x, y, size, size)
+
+	-- Render SVG image on temporary canvas
+	local err
+
+	cairo_push_group(cr)
+	rsvg_handle_render_document(handle, cr, svg_rect, err)
+
+	-- Destroy objects
+	tolua.releaseownership(svg_rect)
+	RsvgRectangle:destroy(svg_rect)
+
+	-- Re-color and draw SVG image
+	local pattern = cairo_pop_group(cr)
+
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(default_color, 0.2))
+
+	cairo_mask(cr, pattern)
+
+	cairo_pattern_destroy(pattern)
+
+	rsvg_destroy_handle(handle)
+
+	cairo_restore(cr)
+end
+
+---------------------------------------
 -- Function draw_audio_cover
 ---------------------------------------
 function draw_audio_cover(cr, x, y, cover)
-	-- -- Draw frame
-	-- cairo_rectangle(cr, pt.frame.x, pt.frame.y, pt.frame.size, pt.frame.size)
+	-- Draw audio icon
+	if (cover.show == false or cover.file == nil or cover.file == "") then
+		local icon = string.gsub(conky_config, 'nothing.conf', 'icons/audio.svg')
 
-	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame.color, pt.frame.alpha))
-	-- cairo_fill(cr)
+		local xi = x + (cover.size - cover.icon_size)/2
+		local yi = y + (cover.size - cover.icon_size)/2
 
-	-- -- Draw audio icon
-	-- if (show_cover_art == false or pt.image.file == nil or pt.image.file == "") then
-	-- 	draw_svg_icon(cr, pt.icon)
-	-- -- Draw cover
-	-- else
+		draw_svg_icon(cr, icon, xi, yi, cover.icon_size)
+	-- Draw cover
+	else
 		cairo_save(cr)
 		cairo_arc(cr, x + cover.size/2, y + cover.size/2, cover.size/2, 0, math.pi * 2)
 		cairo_clip(cr)
 		cairo_place_image(cover.file, cr, x, y, cover.size, cover.size, 1)
 		cairo_restore(cr)
-	-- end
-end
-
-------------------------------------------------------------------------------
--- OTHER FUNCTIONS
-------------------------------------------------------------------------------
----------------------------------------
--- Function update_weather
----------------------------------------
-function update_weather()
-	local json = require("dkjson")
-
-	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?q='..time.weather.city..'&appid='..time.weather.app_id..'&units=metric'
-
-	local handle = io.popen('curl -s "'..url..'"')
-	local str = handle:read("*a")
-	handle:close()
-
-	-- Decode weather data from json
-	local data, pos, err = json.decode(str, 1, nil)
-
-	time.weather.location = (data ~= nil and data.name or '')
-	time.weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
-	time.weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	time.weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
-
-	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
-	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
-end
-
----------------------------------------
--- Function update_player
----------------------------------------
-function update_player()
-	local lgi = require 'lgi'
-	local Playerctl = lgi.Playerctl
-
-	-- Find preferred player
-	local rank = 0
-
-	audio.player = nil
-	audio.alias = nil
-
-	for _, p in pairs(Playerctl.list_players()) do
-		local named = named_players[p.instance]
-
-		if named ~= nil and named.rank > rank then
-			audio.player = Playerctl.Player.new_from_name(p)
-			audio.alias = named.alias or p.instance
-
-			rank = named.rank
-		end
 	end
 end
 
@@ -682,7 +723,8 @@ function conky_main()
 		-- Compute audio widget values
 
 		local pos = audio.player.position or 0
-		local len = tonumber(audio.player:print_metadata_prop("mpris:length")) or 0
+		local len_str = audio.player:print_metadata_prop("mpris:length")
+		local len = len_str ~= nil and tonumber(len_str) or 0
 
 		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
 		audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
