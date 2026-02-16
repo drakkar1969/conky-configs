@@ -349,7 +349,7 @@ function accented_upper(text)
 
 	text = string.upper(text)
 
-	return (text:gsub("[%z\1-\127\194-\244][\128-\191]*", function(char)
+	return (string.gsub(text, "[%z\1-\127\194-\244][\128-\191]*", function(char)
 		return accented_map[char] or char
 	end))
 end
@@ -370,7 +370,7 @@ function ellipsize_text(cr, style, text, max_width)
 	local ellipsis_width = text_width(cr, style, ellipsis)
 
 	while text_width(cr, style, out_text) + ellipsis_width > max_width and #out_text > 0 do
-		out_text = out_text:sub(1, -2)
+		out_text = string.sub(out_text, 1, -2)
 	end
 
 	return out_text..ellipsis
