@@ -237,6 +237,7 @@ audio = {
 	player = nil,
 	alias = nil,
 	gap_x = 32,
+	show_album = true,
 	background = {
 		x = 0,
 		y = 980,
@@ -712,7 +713,7 @@ function draw_audio_widget(cr)
 
 	local album = audio.player:get_album()
 
-	if subtitle ~= nil and subtitle ~= '---' and album ~= nil and album ~= "" then
+	if audio.show_album and subtitle ~= nil and subtitle ~= '---' and album ~= nil and album ~= "" then
 		subtitle = subtitle.."  •  "..album
 	end
 
