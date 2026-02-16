@@ -242,6 +242,18 @@ audio = {
 	},
 	cover = {
 		gap_x = 30
+	},
+	ring = {
+		start_angle = -180,
+		end_angle = -40,
+		step = 7,
+		padding_x = 0,
+		outer_radius = 40,
+		mark_width = 10,
+		mark_thickness = 5,
+		label = '',
+		value = 50,
+		value_max = 100
 	}
 }
 ------------------------------------------------------------------------------
@@ -668,9 +680,23 @@ function conky_main()
 		style.audio_subtitle.height = font_height(cr, style.audio_subtitle)
 
 		-- Compute audio widget values
-		audio.background.height = 400
+
+		local pos = audio.player.position or 0
+		local len = tonumber(audio.player:print_metadata_prop("mpris:length")) or 0
+
+		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
+		audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
+		audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width
+
+		if len == 0 then
+			audio.ring.value = 0
+		else
+			audio.ring.value = pos/len * 100
+		end
 
 		-- Draw background
+		audio.background.height = style.subtext.height + line_spacing * 0.5 + audio.ring.outer_radius * 2 + margin_y * 2
+
 		draw_background(cr, audio.background)
 
 		-- Draw heading
@@ -679,10 +705,19 @@ function conky_main()
 
 		draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
 
-		-- Draw cover art
-		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
+		-- Compute cover/ring values
 
-		y = y + line_spacing * 1.5
+		x = x + audio.ring.outer_radius
+		y = y + audio.ring.outer_radius + line_spacing * 0.5
+
+		audio.ring.x = x
+		audio.ring.y = y
+
+		draw_ring(cr, audio.ring)
+
+		-- Draw cover art
+		x = x - audio.cover.size/2
+		y = y - audio.cover.size/2
 
 		local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
 		audio.cover.file = string.gsub(cover_url, "file://", "")
@@ -699,26 +734,24 @@ function conky_main()
 
 		local subtitle = audio.player.playback_status == "STOPPED" and "(None)" or (audio.player:get_artist() or "Unknown Artist")
 
-	-- 	-- if show_album then
+	-- -- 	-- if show_album then
 			local album = audio.player:get_album()
 
 			if album ~= nil then
 				subtitle = subtitle.."  •  "..album
 			end
-	-- 	-- end
+	-- -- 	-- end
 
 		draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
 
-		y = y + line_spacing + style.audio_subtitle.height
+		y = y + line_spacing * 1.5 + style.audio_subtitle.height
 
 		draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
 
 		-- Draw status
-		local pos = audio.player.position or 0
-		local len = tonumber(audio.player:print_metadata_prop("mpris:length")) or 0
 		local status = audio.player.playback_status.."  •  "..microsecs_to_string(pos)..' / '..microsecs_to_string(len)
 
-		y = y + line_spacing * 1.5 + style.subtext.height
+		y = y + line_spacing + style.subtext.height
 
 		draw_text(cr, style.subtext, ALIGNL, x, y, status)
 	end
