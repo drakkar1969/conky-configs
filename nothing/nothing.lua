@@ -267,6 +267,43 @@ function font_height(cr, style)
 	return height
 end
 
+function text_width(cr, style, text)
+	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_size(cr, style.fsize)
+
+	local t_extents = cairo_text_extents_t:create()
+	tolua.takeownership(t_extents)
+	cairo_text_extents(cr, text, t_extents)
+
+	local width = t_extents.width - t_extents.x_bearing
+
+	tolua.releaseownership(t_extents)
+	cairo_text_extents_t:destroy(t_extents)
+
+	return width
+end
+
+function ellipsize_text(cr, style, text, max_width)
+	-- If text fits within max width, return it as is
+	if text_width(cr, style, text) <= max_width then
+		return text
+	end
+
+	local out_text = text
+
+	print(out_text)
+
+	-- Truncate text and add ellipsis
+	local ellipsis = "…"
+	local ellipsis_width = text_width(cr, style, ellipsis)
+
+	while text_width(cr, style, out_text) + ellipsis_width > max_width and #out_text > 0 do
+		out_text = out_text:sub(1, -2)
+	end
+
+	return out_text..ellipsis
+end
+
 ------------------------------------------------------------------------------
 -- DRAWING FUNCTIONS
 ------------------------------------------------------------------------------
@@ -290,12 +327,12 @@ end
 ---------------------------------------
 -- Function draw_text
 ---------------------------------------
-function draw_text(cr, style, align, x, y, text, len)
+function draw_text(cr, style, align, x, y, text, max_width)
 	text = string.upper(conky_parse(text))
 
 	-- Ellipsize text if necessary
-	if len ~= nil and string.len(text) > len then
-		text = string.sub(text, 1, len - 1)..'…'
+	if max_width ~= nil then
+		text = ellipsize_text(cr, style, text, max_width)
 	end
 
 	-- Set font/color
@@ -432,13 +469,11 @@ function conky_main()
 		draw_ring(cr, w.ring)
 
 		-- Draw text
-		local len = 14
-
 		for i, item in pairs(w.text.items) do
 			local y = w.ring.y + line_spacing + (line_spacing + style.text.height) * i
 
-			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, len)
-			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, len)
+			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
+			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)
 		end
 	end
 
