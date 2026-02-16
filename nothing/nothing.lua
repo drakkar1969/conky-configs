@@ -244,15 +244,15 @@ audio = {
 	},
 	cover = {
 		show = true,
-		icon_size = 64
+		icon_size = 80
 	},
 	ring = {
 		start_angle = -200,
 		end_angle = -40,
-		step = 6,
+		step = 5,
 		padding_x = 0,
 		outer_radius = 40,
-		mark_width = 6,
+		mark_width = 8,
 		mark_thickness = 4,
 		label = '',
 		value = 50,
