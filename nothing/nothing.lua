@@ -238,10 +238,16 @@ end
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
 ------------------------------------------------------------------------------
+---------------------------------------
+-- Function rgb_to_r_g_b
+---------------------------------------
 function rgb_to_r_g_b(color, alpha)
 	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
 end
 
+---------------------------------------
+-- Function ar_to_xy
+---------------------------------------
 function ar_to_xy(xc, yc, angle, radius)
 	local radians = (math.pi / 180) * angle
 
@@ -251,6 +257,9 @@ function ar_to_xy(xc, yc, angle, radius)
 	return x, y
 end
 
+---------------------------------------
+-- Function font_height
+---------------------------------------
 function font_height(cr, style)
 	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size(cr, style.fsize)
@@ -267,6 +276,9 @@ function font_height(cr, style)
 	return height
 end
 
+---------------------------------------
+-- Function text_width
+---------------------------------------
 function text_width(cr, style, text)
 	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
 	cairo_set_font_size(cr, style.fsize)
@@ -283,6 +295,29 @@ function text_width(cr, style, text)
 	return width
 end
 
+---------------------------------------
+-- Function accented_upper
+---------------------------------------
+function accented_upper(text)
+	-- Accented character map
+	local accented_map = {
+		["á"] = "Á", ["é"] = "É", ["í"] = "Í", ["ó"] = "Ó", ["ú"] = "Ú",
+		["à"] = "À", ["è"] = "È", ["ì"] = "Ì", ["ò"] = "Ò", ["ù"] = "Ù",
+		["â"] = "Â", ["ê"] = "Ê", ["î"] = "Î", ["ô"] = "Ô", ["û"] = "Û",
+		["ä"] = "Ä", ["ë"] = "Ë", ["ï"] = "Ï", ["ö"] = "Ö", ["ü"] = "Ü",
+		["ã"] = "Ã", ["õ"] = "Õ", ["ñ"] = "Ñ", ["ç"] = "Ç"
+	}
+
+	text = string.upper(text)
+
+	return (text:gsub("[%z\1-\127\194-\244][\128-\191]*", function(char)
+		return accented_map[char] or char
+	end))
+end
+
+---------------------------------------
+-- Function ellipsize_text
+---------------------------------------
 function ellipsize_text(cr, style, text, max_width)
 	-- If text fits within max width, return it as is
 	if text_width(cr, style, text) <= max_width then
@@ -328,7 +363,7 @@ end
 -- Function draw_text
 ---------------------------------------
 function draw_text(cr, style, align, x, y, text, max_width)
-	text = string.upper(conky_parse(text))
+	text = accented_upper(conky_parse(text))
 
 	-- Ellipsize text if necessary
 	if max_width ~= nil then
