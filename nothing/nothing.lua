@@ -57,24 +57,13 @@ local style = {
 	},
 	weather = {
 		fface = 'Ndot77JPExtended', fsize = 52, stroke = 0.3, color = accent_color
+	},
+	audio_title = {
+		fface = 'Ndot77JPExtended', fsize = 42, stroke = 0.3, color = accent_color
+	},
+	audio_subtitle = {
+		fface = 'Inter', fsize = 25, stroke = 0.6, color = default_color
 	}
-}
-
----------------------------------------
--- Weather variables
----------------------------------------
-local weather = {
-	app_id = 'b1b61a08efe33de67901d98c4f5711f5',
-	city = 'Krakow,PL',
-	interval = 900,
-	icon_size = 64,
-	icon_gap = 20,
-	icon_dy = 2,
-	icon = '',
-	location = '',
-	description = '',
-	temperature = '-',
-	feels_like = '-'
 }
 
 ------------------------------------------------------------------------------
@@ -217,9 +206,44 @@ time = {
 		x = 0,
 		y = 710,
 		width = 605
+	},
+	weather = {
+		app_id = 'b1b61a08efe33de67901d98c4f5711f5',
+		city = 'Krakow,PL',
+		interval = 900,
+		icon_size = 64,
+		icon_gap_x = 20,
+		icon_dy = 2,
+		icon = '',
+		location = '',
+		description = '',
+		temperature = '-',
+		feels_like = '-'
 	}
 }
 
+---------------------------------------
+-- AUDIO widget
+---------------------------------------
+-- Named players (higher rank = preferred)
+local named_players = {
+	["Lollypop"] = { rank = 2 },
+	["com.github.neithern.g4music"] = { rank = 1, alias = "Gapless" },
+	["Riff"] = { rank = 1, alias = "Spotify" }
+}
+
+audio = {
+	player = nil,
+	alias = nil,
+	background = {
+		x = 0,
+		y = 1050,
+		width = 800
+	},
+	cover = {
+		gap_x = 30
+	}
+}
 ------------------------------------------------------------------------------
 -- COMPUTE WIDGET VALUES
 ------------------------------------------------------------------------------
@@ -326,8 +350,6 @@ function ellipsize_text(cr, style, text, max_width)
 
 	local out_text = text
 
-	print(out_text)
-
 	-- Truncate text and add ellipsis
 	local ellipsis = "…"
 	local ellipsis_width = text_width(cr, style, ellipsis)
@@ -337,6 +359,29 @@ function ellipsize_text(cr, style, text, max_width)
 	end
 
 	return out_text..ellipsis
+end
+
+---------------------------------------
+-- Function microsecs_to_string
+---------------------------------------
+function microsecs_to_string(microsecs)
+	local secs = microsecs//1000000
+
+	local mins = secs//60
+	secs = secs%60
+
+	local hrs = mins//60
+	mins = mins%60
+
+	local str = ""
+
+	if hrs ~= 0 then
+		str = string.format("%d:%02d:%02d", hrs, mins, secs)
+	else
+		str = string.format("%d:%02d", mins, secs)
+	end
+
+	return str
 end
 
 ------------------------------------------------------------------------------
@@ -437,14 +482,40 @@ function draw_ring(cr, pt)
 	draw_text(cr, style.ring, ALIGNC, pt.x, pt.y, pt.label)
 end
 
+---------------------------------------
+-- Function draw_audio_cover
+---------------------------------------
+function draw_audio_cover(cr, x, y, cover)
+	-- -- Draw frame
+	-- cairo_rectangle(cr, pt.frame.x, pt.frame.y, pt.frame.size, pt.frame.size)
+
+	-- cairo_set_source_rgba(cr, rgb_to_r_g_b(pt.frame.color, pt.frame.alpha))
+	-- cairo_fill(cr)
+
+	-- -- Draw audio icon
+	-- if (show_cover_art == false or pt.image.file == nil or pt.image.file == "") then
+	-- 	draw_svg_icon(cr, pt.icon)
+	-- -- Draw cover
+	-- else
+		cairo_save(cr)
+		cairo_arc(cr, x + cover.size/2, y + cover.size/2, cover.size/2, 0, math.pi * 2)
+		cairo_clip(cr)
+		cairo_place_image(cover.file, cr, x, y, cover.size, cover.size, 1)
+		cairo_restore(cr)
+	-- end
+end
+
 ------------------------------------------------------------------------------
--- WEATHER FUNCTIONS
+-- OTHER FUNCTIONS
 ------------------------------------------------------------------------------
+---------------------------------------
+-- Function update_weather
+---------------------------------------
 function update_weather()
 	local json = require("dkjson")
 
 	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
+	local url = 'api.openweathermap.org/data/2.5/weather?q='..time.weather.city..'&appid='..time.weather.app_id..'&units=metric'
 
 	local handle = io.popen('curl -s "'..url..'"')
 	local str = handle:read("*a")
@@ -453,13 +524,38 @@ function update_weather()
 	-- Decode weather data from json
 	local data, pos, err = json.decode(str, 1, nil)
 
-	weather.location = (data ~= nil and data.name or '')
-	weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
-	weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+	time.weather.location = (data ~= nil and data.name or '')
+	time.weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
+	time.weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	time.weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
 	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
-	weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
+	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'icons/'..icon..'.png') or '')
+end
+
+---------------------------------------
+-- Function update_player
+---------------------------------------
+function update_player()
+	local lgi = require 'lgi'
+	local Playerctl = lgi.Playerctl
+
+	-- Find preferred player
+	local rank = 0
+
+	audio.player = nil
+	audio.alias = nil
+
+	for _, p in pairs(Playerctl.list_players()) do
+		local named = named_players[p.instance]
+
+		if named ~= nil and named.rank > rank then
+			audio.player = Playerctl.Player.new_from_name(p)
+			audio.alias = named.alias or p.instance
+
+			rank = named.rank
+		end
+	end
 end
 
 ------------------------------------------------------------------------------
@@ -483,6 +579,7 @@ function conky_main()
 
 	-- Compute style font heights
 	style.text.height = font_height(cr, style.text)
+	style.subtext.height = font_height(cr, style.subtext)
 	style.header.height = font_height(cr, style.header)
 	style.weather.height = font_height(cr, style.weather)
 	style.time.height = font_height(cr, style.time)
@@ -515,7 +612,7 @@ function conky_main()
 	-- Update weather if necessary
 	local updates = tonumber(conky_parse("${updates}"))
 
-	if updates ~= 0 and updates % weather.interval == 0 then
+	if updates ~= 0 and updates % time.weather.interval == 0 then
 		update_weather()
 	end
 
@@ -530,17 +627,17 @@ function conky_main()
 	local xe = time.background.x + time.background.width - margin_x
 	local y = time.background.y + margin_y + style.weather.height + line_spacing * 0.5
 
-	if weather.icon ~= '' then
-		cairo_place_image(weather.icon, cr, xs, y - style.weather.height/2 - weather.icon_size/2 + weather.icon_dy, weather.icon_size, weather.icon_size, 1)
+	if time.weather.icon ~= '' then
+		cairo_place_image(time.weather.icon, cr, xs, y - style.weather.height/2 - time.weather.icon_size/2 + time.weather.icon_dy, time.weather.icon_size, time.weather.icon_size, 1)
 	end
 
 	-- Draw time widget text
-	draw_text(cr, style.weather, ALIGNL, xs + weather.icon_size + weather.icon_gap, y, weather.temperature..'°C')
+	draw_text(cr, style.weather, ALIGNL, xs + time.weather.icon_size + time.weather.icon_gap_x, y, time.weather.temperature..'°C')
 
-	if weather.feels_like ~= '-' then
+	if time.weather.feels_like ~= '-' then
 		y = y + line_spacing * 1.25 + style.text.height
 
-		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..weather.feels_like..'°C')
+		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..time.weather.feels_like..'°C')
 	end
 
 	y = time.background.y + margin_y + style.text.height
@@ -553,13 +650,78 @@ function conky_main()
 
 	y = y + line_spacing * 2 + style.text.height
 
-	draw_text(cr, style.text, ALIGNL, xs, y, weather.description)
+	draw_text(cr, style.text, ALIGNL, xs, y, time.weather.description)
 	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
 
 	y = y + line_spacing + style.text.height
 
-	draw_text(cr, style.subtext, ALIGNL, xs, y, weather.location)
+	draw_text(cr, style.subtext, ALIGNL, xs, y, time.weather.location)
 	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
+
+	-- Get active player
+	update_player()
+	
+	-- Draw audio widget
+	if audio.player ~= nil then
+		-- Compute style font heights
+		style.audio_title.height = font_height(cr, style.audio_title)
+		style.audio_subtitle.height = font_height(cr, style.audio_subtitle)
+
+		-- Compute audio widget values
+		audio.background.height = 400
+
+		-- Draw background
+		draw_background(cr, audio.background)
+
+		-- Draw heading
+		local x = audio.background.x + margin_x
+		local y = audio.background.y + margin_y + style.subtext.height
+
+		draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
+
+		-- Draw cover art
+		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
+
+		y = y + line_spacing * 1.5
+
+		local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
+		audio.cover.file = string.gsub(cover_url, "file://", "")
+
+		draw_audio_cover(cr, x, y, audio.cover)
+
+		-- Draw metadata
+		x = x + audio.cover.size + audio.cover.gap_x
+		y = y + style.audio_title.height
+
+		local max_width = audio.background.width - x - margin_x
+
+		local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
+
+		local subtitle = audio.player.playback_status == "STOPPED" and "(None)" or (audio.player:get_artist() or "Unknown Artist")
+
+	-- 	-- if show_album then
+			local album = audio.player:get_album()
+
+			if album ~= nil then
+				subtitle = subtitle.."  •  "..album
+			end
+	-- 	-- end
+
+		draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
+
+		y = y + line_spacing + style.audio_subtitle.height
+
+		draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
+
+		-- Draw status
+		local pos = audio.player.position or 0
+		local len = tonumber(audio.player:print_metadata_prop("mpris:length")) or 0
+		local status = audio.player.playback_status.."  •  "..microsecs_to_string(pos)..' / '..microsecs_to_string(len)
+
+		y = y + line_spacing * 1.5 + style.subtext.height
+
+		draw_text(cr, style.subtext, ALIGNL, x, y, status)
+	end
 
 	-- Destroy cairo context
 	cairo_destroy(cr)
