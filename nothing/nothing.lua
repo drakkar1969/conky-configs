@@ -612,6 +612,164 @@ function draw_audio_cover(cr, x, y, cover)
 end
 
 ------------------------------------------------------------------------------
+-- WIDGET FUNCTIONS
+------------------------------------------------------------------------------
+---------------------------------------
+-- Function draw_ring_widgets
+---------------------------------------
+function draw_ring_widgets(cr)
+	for i, w in pairs({cpu, mem, disk, wifi}) do
+		-- Compute widget values
+		w.background.height = style.header.height + line_spacing + w.ring.outer_radius + (line_spacing + style.text.height) * #w.text.items + line_spacing * 2 + margin_y * 2
+		w.header.y = w.background.y + margin_y + style.header.height
+		w.ring.y = w.header.y + line_spacing * 2 + w.ring.outer_radius
+
+		-- Draw background
+		draw_background(cr, w.background)
+
+		-- Draw header
+		draw_text(cr, style.header, ALIGNC, w.header.x, w.header.y, w.header.label)
+
+		-- Draw ring with label
+		draw_ring(cr, w.ring)
+
+		-- Draw text
+		for i, item in pairs(w.text.items) do
+			local y = w.ring.y + line_spacing + (line_spacing + style.text.height) * i
+
+			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
+			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)
+		end
+	end
+end
+
+---------------------------------------
+-- Function draw_time_widget
+---------------------------------------
+function draw_time_widget(cr)
+	-- Compute widget values
+	time.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
+
+	-- Draw background
+	draw_background(cr, time.background)
+
+	-- Draw weather icon
+	local xs = time.background.x + margin_x
+	local xe = time.background.x + time.background.width - margin_x
+	local y = time.background.y + margin_y + style.weather.height + line_spacing * 0.5
+
+	if time.weather.icon ~= '' then
+		cairo_place_image(time.weather.icon, cr, xs, y - style.weather.height/2 - time.weather.icon_size/2 + time.weather.icon_dy, time.weather.icon_size, time.weather.icon_size, 1)
+	end
+
+	-- Draw weather temperature text
+	draw_text(cr, style.weather, ALIGNL, xs + time.weather.icon_size + time.weather.icon_gap_x, y, time.weather.temperature..'°C')
+
+	if time.weather.feels_like ~= '-' then
+		y = y + line_spacing * 1.25 + style.text.height
+
+		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..time.weather.feels_like..'°C')
+	end
+
+	-- Draw date/time text
+	y = time.background.y + margin_y + style.text.height
+
+	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
+
+	y = y + line_spacing + style.time.height
+
+	draw_text(cr, style.time, ALIGNR, xe, y, '${time %R}')
+
+	-- Draw battery/weather text
+	y = y + line_spacing * 2 + style.text.height
+
+	draw_text(cr, style.text, ALIGNL, xs, y, time.weather.description)
+	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
+
+	y = y + line_spacing + style.text.height
+
+	draw_text(cr, style.subtext, ALIGNL, xs, y, time.weather.location)
+	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
+end
+
+---------------------------------------
+-- Function draw_audio_widget
+---------------------------------------
+function draw_audio_widget(cr)
+	-- Get player cover art
+	local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
+	audio.cover.file = string.gsub(cover_url, "file://", "")
+
+	-- Get player metadata
+	local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
+
+	local subtitle = audio.player.playback_status == "STOPPED" and "(None)" or (audio.player:get_artist() or "Unknown Artist")
+
+	local album = audio.player:get_album()
+
+	if album ~= nil then
+		subtitle = subtitle.."  •  "..album
+	end
+
+	-- Get player position/track length
+	local pos = audio.player.position or 0
+	local len_str = audio.player:print_metadata_prop("mpris:length")
+	local len = len_str ~= nil and tonumber(len_str) or 0
+
+	-- Compute widget values
+	audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
+
+	audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
+	audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width + audio.ring.mark_thickness
+	audio.ring.value = (len == 0 and 0 or pos/len * 100)
+
+	audio.background.height = style.subtext.height + line_spacing * 0.5 + audio.ring.outer_radius * 2 + margin_y * 2
+
+	-- Draw background
+	draw_background(cr, audio.background)
+
+	-- Draw heading
+	local x = audio.background.x + margin_x
+	local y = audio.background.y + margin_y + style.subtext.height
+
+	draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
+
+	-- Draw ring
+	x = x + audio.ring.outer_radius
+	y = y + audio.ring.outer_radius + line_spacing * 0.5
+
+	audio.ring.x = x
+	audio.ring.y = y
+
+	draw_ring(cr, audio.ring)
+
+	-- Draw cover art
+	x = x - audio.cover.size/2
+	y = y - audio.cover.size/2
+
+	draw_audio_cover(cr, x, y, audio.cover)
+
+	-- Draw metadata
+	x = x + audio.cover.size + audio.cover.gap_x
+	y = y + style.audio_title.height + line_spacing * 0.5
+
+	local max_width = audio.background.width - x - margin_x
+
+	draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
+
+	y = y + line_spacing * 1.5 + style.audio_subtitle.height
+
+	draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
+
+	-- Draw status
+	local status = audio.player.playback_status.."  •  "..microsecs_to_string(pos)..' / '..microsecs_to_string(len)
+
+	y = y + line_spacing + style.subtext.height
+
+	draw_text(cr, style.subtext, ALIGNL, x, y, status)
+end
+
+------------------------------------------------------------------------------
 -- STARTUP FUNCTION
 ------------------------------------------------------------------------------
 function conky_startup()
@@ -638,29 +796,7 @@ function conky_main()
 	style.time.height = font_height(cr, style.time)
 
 	-- Draw ring widgets
-	for i, w in pairs({cpu, mem, disk, wifi}) do
-		-- Compute widget values
-		w.background.height = style.header.height + line_spacing + w.ring.outer_radius + (line_spacing + style.text.height) * #w.text.items + line_spacing * 2 + margin_y * 2
-		w.header.y = w.background.y + margin_y + style.header.height
-		w.ring.y = w.header.y + line_spacing * 2 + w.ring.outer_radius
-
-		-- Draw background
-		draw_background(cr, w.background)
-
-		-- Draw header
-		draw_text(cr, style.header, ALIGNC, w.header.x, w.header.y, w.header.label)
-
-		-- Draw ring with label
-		draw_ring(cr, w.ring)
-
-		-- Draw text
-		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + line_spacing + (line_spacing + style.text.height) * i
-
-			draw_text(cr, style.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
-			draw_text(cr, style.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)
-		end
-	end
+	draw_ring_widgets(cr)
 
 	-- Update weather if necessary
 	local updates = tonumber(conky_parse("${updates}"))
@@ -669,49 +805,10 @@ function conky_main()
 		update_weather()
 	end
 
-	-- Compute time widget values
-	time.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
+	-- Draw time widget
+	draw_time_widget(cr)
 
-	-- Draw time widget background
-	draw_background(cr, time.background)
-
-	-- Draw weather icon
-	local xs = time.background.x + margin_x
-	local xe = time.background.x + time.background.width - margin_x
-	local y = time.background.y + margin_y + style.weather.height + line_spacing * 0.5
-
-	if time.weather.icon ~= '' then
-		cairo_place_image(time.weather.icon, cr, xs, y - style.weather.height/2 - time.weather.icon_size/2 + time.weather.icon_dy, time.weather.icon_size, time.weather.icon_size, 1)
-	end
-
-	-- Draw time widget text
-	draw_text(cr, style.weather, ALIGNL, xs + time.weather.icon_size + time.weather.icon_gap_x, y, time.weather.temperature..'°C')
-
-	if time.weather.feels_like ~= '-' then
-		y = y + line_spacing * 1.25 + style.text.height
-
-		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..time.weather.feels_like..'°C')
-	end
-
-	y = time.background.y + margin_y + style.text.height
-
-	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
-
-	y = y + line_spacing + style.time.height
-
-	draw_text(cr, style.time, ALIGNR, xe, y, '${time %R}')
-
-	y = y + line_spacing * 2 + style.text.height
-
-	draw_text(cr, style.text, ALIGNL, xs, y, time.weather.description)
-	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
-
-	y = y + line_spacing + style.text.height
-
-	draw_text(cr, style.subtext, ALIGNL, xs, y, time.weather.location)
-	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
-
-	-- Get active player
+	-- Update active player
 	update_player()
 	
 	-- Draw audio widget
@@ -720,82 +817,7 @@ function conky_main()
 		style.audio_title.height = font_height(cr, style.audio_title)
 		style.audio_subtitle.height = font_height(cr, style.audio_subtitle)
 
-		-- Compute audio widget values
-
-		local pos = audio.player.position or 0
-		local len_str = audio.player:print_metadata_prop("mpris:length")
-		local len = len_str ~= nil and tonumber(len_str) or 0
-
-		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
-		audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
-		audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width + audio.ring.mark_thickness
-
-		if len == 0 then
-			audio.ring.value = 0
-		else
-			audio.ring.value = pos/len * 100
-		end
-
-		-- Draw background
-		audio.background.height = style.subtext.height + line_spacing * 0.5 + audio.ring.outer_radius * 2 + margin_y * 2
-
-		draw_background(cr, audio.background)
-
-		-- Draw heading
-		local x = audio.background.x + margin_x
-		local y = audio.background.y + margin_y + style.subtext.height
-
-		draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
-
-		-- Compute cover/ring values
-
-		x = x + audio.ring.outer_radius
-		y = y + audio.ring.outer_radius + line_spacing * 0.5
-
-		audio.ring.x = x
-		audio.ring.y = y
-
-		draw_ring(cr, audio.ring)
-
-		-- Draw cover art
-		x = x - audio.cover.size/2
-		y = y - audio.cover.size/2
-
-		local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
-		audio.cover.file = string.gsub(cover_url, "file://", "")
-
-		draw_audio_cover(cr, x, y, audio.cover)
-
-		-- Draw metadata
-		x = x + audio.cover.size + audio.cover.gap_x
-		y = y + style.audio_title.height + line_spacing * 0.5
-
-		local max_width = audio.background.width - x - margin_x
-
-		local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
-
-		local subtitle = audio.player.playback_status == "STOPPED" and "(None)" or (audio.player:get_artist() or "Unknown Artist")
-
-	-- -- 	-- if show_album then
-			local album = audio.player:get_album()
-
-			if album ~= nil then
-				subtitle = subtitle.."  •  "..album
-			end
-	-- -- 	-- end
-
-		draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
-
-		y = y + line_spacing * 1.5 + style.audio_subtitle.height
-
-		draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
-
-		-- Draw status
-		local status = audio.player.playback_status.."  •  "..microsecs_to_string(pos)..' / '..microsecs_to_string(len)
-
-		y = y + line_spacing + style.subtext.height
-
-		draw_text(cr, style.subtext, ALIGNL, x, y, status)
+		draw_audio_widget(cr)
 	end
 
 	-- Destroy cairo context
