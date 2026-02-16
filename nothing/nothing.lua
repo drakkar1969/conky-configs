@@ -92,7 +92,7 @@ local cpu = {
 		step = 9,
 		padding_x = 0,
 		outer_radius = 105,
-		mark_width = 16,
+		mark_width = 12,
 		mark_thickness = 5,
 		label = '${cpu cpu0}%',
 		value = '${cpu cpu0}',
@@ -122,7 +122,7 @@ local mem = {
 		step = 9,
 		padding_x = 0,
 		outer_radius = 105,
-		mark_width = 16,
+		mark_width = 12,
 		mark_thickness = 5,
 		label = '${memperc}%',
 		value = '${memperc}',
@@ -152,7 +152,7 @@ local disk = {
 		step = 9,
 		padding_x = 0,
 		outer_radius = 105,
-		mark_width = 16,
+		mark_width = 12,
 		mark_thickness = 5,
 		label = '${fs_used_perc /home}%',
 		value = '${fs_used_perc /home}',
@@ -185,7 +185,7 @@ local wifi = {
 		step = 9,
 		padding_x = 0,
 		outer_radius = 105,
-		mark_width = 16,
+		mark_width = 12,
 		mark_thickness = 5,
 		label = '${downspeed '..interface..'}',
 		value = '${downspeedf '..interface..'}',
@@ -241,7 +241,7 @@ audio = {
 		width = 800
 	},
 	cover = {
-		gap_x = 30
+		gap_x = 32
 	},
 	ring = {
 		start_angle = -180,
@@ -249,8 +249,8 @@ audio = {
 		step = 7,
 		padding_x = 0,
 		outer_radius = 40,
-		mark_width = 10,
-		mark_thickness = 5,
+		mark_width = 6,
+		mark_thickness = 4,
 		label = '',
 		value = 50,
 		value_max = 100
@@ -265,7 +265,7 @@ for i, w in pairs({cpu, mem, disk, wifi}) do
 	w.header.x = w.background.x + w.background.width / 2
 
 	w.ring.x = w.header.x
-	w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width
+	w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width - w.ring.mark_thickness
 
 	w.text.xs = w.background.x + margin_x
 	w.text.xe = w.background.x + w.background.width - margin_x
@@ -686,7 +686,7 @@ function conky_main()
 
 		audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height + line_spacing * 2.5
 		audio.ring.inner_radius = audio.cover.size/2 + audio.cover.gap_x/2
-		audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width
+		audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width + audio.ring.mark_thickness
 
 		if len == 0 then
 			audio.ring.value = 0
@@ -726,7 +726,7 @@ function conky_main()
 
 		-- Draw metadata
 		x = x + audio.cover.size + audio.cover.gap_x
-		y = y + style.audio_title.height
+		y = y + style.audio_title.height + line_spacing * 0.5
 
 		local max_width = audio.background.width - x - margin_x
 
