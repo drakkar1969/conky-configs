@@ -200,9 +200,9 @@ local wifi = {
 }
 
 ---------------------------------------
--- TIME widget
+-- MULTI widget
 ---------------------------------------
-time = {
+multi = {
 	background = {
 		x = 0,
 		y = 670,
@@ -261,7 +261,7 @@ audio = {
 	}
 }
 ------------------------------------------------------------------------------
--- COMPUTE WIDGET VALUES
+-- COMPUTE RING WIDGET VALUES
 ------------------------------------------------------------------------------
 for i, w in pairs({cpu, mem, disk, wifi}) do
 	w.background.width = (margin_x + w.ring.padding_x + w.ring.outer_radius) * 2
@@ -410,7 +410,7 @@ function update_weather()
 	local json = require("dkjson")
 
 	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?q='..time.weather.city..'&appid='..time.weather.app_id..'&units=metric'
+	local url = 'api.openweathermap.org/data/2.5/weather?q='..multi.weather.city..'&appid='..multi.weather.app_id..'&units=metric'
 
 	local handle = io.popen('curl -s "'..url..'"')
 	local str = handle:read("*a")
@@ -419,13 +419,13 @@ function update_weather()
 	-- Decode weather data from json
 	local data, pos, err = json.decode(str, 1, nil)
 
-	time.weather.location = (data and data.name or '')
-	time.weather.description = (data.weather[1] and data.weather[1].main or '')
-	time.weather.temperature = ((data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	time.weather.feels_like = ((data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+	multi.weather.location = (data and data.name or '')
+	multi.weather.description = (data.weather[1] and data.weather[1].main or '')
+	multi.weather.temperature = ((data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	multi.weather.feels_like = ((data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
 	local icon = (data.weather[1] and data.weather[1].icon or '')
-	time.weather.icon = (icon and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
+	multi.weather.icon = (icon and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
 end
 
 ---------------------------------------
@@ -459,14 +459,14 @@ end
 ---------------------------------------
 -- Function draw_background
 ---------------------------------------
-function draw_background(cr, pt)
+function draw_background(cr, bg)
 	local conv = math.pi / 180
 
 	cairo_new_sub_path(cr)
-	cairo_arc(cr, pt.x + pt.width - border_radius, pt.y + border_radius, border_radius, -90 * conv, 0)
-	cairo_arc(cr, pt.x + pt.width - border_radius, pt.y + pt.height - border_radius, border_radius, 0, 90 * conv)
-	cairo_arc(cr, pt.x + border_radius, pt.y + pt.height - border_radius, border_radius, 90 * conv, 180 * conv);
-	cairo_arc(cr, pt.x + border_radius, pt.y + border_radius, border_radius, 180 * conv, 270 * conv);
+	cairo_arc(cr, bg.x + bg.width - border_radius, bg.y + border_radius, border_radius, -90 * conv, 0)
+	cairo_arc(cr, bg.x + bg.width - border_radius, bg.y + bg.height - border_radius, border_radius, 0, 90 * conv)
+	cairo_arc(cr, bg.x + border_radius, bg.y + bg.height - border_radius, border_radius, 90 * conv, 180 * conv);
+	cairo_arc(cr, bg.x + border_radius, bg.y + border_radius, border_radius, 180 * conv, 270 * conv);
 	cairo_close_path(cr)
 
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(background_color, 1))
@@ -515,25 +515,25 @@ end
 ---------------------------------------
 -- Function draw_ring
 ---------------------------------------
-function draw_ring(cr, pt)
-	local str = conky_parse(pt.value)
+function draw_ring(cr, ring)
+	local str = conky_parse(ring.value)
 
 	-- Calculate ring value
 	local value = tonumber(str)
 	if value == nil then value = 0 end
 
-	local pct = value/pt.value_max
+	local pct = value/ring.value_max
 	pct = (pct > 1 and 1 or pct)
 
-	local value_angle = pct * (pt.end_angle - pt.start_angle) + pt.start_angle
+	local value_angle = pct * (ring.end_angle - ring.start_angle) + ring.start_angle
 
 	-- Draw ring marks
-	for angle = pt.start_angle, pt.end_angle, pt.step do
-		local xs, ys = ar_to_xy(pt.x, pt.y, angle, pt.outer_radius)
+	for angle = ring.start_angle, ring.end_angle, ring.step do
+		local xs, ys = ar_to_xy(ring.x, ring.y, angle, ring.outer_radius)
 
 		cairo_move_to(cr, xs, ys)
 
-		local xe, ye = ar_to_xy(pt.x, pt.y, angle, pt.inner_radius)
+		local xe, ye = ar_to_xy(ring.x, ring.y, angle, ring.inner_radius)
 
 		cairo_line_to(cr, xe, ye)
 
@@ -542,13 +542,13 @@ function draw_ring(cr, pt)
 		else
 			cairo_set_source_rgba(cr, rgb_to_r_g_b(default_color, 0.05))
 		end
-		cairo_set_line_width(cr, pt.mark_thickness)
+		cairo_set_line_width(cr, ring.mark_thickness)
 		cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
 		cairo_stroke(cr)
 	end
 
 	-- Draw ring text
-	draw_text(cr, style.ring, ALIGNC, pt.x, pt.y, pt.label)
+	draw_text(cr, style.ring, ALIGNC, ring.x, ring.y, ring.label)
 end
 
 ---------------------------------------
@@ -645,35 +645,35 @@ function draw_ring_widgets(cr)
 end
 
 ---------------------------------------
--- Function draw_time_widget
+-- Function draw_multi_widget
 ---------------------------------------
-function draw_time_widget(cr)
+function draw_multi_widget(cr)
 	-- Compute widget values
-	time.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
+	multi.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
 
 	-- Draw background
-	draw_background(cr, time.background)
+	draw_background(cr, multi.background)
 
 	-- Draw weather icon
-	local xs = time.background.x + margin_x
-	local xe = time.background.x + time.background.width - margin_x
-	local y = time.background.y + margin_y + style.weather.height + line_spacing * 0.5
+	local xs = multi.background.x + margin_x
+	local xe = multi.background.x + multi.background.width - margin_x
+	local y = multi.background.y + margin_y + style.weather.height + line_spacing * 0.5
 
-	if time.weather.icon ~= '' then
-		cairo_place_image(time.weather.icon, cr, xs, y - style.weather.height/2 - time.weather.icon_size/2 + time.weather.icon_dy, time.weather.icon_size, time.weather.icon_size, 1)
+	if multi.weather.icon ~= '' then
+		cairo_place_image(multi.weather.icon, cr, xs, y - style.weather.height/2 - multi.weather.icon_size/2 + multi.weather.icon_dy, multi.weather.icon_size, multi.weather.icon_size, 1)
 	end
 
 	-- Draw weather temperature text
-	draw_text(cr, style.weather, ALIGNL, xs + time.weather.icon_size + time.weather.icon_gap_x, y, time.weather.temperature..'°C')
+	draw_text(cr, style.weather, ALIGNL, xs + multi.weather.icon_size + multi.weather.icon_gap_x, y, multi.weather.temperature..'°C')
 
-	if time.weather.feels_like ~= '-' then
+	if multi.weather.feels_like ~= '-' then
 		y = y + line_spacing * 1.25 + style.text.height
 
-		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..time.weather.feels_like..'°C')
+		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..multi.weather.feels_like..'°C')
 	end
 
 	-- Draw date/time text
-	y = time.background.y + margin_y + style.text.height
+	y = multi.background.y + margin_y + style.text.height
 
 	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
 
@@ -684,12 +684,12 @@ function draw_time_widget(cr)
 	-- Draw battery/weather text
 	y = y + line_spacing * 2 + style.text.height
 
-	draw_text(cr, style.text, ALIGNL, xs, y, time.weather.description)
+	draw_text(cr, style.text, ALIGNL, xs, y, multi.weather.description)
 	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
 
 	y = y + line_spacing + style.text.height
 
-	draw_text(cr, style.subtext, ALIGNL, xs, y, time.weather.location)
+	draw_text(cr, style.subtext, ALIGNL, xs, y, multi.weather.location)
 	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
 end
 
@@ -817,12 +817,12 @@ function conky_main()
 	-- Update weather if necessary
 	local updates = tonumber(conky_parse("${updates}"))
 
-	if updates ~= 0 and updates % time.weather.interval == 0 then
+	if updates ~= 0 and updates % multi.weather.interval == 0 then
 		update_weather()
 	end
 
-	-- Draw time widget
-	draw_time_widget(cr)
+	-- Draw multi widget
+	draw_multi_widget(cr)
 
 	-- Update active player
 	update_player()
