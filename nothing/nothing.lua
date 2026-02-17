@@ -511,12 +511,8 @@ function draw_text(cr, style, align, x, y, text, max_width)
 	cairo_set_font_size(cr, style.fsize)
 	cairo_set_source_rgba(cr, rgb_to_r_g_b(style.color, 1))
 
-	-- Calculate text extents
-	local t_extents = cairo_text_extents_t:create()
-	tolua.takeownership(t_extents)
-	cairo_text_extents(cr, text, t_extents)
-
-	local text_w = t_extents.x_advance
+	-- Calculate text position
+	local text_w = text_width(cr, style, text)
 
 	local text_x = ((align == ALIGNR) and (x - text_w) or ((align == ALIGNC) and (x - text_w * 0.5) or x))
 
@@ -526,10 +522,6 @@ function draw_text(cr, style, align, x, y, text, max_width)
 	cairo_set_line_width(cr, style.stroke)
 	cairo_stroke_preserve(cr)
 	cairo_fill(cr)
-
-	-- Destroy variables
-	tolua.releaseownership(t_extents)
-	cairo_text_extents_t:destroy(t_extents)
 
 	return text_w
 end
