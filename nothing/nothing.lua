@@ -419,13 +419,13 @@ function update_weather()
 	-- Decode weather data from json
 	local data, pos, err = json.decode(str, 1, nil)
 
-	time.weather.location = (data ~= nil and data.name or '')
-	time.weather.description = (data.weather[1] ~= nil and data.weather[1].main or '')
-	time.weather.temperature = ((data.main ~= nil and data.main.temp ~= nil) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	time.weather.feels_like = ((data.main ~= nil and data.main.feels_like ~= nil) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+	time.weather.location = (data and data.name or '')
+	time.weather.description = (data.weather[1] and data.weather[1].main or '')
+	time.weather.temperature = ((data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	time.weather.feels_like = ((data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
-	local icon = (data.weather[1] ~= nil and data.weather[1].icon or '')
-	time.weather.icon = (icon ~= nil and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
+	local icon = (data.weather[1] and data.weather[1].icon or '')
+	time.weather.icon = (icon and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
 end
 
 ---------------------------------------
@@ -444,7 +444,7 @@ function update_player()
 	for _, p in pairs(Playerctl.list_players()) do
 		local named = named_players[p.instance]
 
-		if named ~= nil and named.rank > rank then
+		if named and named.rank > rank then
 			audio.player = Playerctl.Player.new_from_name(p)
 			audio.alias = named.alias or p.instance
 
@@ -480,7 +480,7 @@ function draw_text(cr, style, align, x, y, text, max_width)
 	text = accented_upper(conky_parse(text))
 
 	-- Ellipsize text if necessary
-	if max_width ~= nil then
+	if max_width then
 		text = ellipsize_text(cr, style, text, max_width)
 	end
 
@@ -713,14 +713,14 @@ function draw_audio_widget(cr)
 
 	local album = audio.player:get_album()
 
-	if audio.show_album and subtitle ~= nil and subtitle ~= '---' and album ~= nil and album ~= "" then
+	if audio.show_album and subtitle and subtitle ~= '---' and album and album ~= "" then
 		subtitle = subtitle.."  •  "..album
 	end
 
 	-- Get player position/track length
 	local pos = audio.player.position or 0
 	local len_str = audio.player:print_metadata_prop("mpris:length")
-	local len = len_str ~= nil and tonumber(len_str) or 0
+	local len = len_str and tonumber(len_str) or 0
 
 	-- Compute widget values
 	audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height * 2 + line_spacing * 4
@@ -828,7 +828,7 @@ function conky_main()
 	update_player()
 	
 	-- Draw audio widget
-	if audio.player ~= nil then
+	if audio.player then
 		-- Compute style font heights
 		style.audio_title.height = font_height(cr, style.audio_title)
 		style.audio_subtitle.height = font_height(cr, style.audio_subtitle)
