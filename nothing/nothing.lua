@@ -37,7 +37,7 @@ local palette = {
 local background_color = 0x28282c
 local header_color = 0xaaaaaa
 local default_color = 0xffffff
-local subtext_color = 0xbbbbbb
+local subtext_color = 0xaaaaaa
 local accent_color = palette.adwaita_yellow
 
 local style = {
