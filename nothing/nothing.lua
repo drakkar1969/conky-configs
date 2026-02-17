@@ -208,6 +208,13 @@ multi = {
 		y = 670,
 		width = 605
 	},
+	button = {
+		gap_x = 16,
+		size = 64,
+		icon = string.gsub(conky_config, 'nothing.conf', 'weather/refresh.svg'),
+		icon_size = 32,
+		is_down = false
+	},
 	weather = {
 		app_id = 'b1b61a08efe33de67901d98c4f5711f5',
 		city = 'Krakow,PL',
@@ -474,6 +481,21 @@ function draw_background(cr, bg)
 end
 
 ---------------------------------------
+-- Function draw_button
+---------------------------------------
+function draw_button(cr, btn)
+	cairo_arc(cr, btn.x + btn.size/2, btn.y + btn.size/2, btn.size/2, 0, math.pi * 2)
+
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(background_color, 1))
+	cairo_fill(cr)
+
+	local x = btn.x + (btn.size - btn.icon_size)/2
+	local y = btn.y + (btn.size - btn.icon_size)/2
+
+	draw_svg_icon(cr, btn.icon, x, y, btn.icon_size, 1)
+end
+
+---------------------------------------
 -- Function draw_text
 ---------------------------------------
 function draw_text(cr, style, align, x, y, text, max_width)
@@ -554,7 +576,7 @@ end
 ---------------------------------------
 -- Function draw_svg_icon
 ---------------------------------------
-function draw_svg_icon(cr, file, x, y, size)
+function draw_svg_icon(cr, file, x, y, size, alpha)
 	cairo_save(cr)
 
 	-- Load SVG image from file
@@ -579,7 +601,7 @@ function draw_svg_icon(cr, file, x, y, size)
 	-- Re-color and draw SVG image
 	local pattern = cairo_pop_group(cr)
 
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(default_color, 0.2))
+	cairo_set_source_rgba(cr, rgb_to_r_g_b(default_color, alpha))
 
 	cairo_mask(cr, pattern)
 
@@ -601,7 +623,7 @@ function draw_audio_cover(cr, x, y, cover)
 		local xi = x + (cover.size - cover.icon_size)/2
 		local yi = y + (cover.size - cover.icon_size)/2
 
-		draw_svg_icon(cr, icon, xi, yi, cover.icon_size)
+		draw_svg_icon(cr, icon, xi, yi, cover.icon_size, 0.2)
 	-- Draw cover
 	else
 		cairo_save(cr)
@@ -650,9 +672,14 @@ end
 function draw_multi_widget(cr)
 	-- Compute widget values
 	multi.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
+	multi.button.x = multi.background.x + multi.background.width + multi.button.gap_x
+	multi.button.y = multi.background.y
 
 	-- Draw background
 	draw_background(cr, multi.background)
+
+	-- Draw button
+	draw_button(cr, multi.button)
 
 	-- Draw weather icon
 	local xs = multi.background.x + margin_x
@@ -839,4 +866,26 @@ function conky_main()
 	-- Destroy cairo context
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
+end
+
+------------------------------------------------------------------------------
+-- MOUSE EVENTS
+------------------------------------------------------------------------------
+function mouse_in_button(event, btn)
+	return event.x >= btn.x and event.x < btn.x + btn.size and event.y >= btn.y and event.y < btn.y + btn.size
+end
+
+function conky_mouse(event)
+	if event.type ~= "button_down" and event.type ~= "button_up" then return end
+	if mouse_in_button(event, multi.button) == false then return end
+
+	if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
+		if event.type == "button_down" then
+			multi.button.is_down = true
+		elseif event.type == "button_up" and multi.button.is_down then
+			update_weather()
+
+			multi.button.is_down = false
+		end
+	end
 end
