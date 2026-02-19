@@ -392,7 +392,13 @@ function ellipsize_text(cr, style, text, max_width)
 	local ellipsis_width = text_width(cr, style, ellipsis)
 
 	while text_width(cr, style, out_text) + ellipsis_width > max_width and #out_text > 0 do
-		out_text = string.sub(out_text, 1, -2)
+		local chars = {}
+
+		for c in string.gmatch(out_text, "[%z\1-\127\194-\244][\128-\191]*") do
+			table.insert(chars, c)
+		end
+
+		out_text = table.concat(chars, "", 1, #chars - 2)
 	end
 
 	return out_text..ellipsis
