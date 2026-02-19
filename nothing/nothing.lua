@@ -608,16 +608,16 @@ end
 -- Function draw_audio_cover
 ---------------------------------------
 function draw_audio_cover(cr, x, y, cover)
-	-- Draw audio icon
 	if (cover.show == false or cover.file == nil or cover.file == "") then
+		-- Draw audio icon
 		local icon = string.gsub(conky_config, 'nothing.conf', 'audio/audio.svg')
 
 		local xi = x + (cover.size - cover.icon_size)/2
 		local yi = y + (cover.size - cover.icon_size)/2
 
 		draw_svg_icon(cr, icon, xi, yi, cover.icon_size, 0.2)
-	-- Draw cover
 	else
+		-- Draw cover from file
 		cairo_save(cr)
 		cairo_arc(cr, x + cover.size/2, y + cover.size/2, cover.size/2, 0, math.pi * 2)
 		cairo_clip(cr)
@@ -717,12 +717,28 @@ end
 ---------------------------------------
 function draw_audio_widget(cr)
 	-- Get player cover art
-	local cover_url = audio.player:print_metadata_prop("mpris:artUrl") or ""
+	local url = audio.player:print_metadata_prop("mpris:artUrl")
 
-	if string.find(cover_url, "^http") then
-		audio.cover.file = nil
-	else
-		audio.cover.file = string.gsub(cover_url, "file://", "")
+	if url ~= audio.cover.url then
+		audio.cover.url = url
+
+		if string.find(url, "^file://") then
+			audio.cover.file = string.gsub(cover.url, "file://", "")
+		elseif string.find(url, "^http") then
+			local handle = io.popen('curl -s "'..url..'"')
+			local str = handle:read("*a")
+			handle:close()
+
+			local file = '/tmp/conky_nothing_cover'
+
+			io.output(file)
+			io.write(str)
+			io.input():close()
+
+			audio.cover.file = file
+		else
+			audio.cover.file = nil
+		end
 	end
 
 	-- Get player metadata
