@@ -811,7 +811,7 @@ function draw_audio_widget(cr)
 	draw_audio_cover(cr, x, y, audio.cover)
 
 	-- Draw heading
-	x = x + audio.cover.size + audio.gap_x
+	x = x + audio.cover.size + audio.gap_x * 1.5
 	y = y + style.subtext.height
 
 	draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
