@@ -741,26 +741,30 @@ function draw_audio_widget(cr)
 	-- Get player cover art
 	local url = audio.player:print_metadata_prop('mpris:artUrl')
 
-	if url ~= audio.cover.url then
-		audio.cover.url = url
+	url = (audio.player.playback_status == 'STOPPED' and '' or url)
 
+	local cover_file = nil
+
+	if url ~= nil then
 		if string.find(url, '^file://') then
-			audio.cover.file = string.gsub(cover.url, 'file://', '')
+			cover_file = string.gsub(url, 'file://', '')
 		elseif string.find(url, '^http') then
+			local file = '/tmp/conky_nothing_cover'
+
 			local handle = io.popen('curl -s "'..url..'"')
 			local str = handle:read('*a')
 			handle:close()
-
-			local file = '/tmp/conky_nothing_cover'
 
 			io.output(file)
 			io.write(str)
 			io.output():close()
 
-			audio.cover.file = file
-		else
-			audio.cover.file = nil
+			cover_file = file
 		end
+	end
+
+	if cover_file ~= audio.cover.file then
+		audio.cover.file = cover_file
 	end
 
 	-- Get player metadata
