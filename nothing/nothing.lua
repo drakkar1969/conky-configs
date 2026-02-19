@@ -249,9 +249,9 @@ multi = {
 ---------------------------------------
 -- Named players (higher rank = preferred)
 local named_players = {
-	["Lollypop"] = { rank = 2 },
-	["com.github.neithern.g4music"] = { rank = 1, alias = "Gapless" },
-	["Riff"] = { rank = 1, alias = "Spotify" }
+	['Lollypop'] = { rank = 2 },
+	['com.github.neithern.g4music'] = { rank = 1, alias = 'Gapless' },
+	['Riff'] = { rank = 1, alias = 'Spotify' }
 }
 
 audio = {
@@ -362,16 +362,16 @@ end
 function accented_upper(text)
 	-- Accented character map
 	local accented_map = {
-		["á"] = "Á", ["é"] = "É", ["í"] = "Í", ["ó"] = "Ó", ["ú"] = "Ú",
-		["à"] = "À", ["è"] = "È", ["ì"] = "Ì", ["ò"] = "Ò", ["ù"] = "Ù",
-		["â"] = "Â", ["ê"] = "Ê", ["î"] = "Î", ["ô"] = "Ô", ["û"] = "Û",
-		["ä"] = "Ä", ["ë"] = "Ë", ["ï"] = "Ï", ["ö"] = "Ö", ["ü"] = "Ü",
-		["ã"] = "Ã", ["õ"] = "Õ", ["ñ"] = "Ñ", ["ç"] = "Ç"
+		['á'] = 'Á', ['é'] = 'É', ['í'] = 'Í', ['ó'] = 'Ó', ['ú'] = 'Ú',
+		['à'] = 'À', ['è'] = 'È', ['ì'] = 'Ì', ['ò'] = 'Ò', ['ù'] = 'Ù',
+		['â'] = 'Â', ['ê'] = 'Ê', ['î'] = 'Î', ['ô'] = 'Ô', ['û'] = 'Û',
+		['ä'] = 'Ä', ['ë'] = 'Ë', ['ï'] = 'Ï', ['ö'] = 'Ö', ['ü'] = 'Ü',
+		['ã'] = 'Ã', ['õ'] = 'Õ', ['ñ'] = 'Ñ', ['ç'] = 'Ç'
 	}
 
 	text = string.upper(text)
 
-	return (string.gsub(text, "[%z\1-\127\194-\244][\128-\191]*", function(char)
+	return (string.gsub(text, '[%z\1-\127\194-\244][\128-\191]*', function(char)
 		return accented_map[char] or char
 	end))
 end
@@ -388,17 +388,17 @@ function ellipsize_text(cr, style, text, max_width)
 	local out_text = text
 
 	-- Truncate text and add ellipsis
-	local ellipsis = "…"
+	local ellipsis = '…'
 	local ellipsis_width = text_width(cr, style, ellipsis)
 
 	while text_width(cr, style, out_text) + ellipsis_width > max_width and #out_text > 0 do
 		local chars = {}
 
-		for c in string.gmatch(out_text, "[%z\1-\127\194-\244][\128-\191]*") do
+		for c in string.gmatch(out_text, '[%z\1-\127\194-\244][\128-\191]*') do
 			table.insert(chars, c)
 		end
 
-		out_text = table.concat(chars, "", 1, #chars - 2)
+		out_text = table.concat(chars, '', 1, #chars - 2)
 	end
 
 	return out_text..ellipsis
@@ -416,12 +416,12 @@ function microsecs_to_string(microsecs)
 	local hrs = mins//60
 	mins = mins%60
 
-	local str = ""
+	local str = ''
 
 	if hrs ~= 0 then
-		str = string.format("%d:%02d:%02d", hrs, mins, secs)
+		str = string.format('%d:%02d:%02d', hrs, mins, secs)
 	else
-		str = string.format("%d:%02d", mins, secs)
+		str = string.format('%d:%02d', mins, secs)
 	end
 
 	return str
@@ -434,13 +434,13 @@ end
 -- Function update_weather
 ---------------------------------------
 function update_weather()
-	local json = require("dkjson")
+	local json = require('dkjson')
 
 	-- Download weather data
 	local url = 'api.openweathermap.org/data/2.5/weather?q='..multi.weather.city..'&appid='..multi.weather.app_id..'&units=metric'
 
 	local handle = io.popen('curl -s "'..url..'"')
-	local str = handle:read("*a")
+	local str = handle:read('*a')
 	handle:close()
 
 	-- Decode weather data from json
@@ -628,7 +628,7 @@ end
 -- Function draw_audio_cover
 ---------------------------------------
 function draw_audio_cover(cr, x, y, cover)
-	if (cover.show == false or cover.file == nil or cover.file == "") then
+	if (cover.show == false or cover.file == nil or cover.file == '') then
 		-- Draw audio icon
 		local icon = string.gsub(conky_config, 'nothing.conf', 'audio/audio.svg')
 
@@ -740,16 +740,16 @@ end
 ---------------------------------------
 function draw_audio_widget(cr)
 	-- Get player cover art
-	local url = audio.player:print_metadata_prop("mpris:artUrl")
+	local url = audio.player:print_metadata_prop('mpris:artUrl')
 
 	if url ~= audio.cover.url then
 		audio.cover.url = url
 
-		if string.find(url, "^file://") then
-			audio.cover.file = string.gsub(cover.url, "file://", "")
-		elseif string.find(url, "^http") then
+		if string.find(url, '^file://') then
+			audio.cover.file = string.gsub(cover.url, 'file://', '')
+		elseif string.find(url, '^http') then
 			local handle = io.popen('curl -s "'..url..'"')
-			local str = handle:read("*a")
+			local str = handle:read('*a')
 			handle:close()
 
 			local file = '/tmp/conky_nothing_cover'
@@ -765,19 +765,19 @@ function draw_audio_widget(cr)
 	end
 
 	-- Get player metadata
-	local title = audio.player.playback_status == "STOPPED" and "No Track" or (audio.player:get_title() or "Track")
+	local title = audio.player.playback_status == 'STOPPED' and 'No Track' or (audio.player:get_title() or 'Track')
 
-	local subtitle = audio.player.playback_status == "STOPPED" and "---" or (audio.player:get_artist() or "Unknown Artist")
+	local subtitle = audio.player.playback_status == 'STOPPED' and '---' or (audio.player:get_artist() or 'Unknown Artist')
 
 	local album = audio.player:get_album()
 
-	if audio.show_album and subtitle and subtitle ~= '---' and album and album ~= "" then
-		subtitle = subtitle.."  •  "..album
+	if audio.show_album and subtitle and subtitle ~= '---' and album and album ~= '' then
+		subtitle = subtitle..'  •  '..album
 	end
 
 	-- Get player position/track length
 	local pos = audio.player.position or 0
-	local len_str = audio.player:print_metadata_prop("mpris:length")
+	local len_str = audio.player:print_metadata_prop('mpris:length')
 	local len = len_str and tonumber(len_str) or 0
 
 	-- Compute widget values
@@ -873,7 +873,7 @@ function conky_main()
 	draw_ring_widgets(cr)
 
 	-- Update weather if necessary
-	local updates = tonumber(conky_parse("${updates}"))
+	local updates = tonumber(conky_parse('${updates}'))
 
 	if updates ~= 0 and updates % multi.weather.interval == 0 then
 		update_weather()
@@ -918,23 +918,23 @@ function mouse_in_button(event, btn)
 end
 
 function conky_mouse(event)
-	if event.type ~= "button_down" and event.type ~= "button_up" then return end
+	if event.type ~= 'button_down' and event.type ~= 'button_up' then return end
 	
 	if mouse_in_button(event, multi.buttons.refresh) then
-		if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
-			if event.type == "button_down" then
+		if event.button == 'left' and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
+			if event.type == 'button_down' then
 				multi.buttons.refresh.is_down = true
-			elseif event.type == "button_up" and multi.buttons.refresh.is_down then
+			elseif event.type == 'button_up' and multi.buttons.refresh.is_down then
 				update_weather()
 
 				multi.buttons.refresh.is_down = false
 			end
 		end
 	elseif mouse_in_button(event, multi.buttons.color) then
-		if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false then
-			if event.type == "button_down" then
+		if event.button == 'left' and event.mods.alt == false and event.mods.control == false and event.mods.super == false then
+			if event.type == 'button_down' then
 				multi.buttons.color.is_down = true
-			elseif event.type == "button_up" and multi.buttons.color.is_down then
+			elseif event.type == 'button_up' and multi.buttons.color.is_down then
 				local index = 0
 
 				for i, v in ipairs(palette) do
