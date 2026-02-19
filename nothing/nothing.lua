@@ -97,7 +97,7 @@ local cpu = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 105,
+		outer_radius = 100,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${cpu cpu0}%',
@@ -116,7 +116,7 @@ local cpu = {
 ---------------------------------------
 local mem = {
 	background = {
-		x = 315,
+		x = 305,
 		y = 0
 	},
 	header = {
@@ -127,7 +127,7 @@ local mem = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 105,
+		outer_radius = 100,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${memperc}%',
@@ -147,7 +147,7 @@ local mem = {
 local disk = {
 	background = {
 		x = 0,
-		y = 335
+		y = 330
 	},
 	header = {
 		label = 'DISK'
@@ -157,7 +157,7 @@ local disk = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 105,
+		outer_radius = 100,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${fs_used_perc /home}%',
@@ -179,8 +179,8 @@ local wifi_max = 36000
 
 local wifi = {
 	background = {
-		x = 315,
-		y = 335
+		x = 305,
+		y = 330
 	},
 	header = {
 		label = 'WIRELESS'
@@ -190,7 +190,7 @@ local wifi = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 105,
+		outer_radius = 100,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${downspeed '..interface..'}',
@@ -210,19 +210,18 @@ local wifi = {
 multi = {
 	background = {
 		x = 0,
-		y = 670,
+		y = 660,
 		width = 700
 	},
 	buttons = {
+		margin = 16,
 		refresh = {
-			gap = 16,
 			size = 64,
 			icon = string.gsub(conky_config, 'nothing.conf', 'weather/refresh.svg'),
 			icon_size = 32,
 			is_down = false
 		},
 		color = {
-			gap = 16,
 			size = 64,
 			icon = string.gsub(conky_config, 'nothing.conf', 'weather/color.svg'),
 			icon_size = 32,
@@ -231,7 +230,7 @@ multi = {
 	},
 	weather = {
 		app_id = 'b1b61a08efe33de67901d98c4f5711f5',
-		city = 'Krakow,PL',
+		city = 'Mogilany,PL',
 		interval = 900,
 		icon_size = 64,
 		icon_gap_x = 32,
@@ -261,7 +260,7 @@ audio = {
 	show_album = true,
 	background = {
 		x = 0,
-		y = 980,
+		y = 970,
 		width = 800
 	},
 	cover = {
@@ -684,10 +683,10 @@ end
 function draw_multi_widget(cr)
 	-- Compute widget values
 	multi.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
-	multi.buttons.refresh.x = multi.background.x + multi.background.width + multi.buttons.refresh.gap
+	multi.buttons.refresh.x = multi.background.x + multi.background.width + multi.buttons.margin
 	multi.buttons.refresh.y = multi.background.y
 	multi.buttons.color.x = multi.buttons.refresh.x
-	multi.buttons.color.y = multi.buttons.refresh.y + multi.buttons.refresh.size + multi.buttons.color.gap
+	multi.buttons.color.y = multi.buttons.refresh.y + multi.buttons.refresh.size + multi.buttons.margin
 
 	-- Draw background
 	draw_background(cr, multi.background)
