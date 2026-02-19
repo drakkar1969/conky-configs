@@ -64,11 +64,8 @@ local style = {
 	weather = {
 		fface = 'Ndot77JPExtended', fsize = 52, stroke = 0.3, color = accent_color
 	},
-	audio_title = {
+	audio = {
 		fface = 'Ndot77JPExtended', fsize = 44, stroke = 0.3, color = accent_color
-	},
-	audio_subtitle = {
-		fface = 'Inter', fsize = 25, stroke = 0.6, color = default_color
 	}
 }
 
@@ -784,7 +781,7 @@ function draw_audio_widget(cr)
 	local len = len_str and tonumber(len_str) or 0
 
 	-- Compute widget values
-	audio.cover.size = style.audio_title.height + style.audio_subtitle.height + style.subtext.height * 2 + line_spacing * 4
+	audio.cover.size = style.audio.height + style.text.height + style.subtext.height * 2 + line_spacing * 4
 
 	audio.ring.inner_radius = audio.cover.size/2 + audio.gap_x/2
 	audio.ring.outer_radius = audio.ring.inner_radius + audio.ring.mark_width + audio.ring.mark_thickness
@@ -817,15 +814,15 @@ function draw_audio_widget(cr)
 	draw_text(cr, style.subtext, ALIGNL, x, y, audio.alias)
 
 	-- Draw metadata
-	y = y + style.audio_title.height + line_spacing * 1.5
+	y = y + style.audio.height + line_spacing * 1.5
 
 	local max_width = audio.background.width - x - margin_x
 
-	draw_text(cr, style.audio_title, ALIGNL, x, y, title, max_width)
+	draw_text(cr, style.audio, ALIGNL, x, y, title, max_width)
 
-	y = y + line_spacing + style.audio_subtitle.height
+	y = y + line_spacing + style.text.height
 
-	draw_text(cr, style.audio_subtitle, ALIGNL, x, y, subtitle, max_width)
+	draw_text(cr, style.text, ALIGNL, x, y, subtitle, max_width)
 
 	-- Draw status
 	local time_w = text_width(cr, style.subtext, '0:00')
@@ -891,8 +888,7 @@ function conky_main()
 	-- Draw audio widget
 	if audio.player then
 		-- Compute style font heights
-		style.audio_title.height = font_height(cr, style.audio_title)
-		style.audio_subtitle.height = font_height(cr, style.audio_subtitle)
+		style.audio.height = font_height(cr, style.audio)
 
 		draw_audio_widget(cr)
 	end
@@ -957,7 +953,7 @@ function conky_mouse(event)
 				style.ring.color = accent_color
 				style.time.color = accent_color
 				style.weather.color = accent_color
-				style.audio_title.color = accent_color
+				style.audio.color = accent_color
 				
 				multi.buttons.color.is_down = false
 			end
