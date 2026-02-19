@@ -15,17 +15,17 @@ local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
 -- COLOR PALETTE
 ------------------------------------------------------------------------------
 local palette = {
-	adwaita_blue = 0x81d0ff,
-	adwaita_teal = 0x7bdff4,
-	adwaita_green = 0x8de698,
-	adwaita_yellow = 0xffc057,
-	adwaita_orange = 0xff9c5b,
-	adwaita_red = 0xff888c,
-	adwaita_pink = 0xffa0d8,
-	adwaita_purple = 0xfba7ff,
-	adwaita_slate = 0xbbd1e5,
+	{ name = 'adwaita_blue',   color = 0x81d0ff },
+	{ name = 'adwaita_teal',   color = 0x7bdff4 },
+	{ name = 'adwaita_green',  color = 0x8de698 },
+	{ name = 'adwaita_yellow', color = 0xffc057 },
+	{ name = 'adwaita_orange', color = 0xff9c5b },
+	{ name = 'adwaita_red',    color = 0xff888c },
+	{ name = 'adwaita_pink',   color = 0xffa0d8 },
+	{ name = 'adwaita_purple', color = 0xfba7ff },
+	{ name = 'adwaita_slate',  color = 0xbbd1e5 },
 
-	nothing_orange = 0xfb4620
+	{ name = 'nothing_orange', color = 0xfb4620 }
 }
 
 ------------------------------------------------------------------------------
@@ -38,7 +38,12 @@ local background_color = 0x28282c
 local header_color = 0xaaaaaa
 local default_color = 0xffffff
 local subtext_color = 0xaaaaaa
-local accent_color = palette.adwaita_orange
+
+io.input(string.gsub(conky_config, 'nothing.conf', 'accent'))
+local str = io.read()
+io.input():close()
+
+local accent_color = tonumber(str) or palette[1].color
 
 local style = {
 	header = {
@@ -208,12 +213,21 @@ multi = {
 		y = 670,
 		width = 700
 	},
-	button = {
-		gap_x = 16,
-		size = 64,
-		icon = string.gsub(conky_config, 'nothing.conf', 'weather/refresh.svg'),
-		icon_size = 32,
-		is_down = false
+	buttons = {
+		refresh = {
+			gap = 16,
+			size = 64,
+			icon = string.gsub(conky_config, 'nothing.conf', 'weather/refresh.svg'),
+			icon_size = 32,
+			is_down = false
+		},
+		color = {
+			gap = 16,
+			size = 64,
+			icon = string.gsub(conky_config, 'nothing.conf', 'weather/color.svg'),
+			icon_size = 32,
+			is_down = false
+		}
 	},
 	weather = {
 		app_id = 'b1b61a08efe33de67901d98c4f5711f5',
@@ -664,14 +678,17 @@ end
 function draw_multi_widget(cr)
 	-- Compute widget values
 	multi.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
-	multi.button.x = multi.background.x + multi.background.width + multi.button.gap_x
-	multi.button.y = multi.background.y
+	multi.buttons.refresh.x = multi.background.x + multi.background.width + multi.buttons.refresh.gap
+	multi.buttons.refresh.y = multi.background.y
+	multi.buttons.color.x = multi.buttons.refresh.x
+	multi.buttons.color.y = multi.buttons.refresh.y + multi.buttons.refresh.size + multi.buttons.color.gap
 
 	-- Draw background
 	draw_background(cr, multi.background)
 
-	-- Draw button
-	draw_button(cr, multi.button)
+	-- Draw buttons
+	draw_button(cr, multi.buttons.refresh)
+	draw_button(cr, multi.buttons.color)
 
 	-- Draw weather icon
 	local xs = multi.background.x + margin_x
@@ -733,7 +750,7 @@ function draw_audio_widget(cr)
 
 			io.output(file)
 			io.write(str)
-			io.input():close()
+			io.output():close()
 
 			audio.cover.file = file
 		else
@@ -877,6 +894,17 @@ function conky_main()
 end
 
 ------------------------------------------------------------------------------
+-- SHUTDOWN FUNCTION
+------------------------------------------------------------------------------
+function conky_shutdown()
+	local str = string.format('0x%x', accent_color)
+
+	io.output(string.gsub(conky_config, 'nothing.conf', 'accent'))
+	io.write(str)
+	io.output():close()
+end
+
+------------------------------------------------------------------------------
 -- MOUSE EVENTS
 ------------------------------------------------------------------------------
 function mouse_in_button(event, btn)
@@ -885,15 +913,45 @@ end
 
 function conky_mouse(event)
 	if event.type ~= "button_down" and event.type ~= "button_up" then return end
-	if mouse_in_button(event, multi.button) == false then return end
+	
+	if mouse_in_button(event, multi.buttons.refresh) then
+		if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
+			if event.type == "button_down" then
+				multi.buttons.refresh.is_down = true
+			elseif event.type == "button_up" and multi.buttons.refresh.is_down then
+				update_weather()
 
-	if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
-		if event.type == "button_down" then
-			multi.button.is_down = true
-		elseif event.type == "button_up" and multi.button.is_down then
-			update_weather()
+				multi.buttons.refresh.is_down = false
+			end
+		end
+	elseif mouse_in_button(event, multi.buttons.color) then
+		if event.button == "left" and event.mods.alt == false and event.mods.control == false and event.mods.super == false then
+			if event.type == "button_down" then
+				multi.buttons.color.is_down = true
+			elseif event.type == "button_up" and multi.buttons.color.is_down then
+				local index = 0
 
-			multi.button.is_down = false
+				for i, v in ipairs(palette) do
+					if accent_color == v.color then
+						index = i
+					end
+				end
+
+				if event.mods.shift then
+					index = (index == 1 and #palette or (index - 1))
+				else
+					index = (index == #palette and 1 or (index + 1))
+				end
+
+				accent_color = palette[index].color
+
+				style.ring.color = accent_color
+				style.time.color = accent_color
+				style.weather.color = accent_color
+				style.audio_title.color = accent_color
+				
+				multi.buttons.color.is_down = false
+			end
 		end
 	end
 end
