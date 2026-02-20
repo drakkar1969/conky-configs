@@ -919,44 +919,42 @@ end
 function conky_mouse(event)
 	if event.type ~= 'button_down' and event.type ~= 'button_up' then return end
 	
-	if mouse_in_button(event, multi.buttons.refresh) then
-		if event.button == 'left' and event.mods.alt == false and event.mods.control == false and event.mods.super == false and event.mods.shift == false then
-			if event.type == 'button_down' then
-				multi.buttons.refresh.is_down = true
-			elseif event.type == 'button_up' and multi.buttons.refresh.is_down then
-				update_weather()
+	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super then return end
 
-				multi.buttons.refresh.is_down = false
-			end
+	if mouse_in_button(event, multi.buttons.refresh) and event.mods.shift == false then
+		if event.type == 'button_down' then
+			multi.buttons.refresh.is_down = true
+		elseif event.type == 'button_up' and multi.buttons.refresh.is_down then
+			update_weather()
+
+			multi.buttons.refresh.is_down = false
 		end
 	elseif mouse_in_button(event, multi.buttons.color) then
-		if event.button == 'left' and event.mods.alt == false and event.mods.control == false and event.mods.super == false then
-			if event.type == 'button_down' then
-				multi.buttons.color.is_down = true
-			elseif event.type == 'button_up' and multi.buttons.color.is_down then
-				local index = 0
+		if event.type == 'button_down' then
+			multi.buttons.color.is_down = true
+		elseif event.type == 'button_up' and multi.buttons.color.is_down then
+			local index = 0
 
-				for i, v in ipairs(palette) do
-					if accent_color == v.color then
-						index = i
-					end
+			for i, v in ipairs(palette) do
+				if accent_color == v.color then
+					index = i
 				end
-
-				if event.mods.shift then
-					index = (index == 1 and #palette or (index - 1))
-				else
-					index = (index == #palette and 1 or (index + 1))
-				end
-
-				accent_color = palette[index].color
-
-				style.ring.color = accent_color
-				style.time.color = accent_color
-				style.weather.color = accent_color
-				style.audio.color = accent_color
-				
-				multi.buttons.color.is_down = false
 			end
+
+			if event.mods.shift then
+				index = (index == 1 and #palette or (index - 1))
+			else
+				index = (index == #palette and 1 or (index + 1))
+			end
+
+			accent_color = palette[index].color
+
+			style.ring.color = accent_color
+			style.time.color = accent_color
+			style.weather.color = accent_color
+			style.audio.color = accent_color
+			
+			multi.buttons.color.is_down = false
 		end
 	end
 end
