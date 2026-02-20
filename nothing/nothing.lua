@@ -691,7 +691,7 @@ function draw_multi_widget(cr)
 	if multi.horizontal then
 		multi.background.height = line_spacing * 4 + style.text.height * 2 + style.subtext.height + style.time.height + margin_y * 2
 	else
-		multi.background.height = line_spacing * 8.25 + style.text.height * 3 + style.subtext.height * 3 + style.time.height + style.weather.height + multi.space_y + margin_y * 2
+		multi.background.height = line_spacing * 8.5 + style.text.height * 3 + style.subtext.height * 3 + style.time.height + style.weather.height + multi.space_y + margin_y * 2
 	end
 
 	multi.buttons.refresh.x = multi.background.x + multi.background.width + multi.buttons.margin
@@ -752,7 +752,7 @@ function draw_multi_widget(cr)
 	if multi.horizontal then
 		yw = yt
 	else
-		yw = yw + line_spacing * 3 + style.text.height + style.subtext.height
+		yw = yw + line_spacing * 3.25 + style.text.height + style.subtext.height
 	end
 
 	draw_text(cr, style.subtext, ALIGNL, xw, yw, multi.weather.location)
