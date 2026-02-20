@@ -120,7 +120,7 @@ local cpu = {
 ---------------------------------------
 local mem = {
 	background = {
-		x = 305,
+		x = 296,
 		y = 0
 	},
 	header = {
@@ -151,7 +151,7 @@ local mem = {
 local disk = {
 	background = {
 		x = 0,
-		y = 330
+		y = 318
 	},
 	header = {
 		label = 'DISK'
@@ -183,8 +183,8 @@ local wifi_max = 36000
 
 local wifi = {
 	background = {
-		x = 305,
-		y = 330
+		x = 296,
+		y = 318
 	},
 	header = {
 		label = 'WIRELESS'
@@ -212,10 +212,12 @@ local wifi = {
 -- MULTI widget
 ---------------------------------------
 multi = {
+	horizontal = true,
+	space_y = 0,
 	background = {
 		x = 0,
-		y = 660,
-		width = 700
+		y = 636,
+		width = 690
 	},
 	buttons = {
 		margin = 16,
@@ -264,7 +266,7 @@ audio = {
 	show_album = true,
 	background = {
 		x = 0,
-		y = 970,
+		y = 935,
 		width = 800
 	},
 	cover = {
@@ -686,7 +688,12 @@ end
 ---------------------------------------
 function draw_multi_widget(cr)
 	-- Compute widget values
-	multi.background.height = line_spacing * 4 + style.text.height * 3 + style.time.height + margin_y * 2
+	if multi.horizontal then
+		multi.background.height = line_spacing * 4 + style.text.height * 2 + style.subtext.height + style.time.height + margin_y * 2
+	else
+		multi.background.height = line_spacing * 8.25 + style.text.height * 3 + style.subtext.height * 3 + style.time.height + style.weather.height + multi.space_y + margin_y * 2
+	end
+
 	multi.buttons.refresh.x = multi.background.x + multi.background.width + multi.buttons.margin
 	multi.buttons.refresh.y = multi.background.y
 	multi.buttons.color.x = multi.buttons.refresh.x
@@ -699,43 +706,60 @@ function draw_multi_widget(cr)
 	draw_button(cr, multi.buttons.refresh)
 	draw_button(cr, multi.buttons.color)
 
+	-- Draw date/time
+	local xt = multi.background.x + multi.background.width - margin_x
+	local yt = multi.background.y + margin_y + style.text.height
+
+	draw_text(cr, style.text, ALIGNR, xt, yt, '${time %a %d %b}')
+
+	yt = yt + line_spacing + style.time.height
+
+	draw_text(cr, style.time, ALIGNR, xt, yt, '${time %R}')
+
+	-- Draw battery text
+	yt = yt + line_spacing * 2 + style.text.height
+
+	draw_text(cr, style.text, ALIGNR, xt, yt, '${battery_percent BAT0}% BATT')
+
+	yt = yt + line_spacing + style.subtext.height
+
+	draw_text(cr, style.subtext, ALIGNR, xt, yt, '${battery_status BAT0}')
+
 	-- Draw weather icon
-	local xs = multi.background.x + margin_x
-	local xe = multi.background.x + multi.background.width - margin_x
-	local y = multi.background.y + margin_y + style.weather.height + line_spacing * 0.5
+	local xw = multi.background.x + margin_x
+	local yw
+
+	if multi.horizontal then
+		yw = multi.background.y + margin_y + style.weather.height + line_spacing * 0.5
+	else
+		yw = yt + multi.space_y + style.weather.height
+	end
 
 	if multi.weather.icon ~= '' then
-		cairo_place_image(multi.weather.icon, cr, xs, y - style.weather.height/2 - multi.weather.icon_size/2 + multi.weather.icon_dy, multi.weather.icon_size, multi.weather.icon_size, 1)
+		cairo_place_image(multi.weather.icon, cr, xw, yw - style.weather.height/2 - multi.weather.icon_size/2 + multi.weather.icon_dy, multi.weather.icon_size, multi.weather.icon_size, 1)
 	end
 
 	-- Draw weather temperature text
-	draw_text(cr, style.weather, ALIGNL, xs + multi.weather.icon_size + multi.weather.icon_gap_x, y, multi.weather.temperature..'°C')
+	draw_text(cr, style.weather, ALIGNL, xw + multi.weather.icon_size + multi.weather.icon_gap_x, yw, multi.weather.temperature..'°C')
+
+	yw = yw + line_spacing * 1.25 + style.text.height
 
 	if multi.weather.feels_like ~= '-' then
-		y = y + line_spacing * 1.25 + style.text.height
-
-		draw_text(cr, style.subtext, ALIGNL, xs, y, 'Feels like '..multi.weather.feels_like..'°C')
+		draw_text(cr, style.subtext, ALIGNL, xw, yw, 'Feels like '..multi.weather.feels_like..'°C')
 	end
 
-	-- Draw date/time text
-	y = multi.background.y + margin_y + style.text.height
+	-- Draw weather text
+	if multi.horizontal then
+		yw = yt
+	else
+		yw = yw + line_spacing * 3 + style.text.height + style.subtext.height
+	end
 
-	draw_text(cr, style.text, ALIGNR, xe, y, '${time %a %d %b}')
+	draw_text(cr, style.subtext, ALIGNL, xw, yw, multi.weather.location)
 
-	y = y + line_spacing + style.time.height
+	yw = yw - line_spacing - style.subtext.height
 
-	draw_text(cr, style.time, ALIGNR, xe, y, '${time %R}')
-
-	-- Draw battery/weather text
-	y = y + line_spacing * 2 + style.text.height
-
-	draw_text(cr, style.text, ALIGNL, xs, y, multi.weather.description)
-	draw_text(cr, style.text, ALIGNR, xe, y, '${battery_percent BAT0}% BATT')
-
-	y = y + line_spacing + style.text.height
-
-	draw_text(cr, style.subtext, ALIGNL, xs, y, multi.weather.location)
-	draw_text(cr, style.subtext, ALIGNR, xe, y, '${battery_status BAT0}')
+	draw_text(cr, style.text, ALIGNL, xw, yw, multi.weather.description)
 end
 
 ---------------------------------------
