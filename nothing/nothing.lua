@@ -39,9 +39,16 @@ local header_color = 0xaaaaaa
 local default_color = 0xffffff
 local subtext_color = 0xaaaaaa
 
-io.input(string.gsub(conky_config, 'nothing.conf', 'accent'))
-local str = io.read()
-io.input():close()
+-- Read accent color from disk
+local str
+local accent_file = string.gsub(conky_config, 'nothing.conf', 'accent')
+
+local f = io.open(accent_file, 'r')
+
+if f then
+	str = f:read("*all")
+	f:close()
+end
 
 local accent_color = tonumber(str) or palette[1].color
 
