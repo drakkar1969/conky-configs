@@ -443,11 +443,11 @@ function update_weather()
 	local data, pos, err = json.decode(str, 1, nil)
 
 	multi.weather.location = (data and data.name or '')
-	multi.weather.description = (data.weather[1] and data.weather[1].main or '')
-	multi.weather.temperature = ((data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	multi.weather.feels_like = ((data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+	multi.weather.description = ((data and data.weather[1]) and data.weather[1].main or '')
+	multi.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+	multi.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
-	local icon = (data.weather[1] and data.weather[1].icon or '')
+	local icon = ((data and data.weather[1]) and data.weather[1].icon)
 	multi.weather.icon = (icon and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
 end
 
