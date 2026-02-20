@@ -4,20 +4,23 @@ CONKYFOLDER=$(dirname $(realpath $0))
 
 sleep 3        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less for Xfce/LXDE etc
 
-# # Clock Rings
+# Clock Rings
 # conky -d -c $CONKYFOLDER/clock_rings/clock_rings.conf
 
-# # QlockTwo
+# QlockTwo
 # conky -d -c $CONKYFOLDER/qlocktwo/qlocktwo.conf
 
 # Rings
-conky -d -c $CONKYFOLDER/rings/rings.conf
+# conky -d -c $CONKYFOLDER/rings/rings.conf
 
-# # User
+# User
 # conky -d -c $CONKYFOLDER/user/user.conf
 
 # MPRIS
-conky -d -c $CONKYFOLDER/mpris/mpris.conf
+# conky -d -c $CONKYFOLDER/mpris/mpris.conf
 
-# # Dials
+# Dials
 # conky -d -c $CONKYFOLDER/dials/dials.conf
+
+# Nothing
+conky -d -c $CONKYFOLDER/nothing/nothing.conf
