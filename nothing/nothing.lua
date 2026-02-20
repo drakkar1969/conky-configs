@@ -941,10 +941,14 @@ function conky_mouse(event)
 				end
 			end
 
-			if event.mods.shift then
-				index = (index == 1 and #palette or (index - 1))
+			if index == 0 then
+				index = (event.mods.shift and #palette or 1)
 			else
-				index = (index == #palette and 1 or (index + 1))
+				if event.mods.shift then
+					index = (index == 1 and #palette or (index - 1))
+				else
+					index = (index == #palette and 1 or (index + 1))
+				end
 			end
 
 			accent_color = palette[index].color
