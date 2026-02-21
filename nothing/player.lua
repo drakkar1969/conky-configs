@@ -15,8 +15,6 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
-local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
-
 local fonts = {}
 
 local default_color = 0xffffff
@@ -34,7 +32,7 @@ local named_players = {
 }
 
 local widget = {
-	align = ALIGNC,
+	align = lib.halign.CENTER,
 	x = 0,
 	y = 0,
 	width = 900,
@@ -103,9 +101,9 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget(cr)
-	if widget.align == ALIGNR then
+	if widget.align == lib.halign.RIGHT then
 		widget.x = conky_window.width - widget.width
-	elseif widget.align == ALIGNC then
+	elseif widget.align == lib.halign.CENTER then
 		widget.x = (conky_window.width - widget.width)/2
 	end
 
@@ -287,27 +285,27 @@ function conky_main()
 		draw_cover(cr, widget.cover)
 
 		-- Draw heading
-		lib.draw_text(cr, fonts.caption, ALIGNL, widget.heading.x, widget.heading.y, widget.alias)
+		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.heading.x, widget.heading.y, widget.alias)
 
 		-- Draw metadata
-		lib.draw_text(cr, fonts.title, ALIGNL, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
+		lib.draw_text(cr, fonts.title, lib.halign.LEFT, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
 
-		lib.draw_text(cr, fonts.text, ALIGNL, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
+		lib.draw_text(cr, fonts.text, lib.halign.LEFT, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
 
 		-- Draw status
 		local x = widget.metadata.status_x
 
-		lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, widget.player.playback_status)
+		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, widget.player.playback_status)
 
 		x = x + widget.metadata.stopped_w + widget.spacing_x + widget.metadata.time_w
 
-		lib.draw_text(cr, fonts.caption, ALIGNR, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
+		lib.draw_text(cr, fonts.caption, lib.halign.RIGHT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
 
-		local dx, _ = lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, '  •  ')
+		local dx, _ = lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, '  •  ')
 
 		x = x + dx
 
-		lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
+		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
 	end
 
 	-- Destroy cairo context

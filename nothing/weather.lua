@@ -17,8 +17,6 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
-local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
-
 local fonts = {}
 
 local default_color = 0xffffff
@@ -36,7 +34,7 @@ local weather = {
 
 local widget = {
 	horizontal = true,
-	align = ALIGNR,
+	align = lib.halign.RIGHT,
 	x = 0,
 	y = 0,
 	width = 700,
@@ -100,9 +98,9 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget()
-	if widget.align == ALIGNR then
+	if widget.align == lib.halign.RIGHT then
 		widget.x = conky_window.width - widget.width
-	elseif widget.align == ALIGNC then
+	elseif widget.align == lib.halign.CENTER then
 		widget.x = (conky_window.width - widget.width)/2
 	end
 
@@ -213,12 +211,12 @@ function conky_main()
 	lib.draw_background(cr, widget)
 
 	-- Draw date/time
-	lib.draw_text(cr, fonts.text, ALIGNR, widget.time.date_x, widget.time.date_y, widget.time.date)
-	lib.draw_text(cr, fonts.time, ALIGNR, widget.time.time_x, widget.time.time_y, widget.time.time)
+	lib.draw_text(cr, fonts.text, lib.halign.RIGHT, widget.time.date_x, widget.time.date_y, widget.time.date)
+	lib.draw_text(cr, fonts.time, lib.halign.RIGHT, widget.time.time_x, widget.time.time_y, widget.time.time)
 
 	-- Draw battery text
-	lib.draw_text(cr, fonts.text, ALIGNR, widget.battery.charge_x, widget.battery.charge_y, widget.battery.charge)
-	lib.draw_text(cr, fonts.caption, ALIGNR, widget.battery.status_x, widget.battery.status_y, widget.battery.status)
+	lib.draw_text(cr, fonts.text, lib.halign.RIGHT, widget.battery.charge_x, widget.battery.charge_y, widget.battery.charge)
+	lib.draw_text(cr, fonts.caption, lib.halign.RIGHT, widget.battery.status_x, widget.battery.status_y, widget.battery.status)
 
 	-- Draw weather icon
 	if widget.weather.icon ~= '' then
@@ -226,8 +224,8 @@ function conky_main()
 	end
 
 	-- Draw weather temperature text
-	local dx, _ = lib.draw_text(cr, fonts.weather, ALIGNL, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
-	lib.draw_text(cr, fonts.caption, ALIGNL, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
+	local dx, _ = lib.draw_text(cr, fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
+	lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
 
 	-- Draw refresh button
 	if widget.button.show then
@@ -236,8 +234,8 @@ function conky_main()
 	end
 
 	-- Draw weather status text
-	lib.draw_text(cr, fonts.text, ALIGNL, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
-	lib.draw_text(cr, fonts.caption, ALIGNL, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
+	lib.draw_text(cr, fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
+	lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
 
 	-- Destroy cairo context
 	cairo_destroy(cr)

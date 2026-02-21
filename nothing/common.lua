@@ -1,6 +1,10 @@
 local lib = {}
 
-local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
+lib.halign = {
+	LEFT = 0,
+	CENTER = 1,
+	RIGHT = 2
+}
 
 lib.bg = {
 	color = 0x28282c,
@@ -140,7 +144,7 @@ function lib.draw_text(cr, font, align, x, y, text, max_width)
 	-- Calculate text position
 	local text_w = lib.text_width(cr, font, text)
 
-	local text_x = ((align == ALIGNR) and (x - text_w) or ((align == ALIGNC) and (x - text_w * 0.5) or x))
+	local text_x = ((align == lib.halign.RIGHT) and (x - text_w) or ((align == lib.halign.CENTER) and (x - text_w * 0.5) or x))
 
 	-- Draw text
 	cairo_move_to(cr, text_x, y + font.height)
@@ -200,7 +204,7 @@ function lib.draw_ring(cr, ring, font)
 	end
 
 	-- Draw ring text
-	lib.draw_text(cr, font, ALIGNC, ring.x, ring.y - font.height, ring.label)
+	lib.draw_text(cr, font, lib.halign.CENTER, ring.x, ring.y - font.height, ring.label)
 end
 
 ---------------------------------------

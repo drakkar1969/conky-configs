@@ -15,8 +15,6 @@ local init_done = false
 
 local ROW, COLUMN, BOX = 0, 1, 2
 
-local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
-
 local fonts = {}
 
 local heading_color = 0xaaaaaa
@@ -241,7 +239,7 @@ function conky_main()
 		lib.draw_background(cr, w)
 
 		-- Draw header
-		lib.draw_text(cr, fonts.heading, ALIGNC, w.heading.x, w.heading.y, w.heading.label)
+		lib.draw_text(cr, fonts.heading, lib.halign.CENTER, w.heading.x, w.heading.y, w.heading.label)
 
 		-- Draw ring with label
 		lib.draw_ring(cr, w.ring, fonts.ring)
@@ -250,8 +248,8 @@ function conky_main()
 		for i, item in pairs(w.text.items) do
 			local y = w.ring.y + (lib.line_spacing + fonts.text.height) * i
 
-			lib.draw_text(cr, fonts.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
-			lib.draw_text(cr, fonts.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)
+			lib.draw_text(cr, fonts.text, lib.halign.LEFT, w.text.xs, y, item.label, w.text.xe - w.text.xs)
+			lib.draw_text(cr, fonts.text, lib.halign.RIGHT, w.text.xe, y, item.value, w.text.xe - w.text.xs)
 		end
 	end
 
