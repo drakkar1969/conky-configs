@@ -126,7 +126,7 @@ function init_widget()
 
 	widget.weather.temperature_x = widget.x + background.padding_x + widget.weather.icon_size + widget.spacing_x
 	if widget.horizontal then
-		widget.weather.temperature_y = widget.y + background.padding_y + line_spacing
+		widget.weather.temperature_y = widget.y + background.padding_y + line_spacing * 0.5
 	else
 		widget.weather.temperature_y = widget.battery.status_y + fonts.caption.height + widget.spacing_y
 	end
