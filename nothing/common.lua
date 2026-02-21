@@ -256,4 +256,14 @@ function lib.draw_svg_icon(cr, file, x, y, size, color, alpha)
 	cairo_restore(cr)
 end
 
+---------------------------------------
+-- Function draw_button
+---------------------------------------
+function lib.draw_button(cr, btn)
+	local x = btn.x + (btn.size - btn.icon_size)/2
+	local y = btn.y + (btn.size - btn.icon_size)/2
+
+	lib.draw_svg_icon(cr, btn.icon, x, y, btn.icon_size, btn.color, 0.9)
+end
+
 return lib

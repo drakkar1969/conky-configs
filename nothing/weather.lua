@@ -4,6 +4,7 @@
 require 'cairo'
 require 'cairo_xlib'
 require 'cairo_imlib2_helper'
+require 'rsvg'
 
 local json = require('dkjson')
 
@@ -65,6 +66,14 @@ local widget = {
 		description = '',
 		temperature = '',
 		feels_like = ''
+	},
+	button = {
+		show = true,
+		size = 56,
+		icon = string.gsub(conky_config, 'weather.conf', 'weather/refresh.svg'),
+		icon_size = 32,
+		color = default_color,
+		is_down = false
 	}
 }
 
@@ -133,6 +142,8 @@ function init_widget()
 
 	widget.weather.icon_x = widget.x + background.padding_x
 	widget.weather.icon_y = widget.weather.temperature_y + (fonts.weather.height - widget.weather.icon_size)/2
+
+	widget.button.y = widget.weather.icon_y
 
 	widget.weather.feels_like_x = widget.weather.icon_x
 	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + line_spacing * 1.25
@@ -224,8 +235,14 @@ function conky_main()
 	end
 
 	-- Draw weather temperature text
-	lib.draw_text(cr, fonts.weather, ALIGNL, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
+	local dx, _ = lib.draw_text(cr, fonts.weather, ALIGNL, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
 	lib.draw_text(cr, fonts.caption, ALIGNL, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
+
+	-- Draw refresh button
+	if widget.button.show then
+		widget.button.x = widget.weather.temperature_x + dx + widget.spacing_x
+		lib.draw_button(cr, widget.button)
+	end
 
 	-- Draw weather status text
 	lib.draw_text(cr, fonts.text, ALIGNL, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
@@ -234,4 +251,27 @@ function conky_main()
 	-- Destroy cairo context
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
+end
+
+------------------------------------------------------------------------------
+-- MOUSE EVENTS
+------------------------------------------------------------------------------
+function mouse_in_button(event, btn)
+	return event.x >= btn.x and event.x < btn.x + btn.size and event.y >= btn.y and event.y < btn.y + btn.size
+end
+
+function conky_mouse(event)
+	if event.type ~= 'button_down' and event.type ~= 'button_up' then return end
+	
+	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super then return end
+
+	if widget.button.show and mouse_in_button(event, widget.button) and event.mods.shift == false then
+		if event.type == 'button_down' then
+			widget.button.is_down = true
+		elseif event.type == 'button_up' and widget.button.is_down then
+			update_weather()
+
+			widget.button.is_down = false
+		end
+	end
 end
