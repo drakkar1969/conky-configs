@@ -43,7 +43,7 @@ local named_players = {
 }
 
 local widget = {
-	align = ALIGNR,
+	align = ALIGNC,
 	x = 0,
 	y = 0,
 	width = 900,
