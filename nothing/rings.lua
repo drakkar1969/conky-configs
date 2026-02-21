@@ -200,7 +200,7 @@ end
 function init_widget()
 	for i, w in pairs(widgets) do
 		w.width = (background.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = fonts.heading.height + line_spacing + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + line_spacing * 2 + background.padding_y * 2
+		w.height = fonts.heading.height + line_spacing * 2 + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + background.padding_y * 2
 
 		if widgets_style.layout == COLUMN then
 			w.x = 0
@@ -257,7 +257,7 @@ function conky_main()
 
 		-- Draw text
 		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + line_spacing + (line_spacing + fonts.text.height) * i
+			local y = w.ring.y + (line_spacing + fonts.text.height) * i
 
 			lib.draw_text(cr, fonts.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
 			lib.draw_text(cr, fonts.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)
