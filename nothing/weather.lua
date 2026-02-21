@@ -43,6 +43,7 @@ local weather = {
 }
 
 local widget = {
+	align = ALIGNR,
 	x = 0,
 	y = 0,
 	width = 700,
@@ -97,6 +98,12 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget()
+	if widget.align == ALIGNR then
+		widget.x = conky_window.width - widget.width
+	elseif widget.align == ALIGNC then
+		widget.x = (conky_window.width - widget.width)/2
+	end
+
 	widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + background.padding_y * 2
 
 	widget.time.date_x = widget.x + widget.width - background.padding_x
@@ -156,7 +163,11 @@ end
 -- MAIN FUNCTION
 ------------------------------------------------------------------------------
 function conky_main()
+	local updates = tonumber(conky_parse('${updates}'))
+
 	if conky_window == nil then return end
+
+	if updates < 2 then return end
 
 	-- Create cairo context
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
@@ -174,8 +185,6 @@ function conky_main()
 	end
 
 	-- Update weather if necessary
-	local updates = tonumber(conky_parse('${updates}'))
-
 	if updates ~= 0 and updates % weather.check_interval == 0 then
 		update_weather()
 	end

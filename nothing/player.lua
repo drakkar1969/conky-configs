@@ -43,6 +43,7 @@ local named_players = {
 }
 
 local widget = {
+	align = ALIGNR,
 	x = 0,
 	y = 0,
 	width = 900,
@@ -110,6 +111,12 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget(cr)
+	if widget.align == ALIGNR then
+		widget.x = conky_window.width - widget.width
+	elseif widget.align == ALIGNC then
+		widget.x = (conky_window.width - widget.width)/2
+	end
+
 	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
@@ -126,7 +133,7 @@ function init_widget(cr)
 	widget.heading.x = widget.cover.x + widget.cover.size + widget.spacing_x * 1.5
 	widget.heading.y = widget.cover.y
 
-	widget.metadata.max_width = widget.width - widget.heading.x - background.padding_x
+	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - background.padding_x
 
 	widget.metadata.title_x = widget.heading.x
 	widget.metadata.title_y = widget.heading.y + fonts.caption.height + line_spacing * 1.5
@@ -251,6 +258,12 @@ end
 -- MAIN FUNCTION
 ------------------------------------------------------------------------------
 function conky_main()
+	local updates = tonumber(conky_parse('${updates}'))
+
+	if conky_window == nil then return end
+
+	if updates < 2 then return end
+
 	if conky_window == nil then return end
 
 	-- Create cairo context
