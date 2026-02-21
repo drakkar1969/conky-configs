@@ -23,13 +23,6 @@ local heading_color = 0xaaaaaa
 local default_color = 0xffffff
 local accent_color = 0xffc057
 
-local background = {
-	color = 0x28282c,
-	border_radius = 36,
-	padding_x = 40,
-	padding_y = 40
-}
-
 local line_spacing = 22
 
 ------------------------------------------------------------------------------
@@ -199,8 +192,8 @@ end
 ---------------------------------------
 function init_widget()
 	for i, w in pairs(widgets) do
-		w.width = (background.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = fonts.heading.height + line_spacing * 2 + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + background.padding_y * 2
+		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
+		w.height = fonts.heading.height + line_spacing * 2 + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
 
 		if widgets_style.layout == COLUMN then
 			w.x = 0
@@ -214,15 +207,15 @@ function init_widget()
 		end
 
 		w.heading.x = w.x + w.width/2
-		w.heading.y = w.y + background.padding_y
+		w.heading.y = w.y + lib.bg.padding_y
 
 		w.ring.x = w.heading.x
 		w.ring.y = w.heading.y + line_spacing * 2 + w.ring.outer_radius
 
 		w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width - w.ring.mark_thickness
 
-		w.text.xs = w.x + background.padding_x
-		w.text.xe = w.x + w.width - background.padding_x
+		w.text.xs = w.x + lib.bg.padding_x
+		w.text.xe = w.x + w.width - lib.bg.padding_x
 	end
 end
 
@@ -247,7 +240,7 @@ function conky_main()
 
 	for i, w in pairs(widgets) do
 		-- Draw background
-		lib.draw_background(cr, w, background)
+		lib.draw_background(cr, w)
 
 		-- Draw header
 		lib.draw_text(cr, fonts.heading, ALIGNC, w.heading.x, w.heading.y, w.heading.label)

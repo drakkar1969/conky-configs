@@ -23,13 +23,6 @@ local default_color = 0xffffff
 local caption_color = 0xaaaaaa
 local accent_color = 0xffc057
 
-local background = {
-	color = 0x28282c,
-	border_radius = 36,
-	padding_x = 40,
-	padding_y = 40
-}
-
 local line_spacing = 22
 
 ------------------------------------------------------------------------------
@@ -123,10 +116,10 @@ function init_widget(cr)
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
 	widget.ring.outer_radius = widget.ring.inner_radius + widget.ring.mark_width + widget.ring.mark_thickness
 
-	widget.ring.x = widget.x + background.padding_x + widget.ring.outer_radius
-	widget.ring.y = widget.y + background.padding_y + widget.cover.size/2
+	widget.ring.x = widget.x + lib.bg.padding_x + widget.ring.outer_radius
+	widget.ring.y = widget.y + lib.bg.padding_y + widget.cover.size/2
 
-	widget.height = widget.ring.outer_radius + widget.cover.size/2 + background.padding_y * 2
+	widget.height = widget.ring.outer_radius + widget.cover.size/2 + lib.bg.padding_y * 2
 
 	widget.cover.x = widget.ring.x - widget.cover.size/2
 	widget.cover.y = widget.ring.y - widget.cover.size/2
@@ -134,7 +127,7 @@ function init_widget(cr)
 	widget.heading.x = widget.cover.x + widget.cover.size + widget.spacing_x * 1.5
 	widget.heading.y = widget.cover.y
 
-	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - background.padding_x
+	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - lib.bg.padding_x
 
 	widget.metadata.title_x = widget.heading.x
 	widget.metadata.title_y = widget.heading.y + fonts.caption.height + line_spacing * 1.5
@@ -283,7 +276,7 @@ function conky_main()
 
 	if widget.player then
 		-- Draw background
-		lib.draw_background(cr, widget, background)
+		lib.draw_background(cr, widget)
 
 		-- Update player metadata
 		update_metadata()

@@ -25,13 +25,6 @@ local default_color = 0xffffff
 local caption_color = 0xaaaaaa
 local accent_color = 0xffc057
 
-local background = {
-	color = 0x28282c,
-	border_radius = 36,
-	padding_x = 40,
-	padding_y = 40
-}
-
 local line_spacing = 22
 
 ------------------------------------------------------------------------------
@@ -116,13 +109,13 @@ function init_widget()
 	end
 
 	if widget.horizontal then 
-		widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + background.padding_y * 2
+		widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + lib.bg.padding_y * 2
 	else
-		widget.height = line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + background.padding_y * 2
+		widget.height = line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
 	end
 
-	widget.time.date_x = widget.x + widget.width - background.padding_x
-	widget.time.date_y = widget.y + background.padding_y
+	widget.time.date_x = widget.x + widget.width - lib.bg.padding_x
+	widget.time.date_y = widget.y + lib.bg.padding_y
 
 	widget.time.time_x = widget.time.date_x
 	widget.time.time_y = widget.time.date_y + fonts.text.height + line_spacing
@@ -133,14 +126,14 @@ function init_widget()
 	widget.battery.status_x = widget.battery.charge_x
 	widget.battery.status_y = widget.battery.charge_y + fonts.text.height + line_spacing
 
-	widget.weather.temperature_x = widget.x + background.padding_x + widget.weather.icon_size + widget.spacing_x
+	widget.weather.temperature_x = widget.x + lib.bg.padding_x + widget.weather.icon_size + widget.spacing_x
 	if widget.horizontal then
-		widget.weather.temperature_y = widget.y + background.padding_y + line_spacing * 0.5
+		widget.weather.temperature_y = widget.y + lib.bg.padding_y + line_spacing * 0.5
 	else
 		widget.weather.temperature_y = widget.battery.status_y + fonts.caption.height + widget.spacing_y
 	end
 
-	widget.weather.icon_x = widget.x + background.padding_x
+	widget.weather.icon_x = widget.x + lib.bg.padding_x
 	widget.weather.icon_y = widget.weather.temperature_y + (fonts.weather.height - widget.weather.icon_size)/2
 
 	widget.button.y = widget.weather.icon_y
@@ -219,7 +212,7 @@ function conky_main()
 	end
 
 	-- Draw background
-	lib.draw_background(cr, widget, background)
+	lib.draw_background(cr, widget)
 
 	-- Draw date/time
 	lib.draw_text(cr, fonts.text, ALIGNR, widget.time.date_x, widget.time.date_y, widget.time.date)

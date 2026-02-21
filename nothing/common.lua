@@ -2,6 +2,13 @@ local lib = {}
 
 local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
 
+lib.bg = {
+	color = 0x28282c,
+	border_radius = 36,
+	padding_x = 40,
+	padding_y = 40
+}
+
 ---------------------------------------
 -- Function rgb_to_r_g_b
 ---------------------------------------
@@ -50,17 +57,17 @@ end
 ---------------------------------------
 -- Function draw_background
 ---------------------------------------
-function lib.draw_background(cr, widget, bg)
+function lib.draw_background(cr, widget)
 	local conv = math.pi / 180
 
 	cairo_new_sub_path(cr)
-	cairo_arc(cr, widget.x + widget.width - bg.border_radius, widget.y + bg.border_radius, bg.border_radius, -90 * conv, 0)
-	cairo_arc(cr, widget.x + widget.width - bg.border_radius, widget.y + widget.height - bg.border_radius, bg.border_radius, 0, 90 * conv)
-	cairo_arc(cr, widget.x + bg.border_radius, widget.y + widget.height - bg.border_radius, bg.border_radius, 90 * conv, 180 * conv);
-	cairo_arc(cr, widget.x + bg.border_radius, widget.y + bg.border_radius, bg.border_radius, 180 * conv, 270 * conv);
+	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, -90 * conv, 0)
+	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 0, 90 * conv)
+	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 90 * conv, 180 * conv);
+	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, 180 * conv, 270 * conv);
 	cairo_close_path(cr)
 
-	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(bg.color, 1))
+	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(lib.bg.color, 1))
 	cairo_fill(cr)
 end
 
