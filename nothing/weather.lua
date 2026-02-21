@@ -19,10 +19,6 @@ local init_done = false
 
 local fonts = {}
 
-local default_color = 0xffffff
-local caption_color = 0xaaaaaa
-local accent_color = 0xffc057
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -61,7 +57,7 @@ local widget = {
 		size = 56,
 		icon = string.gsub(conky_config, 'weather.conf', 'weather/refresh.svg'),
 		icon_size = 32,
-		color = default_color,
+		color = lib.colors.default,
 		is_down = false
 	}
 }
@@ -75,16 +71,16 @@ local widget = {
 function init_fonts(cr)
 	fonts = {
 		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = default_color
+			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
 		},
 		caption = {
-			face = 'Inter', size = 23, stroke = 0.4, color = caption_color
+			face = 'Inter', size = 23, stroke = 0.4, color = lib.colors.caption
 		},
 		time = {
-			face = 'Ndot77JPExtended', size = 84, stroke = 0.6, color = accent_color
+			face = 'Ndot77JPExtended', size = 84, stroke = 0.6, color = lib.colors.accent
 		},
 		weather = {
-			face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = accent_color
+			face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
 		}
 	}
 

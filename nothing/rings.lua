@@ -17,10 +17,6 @@ local ROW, COLUMN, BOX = 0, 1, 2
 
 local fonts = {}
 
-local heading_color = 0xaaaaaa
-local default_color = 0xffffff
-local accent_color = 0xffc057
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -50,9 +46,9 @@ widgets.cpu = {
 		label = '${cpu cpu0}%',
 		value = '${cpu cpu0}',
 		value_max = 100,
-		bg_color = default_color,
+		bg_color = lib.colors.default,
 		bg_alpha = 0.05,
-		fg_color = accent_color,
+		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
 	text = {
@@ -81,9 +77,9 @@ widgets.mem = {
 		label = '${memperc}%',
 		value = '${memperc}',
 		value_max = 100,
-		bg_color = default_color,
+		bg_color = lib.colors.default,
 		bg_alpha = 0.05,
-		fg_color = accent_color,
+		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
 	text = {
@@ -112,9 +108,9 @@ widgets.disk = {
 		label = '${fs_used_perc /home}%',
 		value = '${fs_used_perc /home}',
 		value_max = 100,
-		bg_color = default_color,
+		bg_color = lib.colors.default,
 		bg_alpha = 0.05,
-		fg_color = accent_color,
+		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
 	text = {
@@ -146,9 +142,9 @@ widgets.wifi = {
 		label = '${downspeed '..interface..'}',
 		value = '${downspeedf '..interface..'}',
 		value_max = wifi_max,
-		bg_color = default_color,
+		bg_color = lib.colors.default,
 		bg_alpha = 0.05,
-		fg_color = accent_color,
+		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
 	text = {
@@ -167,13 +163,13 @@ widgets.wifi = {
 function init_fonts(cr)
 	fonts = {
 		heading = {
-			face = 'Ndot 55', size = 36, stroke = 0, color = heading_color
+			face = 'Ndot 55', size = 36, stroke = 0, color = lib.colors.heading
 		},
 		ring = {
-			face = 'Ndot 57', size = 32, stroke = 0.5, color = accent_color
+			face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
 		},
 		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = default_color
+			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
 		},
 	}
 

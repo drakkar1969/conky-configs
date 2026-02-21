@@ -1,5 +1,12 @@
 local lib = {}
 
+lib.colors = {
+	default = 0xffffff,
+	caption = 0xaaaaaa,
+	heading = 0xaaaaaa,
+	accent = 0xffc057
+}
+
 lib.halign = {
 	LEFT = 0,
 	CENTER = 1,

@@ -17,10 +17,6 @@ local init_done = false
 
 local fonts = {}
 
-local default_color = 0xffffff
-local caption_color = 0xaaaaaa
-local accent_color = 0xffc057
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -47,7 +43,7 @@ local widget = {
 		file = nil,
 		icon = string.gsub(conky_config, 'player.conf', 'audio/audio.svg'),
 		icon_size = 80,
-		icon_color = default_color,
+		icon_color = lib.colors.default,
 		icon_alpha = 0.2
 	},
 	ring = {
@@ -61,9 +57,9 @@ local widget = {
 		label = '',
 		value = 50,
 		value_max = 100,
-		bg_color = default_color,
+		bg_color = lib.colors.default,
 		bg_alpha = 0.05,
-		fg_color = accent_color,
+		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
 	metadata = {}
@@ -78,16 +74,16 @@ local widget = {
 function init_fonts(cr)
 	fonts = {
 		ring = {
-			face = 'Ndot 57', size = 32, stroke = 0.5, color = accent_color
+			face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
 		},
 		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = default_color
+			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
 		},
 		caption = {
-			face = 'Inter', size = 23, stroke = 0.4, color = caption_color
+			face = 'Inter', size = 23, stroke = 0.4, color = lib.colors.caption
 		},
 		title = {
-			face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = accent_color
+			face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
 		}
 	}
 
