@@ -13,6 +13,8 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
+local ROW, COLUMN, BOX = 0, 1, 2
+
 local ALIGNL, ALIGNC, ALIGNR = 0, 1, 2
 
 local fonts = {}
@@ -35,12 +37,16 @@ local line_spacing = 22
 ------------------------------------------------------------------------------
 local widgets = {}
 
+local widgets_style = {
+	layout = BOX,
+	margin = 20
+}
+
 ---------------------------------------
 -- CPU widget
 ---------------------------------------
 widgets.cpu = {
-	x = 0,
-	y = 0,
+	index = 1,
 	heading = {
 		label = 'CPU'
 	},
@@ -71,8 +77,7 @@ widgets.cpu = {
 -- MEMORY widget
 ---------------------------------------
 widgets.mem = {
-	x = 296,
-	y = 0,
+	index = 2,
 	heading = {
 		label = 'MEMORY'
 	},
@@ -103,8 +108,7 @@ widgets.mem = {
 -- DISK widget
 ---------------------------------------
 widgets.disk = {
-	x = 0,
-	y = 318,
+	index = 3,
 	heading = {
 		label = 'DISK'
 	},
@@ -138,8 +142,7 @@ local interface = 'wlp0s20f3'
 local wifi_max = 36000
 
 widgets.wifi = {
-	x = 296,
-	y = 318,
+	index = 4,
 	heading = {
 		label = 'WIRELESS'
 	},
@@ -198,6 +201,17 @@ function init_widget()
 	for i, w in pairs(widgets) do
 		w.width = (background.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
 		w.height = fonts.heading.height + line_spacing + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + line_spacing * 2 + background.padding_y * 2
+
+		if widgets_style.layout == COLUMN then
+			w.x = 0
+			w.y = (w.index - 1) * (w.height + widgets_style.margin)
+		elseif widgets_style.layout == BOX then
+			w.x = (w.index%2 == 1 and 0 or w.width + widgets_style.margin)
+			w.y = (w.index <= 2 and 0 or w.height + widgets_style.margin)
+		else
+			w.x = (w.index - 1) * (w.width + widgets_style.margin)
+			w.y = 0
+		end
 
 		w.heading.x = w.x + w.width/2
 		w.heading.y = w.y + background.padding_y
