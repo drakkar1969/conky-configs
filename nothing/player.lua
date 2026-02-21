@@ -50,6 +50,7 @@ local widget = {
 	alias = nil,
 	show_album = true,
 	spacing_x = 32,
+	heading = {},
 	cover = {
 		show = true,
 		margin = 16,
@@ -108,7 +109,7 @@ end
 ---------------------------------------
 -- Function init_widget
 ---------------------------------------
-function init_widget()
+function init_widget(cr)
 	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
@@ -118,6 +119,26 @@ function init_widget()
 	widget.ring.y = widget.y + background.padding_y + widget.cover.size/2
 
 	widget.height = widget.ring.outer_radius + widget.cover.size/2 + background.padding_y * 2
+
+	widget.cover.x = widget.ring.x - widget.cover.size/2
+	widget.cover.y = widget.ring.y - widget.cover.size/2
+
+	widget.heading.x = widget.cover.x + widget.cover.size + widget.spacing_x * 1.5
+	widget.heading.y = widget.cover.y
+
+	widget.metadata.max_width = widget.width - widget.heading.x - background.padding_x
+
+	widget.metadata.title_x = widget.heading.x
+	widget.metadata.title_y = widget.heading.y + fonts.caption.height + line_spacing * 1.5
+
+	widget.metadata.subtitle_x = widget.metadata.title_x
+	widget.metadata.subtitle_y = widget.metadata.title_y + fonts.title.height + line_spacing
+
+	widget.metadata.status_x = widget.metadata.subtitle_x
+	widget.metadata.status_y = widget.metadata.subtitle_y + fonts.text.height + line_spacing * 1.5
+
+	widget.metadata.time_w = lib.text_width(cr, fonts.caption, '0:00')
+	widget.metadata.stopped_w = lib.text_width(cr, fonts.caption, 'STOPPED')
 end
 
 ---------------------------------------
@@ -204,23 +225,23 @@ end
 ---------------------------------------
 -- Function draw_cover
 ---------------------------------------
-function draw_cover(cr, x, y, cover)
+function draw_cover(cr, cover)
 	if (cover.show == false or cover.file == nil or cover.file == '') then
 		-- Draw audio icon
 		local icon = string.gsub(conky_config, 'player.conf', 'audio/audio.svg')
 
-		local xi = x + (cover.size - cover.icon_size)/2
-		local yi = y + (cover.size - cover.icon_size)/2
+		local xi = cover.x + (cover.size - cover.icon_size)/2
+		local yi = cover.y + (cover.size - cover.icon_size)/2
 
 		draw_svg_icon(cr, icon, xi, yi, cover.icon_size, cover.icon_color, cover.icon_alpha)
 	else
 		-- Draw cover from file
 		cairo_save(cr)
 
-		cairo_arc(cr, x + cover.size/2, y + cover.size/2, cover.size/2, 0, math.pi * 2)
+		cairo_arc(cr, cover.x + cover.size/2, cover.y + cover.size/2, cover.size/2, 0, math.pi*2)
 		cairo_clip(cr)
 
-		cairo_place_image(cover.file, cr, x, y, cover.size, cover.size, 1)
+		cairo_place_image(cover.file, cr, cover.x, cover.y, cover.size, cover.size, 1)
 
 		cairo_restore(cr)
 	end
@@ -240,7 +261,7 @@ function conky_main()
 	-- Initialize
 	if init_done == false then
 		init_fonts(cr)
-		init_widget()
+		init_widget(cr)
 
 		init_done = true
 	end
@@ -256,51 +277,34 @@ function conky_main()
 		update_metadata()
 
 		-- Draw ring
-		local x = widget.ring.x
-		local y = widget.ring.y
-
 		widget.ring.value = (widget.metadata.len == 0 and 0 or widget.metadata.pos/widget.metadata.len * 100)
 		lib.draw_ring(cr, widget.ring, fonts.ring)
 
 		-- Draw cover art
-		x = x - widget.cover.size/2
-		y = y - widget.cover.size/2
-
-		draw_cover(cr, x, y, widget.cover)
+		draw_cover(cr, widget.cover)
 
 		-- Draw heading
-		x = x + widget.cover.size + widget.spacing_x * 1.5
-
-		_, dy = lib.draw_text(cr, fonts.caption, ALIGNL, x, y, widget.alias)
+		lib.draw_text(cr, fonts.caption, ALIGNL, widget.heading.x, widget.heading.y, widget.alias)
 
 		-- Draw metadata
-		local max_width = widget.width - x - background.padding_x
+		lib.draw_text(cr, fonts.title, ALIGNL, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
 
-		y = y + dy + line_spacing * 1.5
-
-		_, dy = lib.draw_text(cr, fonts.title, ALIGNL, x, y, widget.metadata.title, max_width)
-
-		y = y + dy + line_spacing
-
-		_, dy = lib.draw_text(cr, fonts.text, ALIGNL, x, y, widget.metadata.subtitle, max_width)
+		lib.draw_text(cr, fonts.text, ALIGNL, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
 
 		-- Draw status
-		local time_w = lib.text_width(cr, fonts.caption, '0:00')
-		local stopped_w = lib.text_width(cr, fonts.caption, 'STOPPED')
+		local x = widget.metadata.status_x
 
-		y = y + dy + line_spacing * 1.5
+		lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, widget.player.playback_status)
 
-		_, dy = lib.draw_text(cr, fonts.caption, ALIGNL, x, y, widget.player.playback_status)
+		x = x + widget.metadata.stopped_w + widget.spacing_x + widget.metadata.time_w
 
-		x = x + stopped_w + widget.spacing_x + time_w
+		lib.draw_text(cr, fonts.caption, ALIGNR, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
 
-		lib.draw_text(cr, fonts.caption, ALIGNR, x, y, lib.microsecs_to_string(widget.metadata.pos))
-
-		local dx, _ = lib.draw_text(cr, fonts.caption, ALIGNL, x, y, '  •  ')
+		local dx, _ = lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, '  •  ')
 
 		x = x + dx
 
-		lib.draw_text(cr, fonts.caption, ALIGNL, x, y, lib.microsecs_to_string(widget.metadata.len))
+		lib.draw_text(cr, fonts.caption, ALIGNL, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
 	end
 
 	-- Destroy cairo context
