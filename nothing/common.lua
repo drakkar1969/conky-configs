@@ -220,7 +220,7 @@ end
 ---------------------------------------
 -- Function draw_svg_icon
 ---------------------------------------
-function draw_svg_icon(cr, file, x, y, size, color, alpha)
+function lib.draw_svg_icon(cr, file, x, y, size, color, alpha)
 	cairo_save(cr)
 
 	-- Load SVG image from file

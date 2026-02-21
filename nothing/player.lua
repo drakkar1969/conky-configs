@@ -239,7 +239,7 @@ function draw_cover(cr, cover)
 		local xi = cover.x + (cover.size - cover.icon_size)/2
 		local yi = cover.y + (cover.size - cover.icon_size)/2
 
-		draw_svg_icon(cr, cover.icon, xi, yi, cover.icon_size, cover.icon_color, cover.icon_alpha)
+		lib.draw_svg_icon(cr, cover.icon, xi, yi, cover.icon_size, cover.icon_color, cover.icon_alpha)
 	else
 		-- Draw cover from file
 		cairo_save(cr)
