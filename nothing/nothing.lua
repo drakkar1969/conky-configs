@@ -234,19 +234,6 @@ multi = {
 			is_down = false
 		}
 	},
-	weather = {
-		app_id = 'b1b61a08efe33de67901d98c4f5711f5',
-		city = 'Mogilany,PL',
-		interval = 900,
-		icon_size = 64,
-		icon_gap_x = 32,
-		icon_dy = 1,
-		icon = '',
-		location = '',
-		description = '',
-		temperature = '-',
-		feels_like = '-'
-	}
 }
 
 ---------------------------------------
@@ -304,12 +291,6 @@ end
 ------------------------------------------------------------------------------
 -- AUXILIARY FUNCTIONS
 ------------------------------------------------------------------------------
----------------------------------------
--- Function rgb_to_r_g_b
----------------------------------------
-function rgb_to_r_g_b(color, alpha)
-	return ((color/0x10000)%0x100)/255., ((color/0x100)%0x100)/255., (color%0x100)/255., alpha
-end
 
 ---------------------------------------
 -- Function ar_to_xy
@@ -321,64 +302,6 @@ function ar_to_xy(xc, yc, angle, radius)
 	local y = yc - radius * (math.cos(radians))
 
 	return x, y
-end
-
----------------------------------------
--- Function font_height
----------------------------------------
-function font_height(cr, style)
-	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, style.fsize)
-
-	local f_extents = cairo_font_extents_t:create()
-	tolua.takeownership(f_extents)
-	cairo_font_extents(cr, f_extents)
-
-	local height = f_extents.height - f_extents.descent * 2
-
-	tolua.releaseownership(f_extents)
-	cairo_font_extents_t:destroy(f_extents)
-
-	return height
-end
-
----------------------------------------
--- Function text_width
----------------------------------------
-function text_width(cr, style, text)
-	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, style.fsize)
-
-	local t_extents = cairo_text_extents_t:create()
-	tolua.takeownership(t_extents)
-	cairo_text_extents(cr, text, t_extents)
-
-	local width = t_extents.x_advance
-
-	tolua.releaseownership(t_extents)
-	cairo_text_extents_t:destroy(t_extents)
-
-	return width
-end
-
----------------------------------------
--- Function accented_upper
----------------------------------------
-function accented_upper(text)
-	-- Accented character map
-	local accented_map = {
-		['á'] = 'Á', ['é'] = 'É', ['í'] = 'Í', ['ó'] = 'Ó', ['ú'] = 'Ú',
-		['à'] = 'À', ['è'] = 'È', ['ì'] = 'Ì', ['ò'] = 'Ò', ['ù'] = 'Ù',
-		['â'] = 'Â', ['ê'] = 'Ê', ['î'] = 'Î', ['ô'] = 'Ô', ['û'] = 'Û',
-		['ä'] = 'Ä', ['ë'] = 'Ë', ['ï'] = 'Ï', ['ö'] = 'Ö', ['ü'] = 'Ü',
-		['ã'] = 'Ã', ['õ'] = 'Õ', ['ñ'] = 'Ñ', ['ç'] = 'Ç'
-	}
-
-	text = string.upper(text)
-
-	return (string.gsub(text, '[%z\1-\127\194-\244][\128-\191]*', function(char)
-		return accented_map[char] or char
-	end))
 end
 
 ---------------------------------------
@@ -436,31 +359,6 @@ end
 -- WEATHER/PLAYER FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
--- Function update_weather
----------------------------------------
-function update_weather()
-	local json = require('dkjson')
-
-	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?q='..multi.weather.city..'&appid='..multi.weather.app_id..'&units=metric'
-
-	local handle = io.popen('curl -s "'..url..'"')
-	local str = handle:read('*a')
-	handle:close()
-
-	-- Decode weather data from json
-	local data, pos, err = json.decode(str, 1, nil)
-
-	multi.weather.location = (data and data.name or '')
-	multi.weather.description = ((data and data.weather[1]) and data.weather[1].main or '')
-	multi.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	multi.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
-
-	local icon = ((data and data.weather[1]) and data.weather[1].icon)
-	multi.weather.icon = (icon and string.gsub(conky_config, 'nothing.conf', 'weather/'..icon..'.png') or '')
-end
-
----------------------------------------
 -- Function update_player
 ---------------------------------------
 function update_player()
@@ -488,22 +386,6 @@ end
 ------------------------------------------------------------------------------
 -- DRAWING FUNCTIONS
 ------------------------------------------------------------------------------
----------------------------------------
--- Function draw_background
----------------------------------------
-function draw_background(cr, bg)
-	local conv = math.pi / 180
-
-	cairo_new_sub_path(cr)
-	cairo_arc(cr, bg.x + bg.width - border_radius, bg.y + border_radius, border_radius, -90 * conv, 0)
-	cairo_arc(cr, bg.x + bg.width - border_radius, bg.y + bg.height - border_radius, border_radius, 0, 90 * conv)
-	cairo_arc(cr, bg.x + border_radius, bg.y + bg.height - border_radius, border_radius, 90 * conv, 180 * conv);
-	cairo_arc(cr, bg.x + border_radius, bg.y + border_radius, border_radius, 180 * conv, 270 * conv);
-	cairo_close_path(cr)
-
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(background_color, 1))
-	cairo_fill(cr)
-end
 
 ---------------------------------------
 -- Function draw_button
@@ -518,37 +400,6 @@ function draw_button(cr, btn)
 	local y = btn.y + (btn.size - btn.icon_size)/2
 
 	draw_svg_icon(cr, btn.icon, x, y, btn.icon_size, 1)
-end
-
----------------------------------------
--- Function draw_text
----------------------------------------
-function draw_text(cr, style, align, x, y, text, max_width)
-	text = accented_upper(conky_parse(text))
-
-	-- Ellipsize text if necessary
-	if max_width then
-		text = ellipsize_text(cr, style, text, max_width)
-	end
-
-	-- Set font/color
-	cairo_select_font_face(cr, style.fface, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
-	cairo_set_font_size(cr, style.fsize)
-	cairo_set_source_rgba(cr, rgb_to_r_g_b(style.color, 1))
-
-	-- Calculate text position
-	local text_w = text_width(cr, style, text)
-
-	local text_x = ((align == ALIGNR) and (x - text_w) or ((align == ALIGNC) and (x - text_w * 0.5) or x))
-
-	-- Draw text
-	cairo_move_to(cr, text_x, y)
-	cairo_text_path(cr, text)
-	cairo_set_line_width(cr, style.stroke)
-	cairo_stroke_preserve(cr)
-	cairo_fill(cr)
-
-	return text_w
 end
 
 ---------------------------------------
@@ -699,67 +550,12 @@ function draw_multi_widget(cr)
 	multi.buttons.color.x = multi.buttons.refresh.x
 	multi.buttons.color.y = multi.buttons.refresh.y + multi.buttons.refresh.size + multi.buttons.margin
 
-	-- Draw background
-	draw_background(cr, multi.background)
-
 	-- Draw buttons
 	draw_button(cr, multi.buttons.refresh)
 	draw_button(cr, multi.buttons.color)
 
-	-- Draw date/time
-	local xt = multi.background.x + multi.background.width - margin_x
-	local yt = multi.background.y + margin_y + style.text.height
 
-	draw_text(cr, style.text, ALIGNR, xt, yt, '${time %a %d %b}')
 
-	yt = yt + line_spacing + style.time.height
-
-	draw_text(cr, style.time, ALIGNR, xt, yt, '${time %R}')
-
-	-- Draw battery text
-	yt = yt + line_spacing * 2 + style.text.height
-
-	draw_text(cr, style.text, ALIGNR, xt, yt, '${battery_percent BAT0}% BATT')
-
-	yt = yt + line_spacing + style.subtext.height
-
-	draw_text(cr, style.subtext, ALIGNR, xt, yt, '${battery_status BAT0}')
-
-	-- Draw weather icon
-	local xw = multi.background.x + margin_x
-	local yw
-
-	if multi.horizontal then
-		yw = multi.background.y + margin_y + style.weather.height + line_spacing * 0.5
-	else
-		yw = yt + multi.space_y + style.weather.height
-	end
-
-	if multi.weather.icon ~= '' then
-		cairo_place_image(multi.weather.icon, cr, xw, yw - style.weather.height/2 - multi.weather.icon_size/2 + multi.weather.icon_dy, multi.weather.icon_size, multi.weather.icon_size, 1)
-	end
-
-	-- Draw weather temperature text
-	draw_text(cr, style.weather, ALIGNL, xw + multi.weather.icon_size + multi.weather.icon_gap_x, yw, multi.weather.temperature..'°C')
-
-	yw = yw + line_spacing * 1.25 + style.text.height
-
-	if multi.weather.feels_like ~= '-' then
-		draw_text(cr, style.subtext, ALIGNL, xw, yw, 'Feels like '..multi.weather.feels_like..'°C')
-	end
-
-	-- Draw weather text
-	if multi.horizontal then
-		yw = yt
-	else
-		yw = yw + line_spacing * 3.25 + style.text.height + style.subtext.height
-	end
-
-	draw_text(cr, style.subtext, ALIGNL, xw, yw, multi.weather.location)
-
-	yw = yw - line_spacing - style.subtext.height
-
-	draw_text(cr, style.text, ALIGNL, xw, yw, multi.weather.description)
 end
 
 ---------------------------------------
@@ -902,16 +698,6 @@ function conky_main()
 
 	-- Draw ring widgets
 	draw_ring_widgets(cr)
-
-	-- Update weather if necessary
-	local updates = tonumber(conky_parse('${updates}'))
-
-	if updates ~= 0 and updates % multi.weather.interval == 0 then
-		update_weather()
-	end
-
-	-- Draw multi widget
-	draw_multi_widget(cr)
 
 	-- Update active player
 	update_player()
