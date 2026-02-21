@@ -191,7 +191,7 @@ function lib.draw_ring(cr, ring, font)
 	end
 
 	-- Draw ring text
-	lib.draw_text(cr, font, ALIGNC, ring.x, ring.y, ring.label)
+	lib.draw_text(cr, font, ALIGNC, ring.x, ring.y - font.height, ring.label)
 end
 
 ---------------------------------------
