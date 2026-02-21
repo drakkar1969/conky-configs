@@ -23,8 +23,6 @@ local default_color = 0xffffff
 local caption_color = 0xaaaaaa
 local accent_color = 0xffc057
 
-local line_spacing = 22
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -111,7 +109,7 @@ function init_widget(cr)
 		widget.x = (conky_window.width - widget.width)/2
 	end
 
-	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + line_spacing * 4
+	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + lib.line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
 	widget.ring.outer_radius = widget.ring.inner_radius + widget.ring.mark_width + widget.ring.mark_thickness
@@ -130,13 +128,13 @@ function init_widget(cr)
 	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - lib.bg.padding_x
 
 	widget.metadata.title_x = widget.heading.x
-	widget.metadata.title_y = widget.heading.y + fonts.caption.height + line_spacing * 1.5
+	widget.metadata.title_y = widget.heading.y + fonts.caption.height + lib.line_spacing * 1.5
 
 	widget.metadata.subtitle_x = widget.metadata.title_x
-	widget.metadata.subtitle_y = widget.metadata.title_y + fonts.title.height + line_spacing
+	widget.metadata.subtitle_y = widget.metadata.title_y + fonts.title.height + lib.line_spacing
 
 	widget.metadata.status_x = widget.metadata.subtitle_x
-	widget.metadata.status_y = widget.metadata.subtitle_y + fonts.text.height + line_spacing * 1.5
+	widget.metadata.status_y = widget.metadata.subtitle_y + fonts.text.height + lib.line_spacing * 1.5
 
 	widget.metadata.time_w = lib.text_width(cr, fonts.caption, '0:00')
 	widget.metadata.stopped_w = lib.text_width(cr, fonts.caption, 'STOPPED')

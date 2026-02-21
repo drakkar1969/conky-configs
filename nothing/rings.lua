@@ -23,8 +23,6 @@ local heading_color = 0xaaaaaa
 local default_color = 0xffffff
 local accent_color = 0xffc057
 
-local line_spacing = 22
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -193,7 +191,7 @@ end
 function init_widget()
 	for i, w in pairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = fonts.heading.height + line_spacing * 2 + w.ring.outer_radius + (line_spacing + fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
+		w.height = fonts.heading.height + lib.line_spacing * 2 + w.ring.outer_radius + (lib.line_spacing + fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
 
 		if widgets_style.layout == COLUMN then
 			w.x = 0
@@ -210,7 +208,7 @@ function init_widget()
 		w.heading.y = w.y + lib.bg.padding_y
 
 		w.ring.x = w.heading.x
-		w.ring.y = w.heading.y + line_spacing * 2 + w.ring.outer_radius
+		w.ring.y = w.heading.y + lib.line_spacing * 2 + w.ring.outer_radius
 
 		w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width - w.ring.mark_thickness
 
@@ -250,7 +248,7 @@ function conky_main()
 
 		-- Draw text
 		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + (line_spacing + fonts.text.height) * i
+			local y = w.ring.y + (lib.line_spacing + fonts.text.height) * i
 
 			lib.draw_text(cr, fonts.text, ALIGNL, w.text.xs, y, item.label, w.text.xe - w.text.xs)
 			lib.draw_text(cr, fonts.text, ALIGNR, w.text.xe, y, item.value, w.text.xe - w.text.xs)

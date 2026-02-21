@@ -25,8 +25,6 @@ local default_color = 0xffffff
 local caption_color = 0xaaaaaa
 local accent_color = 0xffc057
 
-local line_spacing = 22
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -109,26 +107,26 @@ function init_widget()
 	end
 
 	if widget.horizontal then 
-		widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + lib.bg.padding_y * 2
 	else
-		widget.height = line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
 	end
 
 	widget.time.date_x = widget.x + widget.width - lib.bg.padding_x
 	widget.time.date_y = widget.y + lib.bg.padding_y
 
 	widget.time.time_x = widget.time.date_x
-	widget.time.time_y = widget.time.date_y + fonts.text.height + line_spacing
+	widget.time.time_y = widget.time.date_y + fonts.text.height + lib.line_spacing
 
 	widget.battery.charge_x = widget.time.time_x
-	widget.battery.charge_y = widget.time.time_y + fonts.time.height + line_spacing * 2
+	widget.battery.charge_y = widget.time.time_y + fonts.time.height + lib.line_spacing * 2
 
 	widget.battery.status_x = widget.battery.charge_x
-	widget.battery.status_y = widget.battery.charge_y + fonts.text.height + line_spacing
+	widget.battery.status_y = widget.battery.charge_y + fonts.text.height + lib.line_spacing
 
 	widget.weather.temperature_x = widget.x + lib.bg.padding_x + widget.weather.icon_size + widget.spacing_x
 	if widget.horizontal then
-		widget.weather.temperature_y = widget.y + lib.bg.padding_y + line_spacing * 0.5
+		widget.weather.temperature_y = widget.y + lib.bg.padding_y + lib.line_spacing * 0.5
 	else
 		widget.weather.temperature_y = widget.battery.status_y + fonts.caption.height + widget.spacing_y
 	end
@@ -139,20 +137,20 @@ function init_widget()
 	widget.button.y = widget.weather.icon_y
 
 	widget.weather.feels_like_x = widget.weather.icon_x
-	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + line_spacing * 1.25
+	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + lib.line_spacing * 1.25
 
 	widget.weather.description_x = widget.weather.feels_like_x
 	if widget.horizontal then
 		widget.weather.description_y = widget.battery.charge_y
 	else
-		widget.weather.description_y = widget.weather.feels_like_y + fonts.caption.height + line_spacing * 2.25
+		widget.weather.description_y = widget.weather.feels_like_y + fonts.caption.height + lib.line_spacing * 2.25
 	end
 
 	widget.weather.location_x = widget.weather.description_x
 	if widget.horizontal then
 		widget.weather.location_y = widget.battery.status_y
 	else
-		widget.weather.location_y = widget.weather.description_y + fonts.text.height + line_spacing
+		widget.weather.location_y = widget.weather.description_y + fonts.text.height + lib.line_spacing
 	end
 end
 
