@@ -13,7 +13,11 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
-local ROW, COLUMN, BOX = 0, 1, 2
+local layouts = {
+	ROW = 0,
+	COLUMN = 1,
+	BOX = 2
+}
 
 local fonts = {}
 
@@ -23,7 +27,7 @@ local fonts = {}
 local widgets = {}
 
 local widgets_style = {
-	layout = BOX,
+	layout = layouts.BOX,
 	margin = 20
 }
 
@@ -187,10 +191,10 @@ function init_widget()
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
 		w.height = fonts.heading.height + lib.line_spacing * 2 + w.ring.outer_radius + (lib.line_spacing + fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
 
-		if widgets_style.layout == COLUMN then
+		if widgets_style.layout == layouts.COLUMN then
 			w.x = 0
 			w.y = (w.index - 1) * (w.height + widgets_style.margin)
-		elseif widgets_style.layout == BOX then
+		elseif widgets_style.layout == layouts.BOX then
 			w.x = (w.index%2 == 1 and 0 or w.width + widgets_style.margin)
 			w.y = (w.index <= 2 and 0 or w.height + widgets_style.margin)
 		else
