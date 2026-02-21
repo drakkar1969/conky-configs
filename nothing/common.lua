@@ -65,6 +65,34 @@ function lib.draw_background(cr, widget, bg)
 end
 
 ---------------------------------------
+-- Function ellipsize
+---------------------------------------
+function lib.ellipsize(cr, font, text, max_width)
+	-- If text fits within max width, return it as is
+	if lib.text_width(cr, font, text) <= max_width then
+		return text
+	end
+
+	local out_text = text
+
+	-- Truncate text and add ellipsis
+	local ellipsis = '…'
+	local ellipsis_width = lib.text_width(cr, font, ellipsis)
+
+	while lib.text_width(cr, font, out_text) + ellipsis_width > max_width and #out_text > 0 do
+		local chars = {}
+
+		for c in string.gmatch(out_text, '[%z\1-\127\194-\244][\128-\191]*') do
+			table.insert(chars, c)
+		end
+
+		out_text = table.concat(chars, '', 1, #chars - 2)
+	end
+
+	return out_text..ellipsis
+end
+
+---------------------------------------
 -- Function accented_upper
 ---------------------------------------
 function lib.accented_upper(text)
@@ -91,9 +119,9 @@ function lib.draw_text(cr, font, align, x, y, text, max_width)
 	text = lib.accented_upper(conky_parse(text))
 
 	-- Ellipsize text if necessary
-	-- if max_width then
-	-- 	text = ellipsize_text(cr, style, text, max_width)
-	-- end
+	if max_width then
+		text = lib.ellipsize(cr, font, text, max_width)
+	end
 
 	-- Set font/color
 	cairo_select_font_face(cr, font.face, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
@@ -113,6 +141,119 @@ function lib.draw_text(cr, font, align, x, y, text, max_width)
 	cairo_fill(cr)
 
 	return text_w, font.height
+end
+
+---------------------------------------
+-- Function ar_to_xy
+---------------------------------------
+function lib.ar_to_xy(xc, yc, angle, radius)
+	local radians = (math.pi / 180) * angle
+
+	local x = xc + radius * (math.sin(radians))
+	local y = yc - radius * (math.cos(radians))
+
+	return x, y
+end
+
+---------------------------------------
+-- Function draw_ring
+---------------------------------------
+function lib.draw_ring(cr, ring, font)
+	local str = conky_parse(ring.value)
+
+	-- Calculate ring value
+	local value = tonumber(str)
+	if value == nil then value = 0 end
+
+	local pct = value/ring.value_max
+	pct = (pct > 1 and 1 or pct)
+
+	local value_angle = pct * (ring.end_angle - ring.start_angle) + ring.start_angle
+
+	-- Draw ring marks
+	for angle = ring.start_angle, ring.end_angle, ring.step do
+		local xs, ys = lib.ar_to_xy(ring.x, ring.y, angle, ring.outer_radius)
+
+		cairo_move_to(cr, xs, ys)
+
+		local xe, ye = lib.ar_to_xy(ring.x, ring.y, angle, ring.inner_radius)
+
+		cairo_line_to(cr, xe, ye)
+
+		if angle <= value_angle then
+			cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(ring.fg_color, ring.fg_alpha))
+		else
+			cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(ring.bg_color, ring.bg_alpha))
+		end
+		cairo_set_line_width(cr, ring.mark_thickness)
+		cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND)
+		cairo_stroke(cr)
+	end
+
+	-- Draw ring text
+	lib.draw_text(cr, font, ALIGNC, ring.x, ring.y, ring.label)
+end
+
+---------------------------------------
+-- Function microsecs_to_string
+---------------------------------------
+function lib.microsecs_to_string(microsecs)
+	local secs = microsecs//1000000
+
+	local mins = secs//60
+	secs = secs%60
+
+	local hrs = mins//60
+	mins = mins%60
+
+	local str = ''
+
+	if hrs ~= 0 then
+		str = string.format('%d:%02d:%02d', hrs, mins, secs)
+	else
+		str = string.format('%d:%02d', mins, secs)
+	end
+
+	return str
+end
+
+---------------------------------------
+-- Function draw_svg_icon
+---------------------------------------
+function draw_svg_icon(cr, file, x, y, size, color, alpha)
+	cairo_save(cr)
+
+	-- Load SVG image from file
+	local handle = rsvg_create_handle_from_file(file)
+
+	-- Position and size SVG image
+	local svg_rect = RsvgRectangle:create()
+	tolua.takeownership(svg_rect)
+
+	svg_rect:set(x, y, size, size)
+
+	-- Render SVG image on temporary canvas
+	local err
+
+	cairo_push_group(cr)
+	rsvg_handle_render_document(handle, cr, svg_rect, err)
+
+	-- Destroy objects
+	tolua.releaseownership(svg_rect)
+	RsvgRectangle:destroy(svg_rect)
+
+	-- Re-color and draw SVG image
+	local pattern = cairo_pop_group(cr)
+
+	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(color, alpha))
+
+	cairo_mask(cr, pattern)
+
+	cairo_pattern_destroy(pattern)
+
+	rsvg_destroy_handle(handle)
+
+	cairo_restore(cr)
 end
 
 return lib
