@@ -43,11 +43,13 @@ local weather = {
 }
 
 local widget = {
+	horizontal = true,
 	align = ALIGNR,
 	x = 0,
 	y = 0,
 	width = 700,
 	spacing_x = 32,
+	spacing_y = 130,
 	time = {
 		date = '${time %a %d %b}',
 		time = '${time %R}'
@@ -104,7 +106,11 @@ function init_widget()
 		widget.x = (conky_window.width - widget.width)/2
 	end
 
-	widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + background.padding_y * 2
+	if widget.horizontal then 
+		widget.height = line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + background.padding_y * 2
+	else
+		widget.height = line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + background.padding_y * 2
+	end
 
 	widget.time.date_x = widget.x + widget.width - background.padding_x
 	widget.time.date_y = widget.y + background.padding_y
@@ -119,7 +125,11 @@ function init_widget()
 	widget.battery.status_y = widget.battery.charge_y + fonts.text.height + line_spacing
 
 	widget.weather.temperature_x = widget.x + background.padding_x + widget.weather.icon_size + widget.spacing_x
-	widget.weather.temperature_y = widget.y + background.padding_y + line_spacing * 0.5
+	if widget.horizontal then
+		widget.weather.temperature_y = widget.y + background.padding_y + line_spacing
+	else
+		widget.weather.temperature_y = widget.battery.status_y + fonts.caption.height + widget.spacing_y
+	end
 
 	widget.weather.icon_x = widget.x + background.padding_x
 	widget.weather.icon_y = widget.weather.temperature_y + (fonts.weather.height - widget.weather.icon_size)/2
@@ -128,10 +138,18 @@ function init_widget()
 	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + line_spacing * 1.25
 
 	widget.weather.description_x = widget.weather.feels_like_x
-	widget.weather.description_y = widget.battery.charge_y
+	if widget.horizontal then
+		widget.weather.description_y = widget.battery.charge_y
+	else
+		widget.weather.description_y = widget.weather.feels_like_y + fonts.caption.height + line_spacing * 2.25
+	end
 
 	widget.weather.location_x = widget.weather.description_x
-	widget.weather.location_y = widget.battery.status_y
+	if widget.horizontal then
+		widget.weather.location_y = widget.battery.status_y
+	else
+		widget.weather.location_y = widget.weather.description_y + fonts.text.height + line_spacing
+	end
 end
 
 ---------------------------------------
