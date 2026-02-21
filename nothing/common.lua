@@ -1,10 +1,24 @@
 local lib = {}
 
+lib.accent_palette = {
+	{ name = 'adwaita_blue',   color = 0x81d0ff },
+	{ name = 'adwaita_teal',   color = 0x7bdff4 },
+	{ name = 'adwaita_green',  color = 0x8de698 },
+	{ name = 'adwaita_yellow', color = 0xffc057 },
+	{ name = 'adwaita_orange', color = 0xff9c5b },
+	{ name = 'adwaita_red',    color = 0xff888c },
+	{ name = 'adwaita_pink',   color = 0xffa0d8 },
+	{ name = 'adwaita_purple', color = 0xfba7ff },
+	{ name = 'adwaita_slate',  color = 0xbbd1e5 },
+
+	{ name = 'nothing_orange', color = 0xfb4620 }
+}
+
 lib.colors = {
 	default = 0xffffff,
 	caption = 0xaaaaaa,
 	heading = 0xaaaaaa,
-	accent = 0xffc057
+	accent = lib.accent_palette[4].color
 }
 
 lib.halign = {
