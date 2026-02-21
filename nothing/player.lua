@@ -56,6 +56,7 @@ local widget = {
 		show = true,
 		margin = 16,
 		file = nil,
+		icon = string.gsub(conky_config, 'player.conf', 'audio/audio.svg'),
 		icon_size = 80,
 		icon_color = default_color,
 		icon_alpha = 0.2
@@ -235,12 +236,10 @@ end
 function draw_cover(cr, cover)
 	if (cover.show == false or cover.file == nil or cover.file == '') then
 		-- Draw audio icon
-		local icon = string.gsub(conky_config, 'player.conf', 'audio/audio.svg')
-
 		local xi = cover.x + (cover.size - cover.icon_size)/2
 		local yi = cover.y + (cover.size - cover.icon_size)/2
 
-		draw_svg_icon(cr, icon, xi, yi, cover.icon_size, cover.icon_color, cover.icon_alpha)
+		draw_svg_icon(cr, cover.icon, xi, yi, cover.icon_size, cover.icon_color, cover.icon_alpha)
 	else
 		-- Draw cover from file
 		cairo_save(cr)
