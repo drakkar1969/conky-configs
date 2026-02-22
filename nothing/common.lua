@@ -312,10 +312,14 @@ end
 -- Function draw_button
 ---------------------------------------
 function lib.draw_button(cr, btn)
+	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(lib.bg.color, 1))
+	cairo_arc(cr, btn.x + btn.size/2, btn.y + btn.size/2, btn.size/2, 0, math.pi * 2)
+	cairo_fill(cr)
+
 	local x = btn.x + (btn.size - btn.icon_size)/2
 	local y = btn.y + (btn.size - btn.icon_size)/2
 
-	lib.draw_svg_icon(cr, btn.icon, x, y, btn.icon_size, btn.color, 0.9)
+	lib.draw_svg_icon(cr, btn.icon, x, y, btn.icon_size, btn.icon_color, 1)
 end
 
 return lib

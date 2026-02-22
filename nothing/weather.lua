@@ -53,10 +53,11 @@ local widget = {
 	},
 	button = {
 		show = true,
-		size = 56,
+		margin = 16,
+		size = 64,
 		icon = string.gsub(conky_config, 'weather.conf', 'weather/refresh.svg'),
 		icon_size = 32,
-		color = lib.colors.default,
+		icon_color = lib.colors.default,
 		is_down = false
 	}
 }
@@ -101,10 +102,13 @@ function init_widget()
 
 	if widget.halign == lib.halign.LEFT then
 		widget.x = 0
+		widget.button.x = widget.x + widget.width + widget.button.margin
 	elseif widget.halign == lib.halign.CENTER then
 		widget.x = (conky_window.width - widget.width)/2
+		widget.button.x = widget.x + widget.width + widget.button.margin
 	else
 		widget.x = conky_window.width - widget.width
+		widget.button.x = widget.x - widget.button.margin - widget.button.size
 	end
 
 	if widget.valign == lib.valign.TOP then
@@ -114,6 +118,8 @@ function init_widget()
 	else
 		widget.y = conky_window.height - widget.height
 	end
+
+	widget.button.y = widget.y
 
 	widget.time.date_x = widget.x + widget.width - lib.bg.padding_x
 	widget.time.date_y = widget.y + lib.bg.padding_y
@@ -136,8 +142,6 @@ function init_widget()
 
 	widget.weather.icon_x = widget.x + lib.bg.padding_x
 	widget.weather.icon_y = widget.weather.temperature_y + (fonts.weather.height - widget.weather.icon_size)/2
-
-	widget.button.y = widget.weather.icon_y
 
 	widget.weather.feels_like_x = widget.weather.icon_x
 	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + lib.line_spacing * 1.25
@@ -229,12 +233,11 @@ function conky_main()
 	end
 
 	-- Draw weather temperature text
-	local dx, _ = lib.draw_text(cr, fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
+	lib.draw_text(cr, fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
 	lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
 
 	-- Draw refresh button
 	if widget.button.show then
-		widget.button.x = widget.weather.temperature_x + dx + widget.spacing_x
 		lib.draw_button(cr, widget.button)
 	end
 
