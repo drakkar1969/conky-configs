@@ -4,7 +4,6 @@
 require 'cairo'
 require 'cairo_xlib'
 require 'cairo_imlib2_helper'
-require 'rsvg'
 
 local json = require('dkjson')
 

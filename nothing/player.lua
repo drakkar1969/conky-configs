@@ -4,7 +4,6 @@
 require 'cairo'
 require 'cairo_xlib'
 require 'cairo_imlib2_helper'
-require 'rsvg'
 
 local path = string.gsub(conky_config, 'player.conf', '?.lua')
 package.path = package.path..';'..path
