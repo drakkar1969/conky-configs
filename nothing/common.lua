@@ -36,6 +36,12 @@ lib.halign = {
 	RIGHT = 2
 }
 
+lib.valign = {
+	TOP = 0,
+	MIDDLE = 1,
+	BOTTOM = 2
+}
+
 lib.bg = {
 	color = 0x28282c,
 	border_radius = 36,

@@ -30,9 +30,8 @@ local weather = {
 
 local widget = {
 	horizontal = true,
-	align = lib.halign.RIGHT,
-	x = 0,
-	y = 0,
+	halign = lib.halign.RIGHT,
+	valign = lib.valign.TOP,
 	width = 700,
 	spacing_x = 32,
 	spacing_y = 130,
@@ -94,16 +93,26 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget()
-	if widget.align == lib.halign.RIGHT then
-		widget.x = conky_window.width - widget.width
-	elseif widget.align == lib.halign.CENTER then
-		widget.x = (conky_window.width - widget.width)/2
-	end
-
 	if widget.horizontal then 
 		widget.height = lib.line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + lib.bg.padding_y * 2
 	else
 		widget.height = lib.line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
+	end
+
+	if widget.halign == lib.halign.LEFT then
+		widget.x = 0
+	elseif widget.halign == lib.halign.CENTER then
+		widget.x = (conky_window.width - widget.width)/2
+	else
+		widget.x = conky_window.width - widget.width
+	end
+
+	if widget.valign == lib.valign.TOP then
+		widget.y = 0
+	elseif widget.valign == lib.valign.MIDDLE then
+		widget.y = (conky_window.height - widget.height)/2
+	else
+		widget.y = conky_window.height - widget.height
 	end
 
 	widget.time.date_x = widget.x + widget.width - lib.bg.padding_x

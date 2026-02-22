@@ -28,9 +28,8 @@ local named_players = {
 }
 
 local widget = {
-	align = lib.halign.CENTER,
-	x = 0,
-	y = 0,
+	halign = lib.halign.CENTER,
+	valign = lib.valign.TOP,
 	width = 900,
 	player = nil,
 	alias = nil,
@@ -97,21 +96,31 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget(cr)
-	if widget.align == lib.halign.RIGHT then
-		widget.x = conky_window.width - widget.width
-	elseif widget.align == lib.halign.CENTER then
-		widget.x = (conky_window.width - widget.width)/2
-	end
-
 	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + lib.line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
 	widget.ring.outer_radius = widget.ring.inner_radius + widget.ring.mark_width + widget.ring.mark_thickness
 
+	widget.height = widget.ring.outer_radius + widget.cover.size/2 + lib.bg.padding_y * 2
+
+	if widget.halign == lib.halign.LEFT then
+		widget.x = 0
+	elseif widget.halign == lib.halign.CENTER then
+		widget.x = (conky_window.width - widget.width)/2
+	else
+		widget.x = conky_window.width - widget.width
+	end
+
+	if widget.valign == lib.valign.TOP then
+		widget.y = 0
+	elseif widget.valign == lib.valign.MIDDLE then
+		widget.y = (conky_window.height - widget.height)/2
+	else
+		widget.y = conky_window.height - widget.height
+	end
+
 	widget.ring.x = widget.x + lib.bg.padding_x + widget.ring.outer_radius
 	widget.ring.y = widget.y + lib.bg.padding_y + widget.cover.size/2
-
-	widget.height = widget.ring.outer_radius + widget.cover.size/2 + lib.bg.padding_y * 2
 
 	widget.cover.x = widget.ring.x - widget.cover.size/2
 	widget.cover.y = widget.ring.y - widget.cover.size/2
