@@ -26,6 +26,7 @@ lib.colors = {
 	default = 0xffffff,
 	caption = 0xaaaaaa,
 	heading = 0xaaaaaa,
+	player  = 0xbbbbbb,
 	accent = lib.accent_palette[4].color
 }
 
@@ -46,7 +47,7 @@ lib.fonts = {
 		face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
 	},
 	player = {
-		face = 'Ndot 55', size = 32, stroke = 0, color = lib.colors.heading
+		face = 'Ndot 57', size = 34, stroke = 0, color = lib.colors.player
 	},
 	title = {
 		face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
