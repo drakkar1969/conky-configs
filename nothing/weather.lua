@@ -22,7 +22,7 @@ local accent_color = nil
 -- WIDGET DATA
 ------------------------------------------------------------------------------
 local weather = {
-	app_id = 'b1b61a08efe33de67901d98c4f5711f5',
+	app_id = '',
 	city = 'Mogilany,PL',
 	check_interval = 900
 }
@@ -136,6 +136,23 @@ function init_widget()
 end
 
 ---------------------------------------
+-- Function weather_token
+---------------------------------------
+function weather_token()
+	local token = nil
+
+	local token_file = string.gsub(conky_config, 'weather.conf', 'token')
+	local f = io.open(token_file, 'r')
+
+	if f ~= nil then
+		token = f:read('*l')
+		f:close()
+	end
+
+	return token ~= nil and token or ''
+end
+
+---------------------------------------
 -- Function update_weather
 ---------------------------------------
 function update_weather()
@@ -152,11 +169,11 @@ function update_weather()
 	local data, pos, err = json.decode(str, 1, nil)
 
 	widget.weather.location = (data and data.name or '')
-	widget.weather.description = ((data and data.weather[1]) and data.weather[1].main or '')
+	widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
 	widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
 	widget.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
-	local icon = ((data and data.weather[1]) and data.weather[1].icon)
+	local icon = ((data and data.weather) and data.weather[1].icon)
 	widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
 end
 
@@ -188,6 +205,8 @@ function conky_main()
 	if init_done == false then
 		lib.init_fonts(cr)
 		init_widget()
+
+		weather.app_id = weather_token()
 
 		update_weather()
 
