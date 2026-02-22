@@ -83,6 +83,8 @@ lib.bg = {
 
 lib.line_spacing = 22
 
+lib.xprop_id = '_NOTHING_CONKY_ACCENT'
+
 ------------------------------------------------------------------------------
 -- FUNCTIONS
 ------------------------------------------------------------------------------
@@ -93,6 +95,46 @@ function lib.init_fonts(cr)
 	for k, font in pairs(lib.fonts) do
 		font.height = lib.font_height(cr, font)
 	end
+end
+
+---------------------------------------
+-- Function update_font_colors
+---------------------------------------
+function lib.update_font_colors(accent_color)
+	for i, font in pairs(lib.fonts) do
+		if font.color == lib.colors.accent then
+			font.color = accent_color
+		end
+	end
+
+	lib.colors.accent = accent_color
+end
+
+---------------------------------------
+-- Function get_xprop_accent
+---------------------------------------
+function lib.get_xprop_accent()
+	local handle = io.popen('xprop -root '..lib.xprop_id)
+	local str = handle:read("*a")
+	handle:close()
+
+	local data = str:match('(%d+)')
+
+	return data and tonumber(data) or lib.colors.accent
+end
+
+---------------------------------------
+-- Function set_xprop_accent
+---------------------------------------
+function lib.set_xprop_accent(accent_color)
+	os.execute('xprop -root -f '..lib.xprop_id..' 32x -set '..lib.xprop_id..' '..accent_color)
+end
+
+---------------------------------------
+-- Function remove_xprop_accent
+---------------------------------------
+function lib.remove_xprop_accent()
+	os.execute('xprop -root -remove '..lib.xprop_id)
 end
 
 ---------------------------------------

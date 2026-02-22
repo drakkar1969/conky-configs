@@ -16,6 +16,8 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
+local accent_color = nil
+
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -172,6 +174,15 @@ function conky_main()
 	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
 
 	local cr = cairo_create(cs)
+
+	-- Update accent color if necessary
+	local xprop_color = lib.get_xprop_accent()
+
+	if xprop_color ~= accent_color then
+		accent_color = xprop_color
+
+		lib.update_font_colors(accent_color)
+	end
 
 	-- Initialize
 	if init_done == false then

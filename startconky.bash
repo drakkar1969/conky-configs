@@ -23,4 +23,7 @@ sleep 3        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less
 # conky -d -c $CONKYFOLDER/dials/dials.conf
 
 # Nothing
-conky -d -c $CONKYFOLDER/nothing/nothing.conf
+conky -d -c $CONKYFOLDER/nothing/rings.conf
+conky -d -c $CONKYFOLDER/nothing/weather.conf
+conky -d -c $CONKYFOLDER/nothing/player.conf
+conky -d -c $CONKYFOLDER/nothing/color.conf
