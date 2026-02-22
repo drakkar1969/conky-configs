@@ -115,11 +115,11 @@ end
 -- Function get_xprop_accent
 ---------------------------------------
 function lib.get_xprop_accent()
-	local handle = io.popen('xprop -root '..lib.xprop_id)
+	local handle = io.popen('xprop -root -f '..lib.xprop_id..' 32x '..lib.xprop_id)
 	local str = handle:read("*a")
 	handle:close()
 
-	local data = str:match('(%d+)')
+	local data = str:match('(0x[0-9a-fA-F]+)')
 
 	return data and tonumber(data) or lib.colors.accent
 end
