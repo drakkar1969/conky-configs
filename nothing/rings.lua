@@ -13,6 +13,8 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
+local accent_color = nil
+
 local layouts = {
 	ROW = 0,
 	COLUMN = 1,
