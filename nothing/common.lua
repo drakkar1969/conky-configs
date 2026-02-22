@@ -309,29 +309,25 @@ function lib.draw_svg_icon(cr, file, x, y, size, color, alpha)
 	local handle = rsvg_create_handle_from_file(file)
 
 	-- Position and size SVG image
-	local svg_rect = RsvgRectangle:create()
-	tolua.takeownership(svg_rect)
+	local rect = RsvgRectangle:create()
+	tolua.takeownership(rect)
 
-	svg_rect:set(x, y, size, size)
+	rect:set(x, y, size, size)
 
 	-- Render SVG image on temporary canvas
-	local err
-
 	cairo_push_group(cr)
-	rsvg_handle_render_document(handle, cr, svg_rect, err)
-
-	-- Destroy objects
-	tolua.releaseownership(svg_rect)
-	RsvgRectangle:destroy(svg_rect)
+	rsvg_handle_render_document(handle, cr, rect)
 
 	-- Re-color and draw SVG image
 	local pattern = cairo_pop_group(cr)
 
 	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(color, alpha))
-
 	cairo_mask(cr, pattern)
-
 	cairo_pattern_destroy(pattern)
+
+	-- Destroy objects
+	tolua.releaseownership(rect)
+	RsvgRectangle:destroy(rect)
 
 	rsvg_destroy_handle(handle)
 
