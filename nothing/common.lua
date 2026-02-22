@@ -28,6 +28,36 @@ lib.colors = {
 }
 
 ---------------------------------------
+-- Fonts
+---------------------------------------
+lib.fonts = {
+	heading = {
+		face = 'Ndot 55', size = 36, stroke = 0, color = lib.colors.heading
+	},
+	text = {
+		face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
+	},
+	caption = {
+		face = 'Inter', size = 23, stroke = 0.4, color = lib.colors.caption
+	},
+	ring = {
+		face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
+	},
+	player = {
+		face = 'Ndot 55', size = 32, stroke = 0, color = lib.colors.heading
+	},
+	title = {
+		face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
+	},
+	time = {
+		face = 'Ndot77JPExtended', size = 84, stroke = 0.6, color = lib.colors.accent
+	},
+	weather = {
+		face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
+	}
+}
+
+---------------------------------------
 -- Other variables
 ---------------------------------------
 lib.halign = {

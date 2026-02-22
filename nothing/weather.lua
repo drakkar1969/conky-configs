@@ -17,8 +17,6 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
-local fonts = {}
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -69,23 +67,8 @@ local widget = {
 -- Function init_fonts
 ---------------------------------------
 function init_fonts(cr)
-	fonts = {
-		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
-		},
-		caption = {
-			face = 'Inter', size = 23, stroke = 0.4, color = lib.colors.caption
-		},
-		time = {
-			face = 'Ndot77JPExtended', size = 84, stroke = 0.6, color = lib.colors.accent
-		},
-		weather = {
-			face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
-		}
-	}
-
 	-- Calculate font heights
-	for k, font in pairs(fonts) do
+	for k, font in pairs(lib.fonts) do
 		font.height = lib.font_height(cr, font)
 	end
 end
@@ -95,9 +78,9 @@ end
 ---------------------------------------
 function init_widget()
 	if widget.horizontal then 
-		widget.height = lib.line_spacing * 4 + fonts.text.height * 2 + fonts.caption.height + fonts.time.height + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 4 + lib.fonts.text.height * 2 + lib.fonts.caption.height + lib.fonts.time.height + lib.bg.padding_y * 2
 	else
-		widget.height = lib.line_spacing * 8.5 + fonts.text.height * 3 + fonts.caption.height * 3 + fonts.time.height + fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 8.5 + lib.fonts.text.height * 3 + lib.fonts.caption.height * 3 + lib.fonts.time.height + lib.fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
 	end
 
 	if widget.halign == lib.halign.LEFT then
@@ -125,39 +108,39 @@ function init_widget()
 	widget.time.date_y = widget.y + lib.bg.padding_y
 
 	widget.time.time_x = widget.time.date_x
-	widget.time.time_y = widget.time.date_y + fonts.text.height + lib.line_spacing
+	widget.time.time_y = widget.time.date_y + lib.fonts.text.height + lib.line_spacing
 
 	widget.battery.charge_x = widget.time.time_x
-	widget.battery.charge_y = widget.time.time_y + fonts.time.height + lib.line_spacing * 2
+	widget.battery.charge_y = widget.time.time_y + lib.fonts.time.height + lib.line_spacing * 2
 
 	widget.battery.status_x = widget.battery.charge_x
-	widget.battery.status_y = widget.battery.charge_y + fonts.text.height + lib.line_spacing
+	widget.battery.status_y = widget.battery.charge_y + lib.fonts.text.height + lib.line_spacing
 
 	widget.weather.temperature_x = widget.x + lib.bg.padding_x + widget.weather.icon_size + widget.spacing_x
 	if widget.horizontal then
 		widget.weather.temperature_y = widget.y + lib.bg.padding_y + lib.line_spacing * 0.5
 	else
-		widget.weather.temperature_y = widget.battery.status_y + fonts.caption.height + widget.spacing_y
+		widget.weather.temperature_y = widget.battery.status_y + lib.fonts.caption.height + widget.spacing_y
 	end
 
 	widget.weather.icon_x = widget.x + lib.bg.padding_x
-	widget.weather.icon_y = widget.weather.temperature_y + (fonts.weather.height - widget.weather.icon_size)/2
+	widget.weather.icon_y = widget.weather.temperature_y + (lib.fonts.weather.height - widget.weather.icon_size)/2
 
 	widget.weather.feels_like_x = widget.weather.icon_x
-	widget.weather.feels_like_y = widget.weather.temperature_y + fonts.weather.height + lib.line_spacing * 1.25
+	widget.weather.feels_like_y = widget.weather.temperature_y + lib.fonts.weather.height + lib.line_spacing * 1.25
 
 	widget.weather.description_x = widget.weather.feels_like_x
 	if widget.horizontal then
 		widget.weather.description_y = widget.battery.charge_y
 	else
-		widget.weather.description_y = widget.weather.feels_like_y + fonts.caption.height + lib.line_spacing * 2.25
+		widget.weather.description_y = widget.weather.feels_like_y + lib.fonts.caption.height + lib.line_spacing * 2.25
 	end
 
 	widget.weather.location_x = widget.weather.description_x
 	if widget.horizontal then
 		widget.weather.location_y = widget.battery.status_y
 	else
-		widget.weather.location_y = widget.weather.description_y + fonts.text.height + lib.line_spacing
+		widget.weather.location_y = widget.weather.description_y + lib.fonts.text.height + lib.line_spacing
 	end
 end
 
@@ -220,12 +203,12 @@ function conky_main()
 	lib.draw_background(cr, widget)
 
 	-- Draw date/time
-	lib.draw_text(cr, fonts.text, lib.halign.RIGHT, widget.time.date_x, widget.time.date_y, widget.time.date)
-	lib.draw_text(cr, fonts.time, lib.halign.RIGHT, widget.time.time_x, widget.time.time_y, widget.time.time)
+	lib.draw_text(cr, lib.fonts.text, lib.halign.RIGHT, widget.time.date_x, widget.time.date_y, widget.time.date)
+	lib.draw_text(cr, lib.fonts.time, lib.halign.RIGHT, widget.time.time_x, widget.time.time_y, widget.time.time)
 
 	-- Draw battery text
-	lib.draw_text(cr, fonts.text, lib.halign.RIGHT, widget.battery.charge_x, widget.battery.charge_y, widget.battery.charge)
-	lib.draw_text(cr, fonts.caption, lib.halign.RIGHT, widget.battery.status_x, widget.battery.status_y, widget.battery.status)
+	lib.draw_text(cr, lib.fonts.text, lib.halign.RIGHT, widget.battery.charge_x, widget.battery.charge_y, widget.battery.charge)
+	lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, widget.battery.status_x, widget.battery.status_y, widget.battery.status)
 
 	-- Draw weather icon
 	if widget.weather.icon ~= '' then
@@ -233,8 +216,8 @@ function conky_main()
 	end
 
 	-- Draw weather temperature text
-	lib.draw_text(cr, fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
-	lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
+	lib.draw_text(cr, lib.fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
+	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
 
 	-- Draw refresh button
 	if widget.button.show then
@@ -242,8 +225,8 @@ function conky_main()
 	end
 
 	-- Draw weather status text
-	lib.draw_text(cr, fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
-	lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
+	lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
+	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
 
 	-- Destroy cairo context
 	cairo_destroy(cr)

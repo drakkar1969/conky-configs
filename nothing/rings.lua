@@ -19,8 +19,6 @@ local layouts = {
 	BOX = 2
 }
 
-local fonts = {}
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -165,20 +163,8 @@ widgets.wifi = {
 -- Function init_fonts
 ---------------------------------------
 function init_fonts(cr)
-	fonts = {
-		heading = {
-			face = 'Ndot 55', size = 36, stroke = 0, color = lib.colors.heading
-		},
-		ring = {
-			face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
-		},
-		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
-		},
-	}
-
 	-- Calculate font heights
-	for k, font in pairs(fonts) do
+	for k, font in pairs(lib.fonts) do
 		font.height = lib.font_height(cr, font)
 	end
 end
@@ -189,7 +175,7 @@ end
 function init_widget()
 	for i, w in pairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = fonts.heading.height + lib.line_spacing * 2 + w.ring.outer_radius + (lib.line_spacing + fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
+		w.height = lib.fonts.heading.height + lib.line_spacing * 2 + w.ring.outer_radius + (lib.line_spacing + lib.fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
 
 		if widgets_style.layout == layouts.COLUMN then
 			w.x = 0
@@ -239,17 +225,17 @@ function conky_main()
 		lib.draw_background(cr, w)
 
 		-- Draw header
-		lib.draw_text(cr, fonts.heading, lib.halign.CENTER, w.heading.x, w.heading.y, w.heading.label)
+		lib.draw_text(cr, lib.fonts.heading, lib.halign.CENTER, w.heading.x, w.heading.y, w.heading.label)
 
 		-- Draw ring with label
-		lib.draw_ring(cr, w.ring, fonts.ring)
+		lib.draw_ring(cr, w.ring, lib.fonts.ring)
 
 		-- Draw text
 		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + (lib.line_spacing + fonts.text.height) * i
+			local y = w.ring.y + (lib.line_spacing + lib.fonts.text.height) * i
 
-			lib.draw_text(cr, fonts.text, lib.halign.LEFT, w.text.xs, y, item.label, w.text.xe - w.text.xs)
-			lib.draw_text(cr, fonts.text, lib.halign.RIGHT, w.text.xe, y, item.value, w.text.xe - w.text.xs)
+			lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, w.text.xs, y, item.label, w.text.xe - w.text.xs)
+			lib.draw_text(cr, lib.fonts.text, lib.halign.RIGHT, w.text.xe, y, item.value, w.text.xe - w.text.xs)
 		end
 	end
 

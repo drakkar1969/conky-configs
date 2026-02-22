@@ -15,8 +15,6 @@ local lib = require 'common'
 ------------------------------------------------------------------------------
 local init_done = false
 
-local fonts = {}
-
 ------------------------------------------------------------------------------
 -- WIDGET DATA
 ------------------------------------------------------------------------------
@@ -73,26 +71,8 @@ local widget = {
 -- Function init_fonts
 ---------------------------------------
 function init_fonts(cr)
-	fonts = {
-		ring = {
-			face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
-		},
-		heading = {
-			face = 'Ndot 55', size = 32, stroke = 0.6, color = lib.colors.heading
-		},
-		text = {
-			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
-		},
-		caption = {
-			face = 'Inter', size = 23, stroke = 0.4, color = lib.colors.caption
-		},
-		title = {
-			face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
-		}
-	}
-
 	-- Calculate font heights
-	for k, font in pairs(fonts) do
+	for k, font in pairs(lib.fonts) do
 		font.height = lib.font_height(cr, font)
 	end
 end
@@ -101,7 +81,7 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget(cr)
-	widget.cover.size = fonts.heading.height + fonts.title.height + fonts.text.height + fonts.caption.height + lib.line_spacing * 4
+	widget.cover.size = lib.fonts.player.height + lib.fonts.title.height + lib.fonts.text.height + lib.fonts.caption.height + lib.line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
 	widget.ring.outer_radius = widget.ring.inner_radius + widget.ring.mark_width + widget.ring.mark_thickness
@@ -136,16 +116,16 @@ function init_widget(cr)
 	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - lib.bg.padding_x
 
 	widget.metadata.title_x = widget.heading.x
-	widget.metadata.title_y = widget.heading.y + fonts.heading.height + lib.line_spacing * 1.5
+	widget.metadata.title_y = widget.heading.y + lib.fonts.player.height + lib.line_spacing * 1.5
 
 	widget.metadata.subtitle_x = widget.metadata.title_x
-	widget.metadata.subtitle_y = widget.metadata.title_y + fonts.title.height + lib.line_spacing
+	widget.metadata.subtitle_y = widget.metadata.title_y + lib.fonts.title.height + lib.line_spacing
 
 	widget.metadata.status_x = widget.metadata.subtitle_x
-	widget.metadata.status_y = widget.metadata.subtitle_y + fonts.text.height + lib.line_spacing * 1.5
+	widget.metadata.status_y = widget.metadata.subtitle_y + lib.fonts.text.height + lib.line_spacing * 1.5
 
-	widget.metadata.time_w = lib.text_width(cr, fonts.caption, '0:00')
-	widget.metadata.stopped_w = lib.text_width(cr, fonts.caption, 'STOPPED')
+	widget.metadata.time_w = lib.text_width(cr, lib.fonts.caption, '0:00')
+	widget.metadata.stopped_w = lib.text_width(cr, lib.fonts.caption, 'STOPPED')
 end
 
 ---------------------------------------
@@ -294,33 +274,33 @@ function conky_main()
 
 		-- Draw ring
 		widget.ring.value = (widget.metadata.len == 0 and 0 or widget.metadata.pos/widget.metadata.len * 100)
-		lib.draw_ring(cr, widget.ring, fonts.ring)
+		lib.draw_ring(cr, widget.ring, lib.fonts.ring)
 
 		-- Draw cover art
 		draw_cover(cr, widget.cover)
 
 		-- Draw heading
-		lib.draw_text(cr, fonts.heading, lib.halign.LEFT, widget.heading.x, widget.heading.y, widget.alias)
+		lib.draw_text(cr, lib.fonts.player, lib.halign.LEFT, widget.heading.x, widget.heading.y, widget.alias)
 
 		-- Draw metadata
-		lib.draw_text(cr, fonts.title, lib.halign.LEFT, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
+		lib.draw_text(cr, lib.fonts.title, lib.halign.LEFT, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
 
-		lib.draw_text(cr, fonts.text, lib.halign.LEFT, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
+		lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
 
 		-- Draw status
 		local x = widget.metadata.status_x
 
-		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, widget.player.playback_status)
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, widget.player.playback_status)
 
 		x = x + widget.metadata.stopped_w + widget.spacing_x + widget.metadata.time_w
 
-		lib.draw_text(cr, fonts.caption, lib.halign.RIGHT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
 
-		local dx, _ = lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, '  •  ')
+		local dx, _ = lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, '  •  ')
 
 		x = x + dx
 
-		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
 	end
 
 	-- Destroy cairo context
