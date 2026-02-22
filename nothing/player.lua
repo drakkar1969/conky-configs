@@ -25,8 +25,8 @@ local named_players = {
 }
 
 local widget = {
-	halign = lib.halign.CENTER,
-	valign = lib.valign.TOP,
+	halign = lib.halign.RIGHT,
+	valign = lib.valign.BOTTOM,
 	width = 900,
 	player = nil,
 	alias = nil,
