@@ -250,6 +250,8 @@ function conky_main()
 		accent_color = xprop_color
 
 		lib.update_font_colors(accent_color)
+
+		widget.ring.fg_color = accent_color
 	end
 
 	-- Initialize
