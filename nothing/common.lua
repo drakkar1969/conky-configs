@@ -50,7 +50,7 @@ lib.fonts = {
 		face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
 	},
 	time = {
-		face = 'Ndot77JPExtended', size = 84, stroke = 0.6, color = lib.colors.accent
+		face = 'Ndot77JPExtended', size = 84, stroke = 0.3, color = lib.colors.accent
 	},
 	weather = {
 		face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
