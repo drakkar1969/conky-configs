@@ -87,8 +87,8 @@ end
 
 function conky_mouse(event)
 	if event.type ~= 'button_down' and event.type ~= 'button_up' then return end
-	
-	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super then return end
+
+	if (event.button ~= 'left' and event.button ~= 'right') or event.mods.alt or event.mods.control or event.mods.super or event.mods.shift then return end
 
 	if widget.button.show and mouse_in_button(event, widget.button) then
 		if event.type == 'button_down' then
@@ -100,10 +100,12 @@ function conky_mouse(event)
 				if color.color == accent_color then index = i end
 			end
 
+			local right_click = event.button == 'right'
+
 			if index == 0 then
-				index = (event.mods.shift and #lib.accent_palette or 1)
+				index = (right_click and #lib.accent_palette or 1)
 			else
-				if event.mods.shift then
+				if right_click then
 					index = (index == 1 and #lib.accent_palette or index - 1)
 				else
 					index = (index == #lib.accent_palette and 1 or index + 1)
