@@ -160,16 +160,6 @@ widgets.wifi = {
 -- INITIALIZATION FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
--- Function init_fonts
----------------------------------------
-function init_fonts(cr)
-	-- Calculate font heights
-	for k, font in pairs(lib.fonts) do
-		font.height = lib.font_height(cr, font)
-	end
-end
-
----------------------------------------
 -- Function init_widget
 ---------------------------------------
 function init_widget()
@@ -214,7 +204,7 @@ function conky_main()
 
 	-- Initialize
 	if init_done == false then
-		init_fonts(cr)
+		lib.init_fonts(cr)
 		init_widget()
 
 		init_done = true

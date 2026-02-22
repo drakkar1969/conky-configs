@@ -87,6 +87,15 @@ lib.line_spacing = 22
 -- FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
+-- Function init_fonts
+---------------------------------------
+function lib.init_fonts(cr)
+	for k, font in pairs(lib.fonts) do
+		font.height = lib.font_height(cr, font)
+	end
+end
+
+---------------------------------------
 -- Function rgb_to_r_g_b
 ---------------------------------------
 function lib.rgb_to_r_g_b(color, alpha)
