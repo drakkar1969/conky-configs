@@ -27,7 +27,7 @@ local layouts = {
 local widgets = {}
 
 local widgets_style = {
-	layout = layouts.BOX,
+	layout = layouts.COLUMN,
 	margin = 20
 }
 
@@ -44,7 +44,7 @@ widgets.cpu = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 95,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${cpu cpu0}%',
@@ -75,7 +75,7 @@ widgets.mem = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 95,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${memperc}%',
@@ -106,7 +106,7 @@ widgets.disk = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 95,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${fs_used_perc /home}%',
@@ -140,7 +140,7 @@ widgets.wifi = {
 		end_angle = 90,
 		step = 9,
 		padding_x = 0,
-		outer_radius = 100,
+		outer_radius = 95,
 		mark_width = 12,
 		mark_thickness = 5,
 		label = '${downspeed '..interface..'}',
@@ -167,7 +167,7 @@ widgets.wifi = {
 function init_widget()
 	for i, w in pairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = lib.fonts.heading.height + lib.line_spacing * 2 + w.ring.outer_radius + (lib.line_spacing + lib.fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
+		w.height = lib.fonts.heading.height + lib.line_spacing * 2.5 + w.ring.outer_radius + (lib.line_spacing + lib.fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
 
 		if widgets_style.layout == layouts.COLUMN then
 			w.x = 0
@@ -184,7 +184,7 @@ function init_widget()
 		w.heading.y = w.y + lib.bg.padding_y
 
 		w.ring.x = w.heading.x
-		w.ring.y = w.heading.y + lib.line_spacing * 2 + w.ring.outer_radius
+		w.ring.y = w.heading.y + lib.line_spacing * 2.5 + w.ring.outer_radius
 
 		w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width - w.ring.mark_thickness
 
