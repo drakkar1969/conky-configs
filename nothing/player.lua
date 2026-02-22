@@ -75,6 +75,9 @@ function init_fonts(cr)
 		ring = {
 			face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
 		},
+		heading = {
+			face = 'Ndot 55', size = 32, stroke = 0.6, color = lib.colors.heading
+		},
 		text = {
 			face = 'Inter', size = 25, stroke = 0.6, color = lib.colors.default
 		},
@@ -96,7 +99,7 @@ end
 -- Function init_widget
 ---------------------------------------
 function init_widget(cr)
-	widget.cover.size = fonts.title.height + fonts.text.height + fonts.caption.height * 2 + lib.line_spacing * 4
+	widget.cover.size = fonts.heading.height + fonts.title.height + fonts.text.height + fonts.caption.height + lib.line_spacing * 4
 
 	widget.ring.inner_radius = widget.cover.size/2 + widget.cover.margin
 	widget.ring.outer_radius = widget.ring.inner_radius + widget.ring.mark_width + widget.ring.mark_thickness
@@ -126,12 +129,12 @@ function init_widget(cr)
 	widget.cover.y = widget.ring.y - widget.cover.size/2
 
 	widget.heading.x = widget.cover.x + widget.cover.size + widget.spacing_x * 1.5
-	widget.heading.y = widget.cover.y
+	widget.heading.y = widget.cover.y + lib.line_spacing * 0.5
 
 	widget.metadata.max_width = widget.x + widget.width - widget.heading.x - lib.bg.padding_x
 
 	widget.metadata.title_x = widget.heading.x
-	widget.metadata.title_y = widget.heading.y + fonts.caption.height + lib.line_spacing * 1.5
+	widget.metadata.title_y = widget.heading.y + fonts.heading.height + lib.line_spacing * 1.5
 
 	widget.metadata.subtitle_x = widget.metadata.title_x
 	widget.metadata.subtitle_y = widget.metadata.title_y + fonts.title.height + lib.line_spacing
@@ -290,7 +293,7 @@ function conky_main()
 		draw_cover(cr, widget.cover)
 
 		-- Draw heading
-		lib.draw_text(cr, fonts.caption, lib.halign.LEFT, widget.heading.x, widget.heading.y, widget.alias)
+		lib.draw_text(cr, fonts.heading, lib.halign.LEFT, widget.heading.x, widget.heading.y, widget.alias)
 
 		-- Draw metadata
 		lib.draw_text(cr, fonts.title, lib.halign.LEFT, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
