@@ -1,12 +1,11 @@
 ------------------------------------------------------------------------------
 -- LUA MODULES
 ------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
+require('cairo')
+require('cairo_xlib')
 
-local path = string.gsub(conky_config, 'rings.conf', '?.lua')
-package.path = package.path..';'..path
-local lib = require 'common'
+package.path = package.path..';'..string.gsub(conky_config, 'rings.conf', '?.lua')
+local lib = require('common')
 
 ------------------------------------------------------------------------------
 -- CONSTANTS (DO NOT DELETE)

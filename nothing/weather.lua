@@ -1,15 +1,12 @@
 ------------------------------------------------------------------------------
 -- LUA MODULES
 ------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
-require 'cairo_imlib2_helper'
+require('cairo')
+require('cairo_xlib')
+require('cairo_imlib2_helper')
 
-local json = require('dkjson')
-
-local path = string.gsub(conky_config, 'weather.conf', '?.lua')
-package.path = package.path..';'..path
-local lib = require 'common'
+package.path = package.path..';'..string.gsub(conky_config, 'weather.conf', '?.lua')
+local lib = require('common')
 
 ------------------------------------------------------------------------------
 -- CONSTANTS (DO NOT DELETE)
@@ -156,7 +153,7 @@ end
 -- Function update_weather
 ---------------------------------------
 function update_weather()
-	print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
+	local json = require('dkjson')
 
 	-- Download weather data
 	local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
@@ -175,6 +172,8 @@ function update_weather()
 
 	local icon = ((data and data.weather) and data.weather[1].icon)
 	widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
+
+	print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
 end
 
 ------------------------------------------------------------------------------

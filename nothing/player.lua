@@ -1,13 +1,12 @@
 ------------------------------------------------------------------------------
 -- LUA MODULES
 ------------------------------------------------------------------------------
-require 'cairo'
-require 'cairo_xlib'
-require 'cairo_imlib2_helper'
+require('cairo')
+require('cairo_xlib')
+require('cairo_imlib2_helper')
 
-local path = string.gsub(conky_config, 'player.conf', '?.lua')
-package.path = package.path..';'..path
-local lib = require 'common'
+package.path = package.path..';'..string.gsub(conky_config, 'player.conf', '?.lua')
+local lib = require('common')
 
 ------------------------------------------------------------------------------
 -- CONSTANTS (DO NOT DELETE)
@@ -123,8 +122,7 @@ end
 -- Function update_player
 ---------------------------------------
 function update_player()
-	local lgi = require 'lgi'
-	local Playerctl = lgi.Playerctl
+	local Playerctl = require('lgi').Playerctl
 
 	-- Find preferred player
 	local rank = 0
