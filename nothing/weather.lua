@@ -19,7 +19,7 @@ local accent_color = nil
 -- WIDGET DATA
 ------------------------------------------------------------------------------
 local weather = {
-	app_id = '',
+	app_id = nil,
 	city = 'Kyiv,UA',
 	check_interval = 900
 }
@@ -146,34 +146,38 @@ function weather_token()
 		f:close()
 	end
 
-	return token ~= nil and token or ''
+	return token
 end
 
 ---------------------------------------
 -- Function update_weather
 ---------------------------------------
 function update_weather()
-	local json = require('dkjson')
+	if weather.app_id then
+		local json = require('dkjson')
 
-	-- Download weather data
-	local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
+		-- Download weather data
+		local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
 
-	local handle = io.popen('curl -s "'..url..'"')
-	local str = handle:read('*a')
-	handle:close()
+		local handle = io.popen('curl -s "'..url..'"')
+		local str = handle:read('*a')
+		handle:close()
 
-	-- Decode weather data from json
-	local data, pos, err = json.decode(str, 1, nil)
+		-- Decode weather data from json
+		local data, pos, err = json.decode(str, 1, nil)
 
-	widget.weather.location = (data and data.name or '')
-	widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
-	widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-	widget.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+		widget.weather.location = (data and data.name or '')
+		widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
+		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
+		widget.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
 
-	local icon = ((data and data.weather) and data.weather[1].icon)
-	widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
+		local icon = ((data and data.weather) and data.weather[1].icon)
+		widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
 
-	print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
+		print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
+	else
+		print('NOTHING: ERROR: Missing weather token ('..os.date('%Y-%m-%d %H:%M:%S')..')')
+	end
 end
 
 ------------------------------------------------------------------------------
