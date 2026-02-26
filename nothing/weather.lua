@@ -138,7 +138,7 @@ end
 function weather_token()
 	local token = nil
 
-	local token_file = string.gsub(conky_config, 'weather.conf', 'token')
+	local token_file = string.gsub(conky_config, 'weather.conf', 'weather.token')
 	local f = io.open(token_file, 'r')
 
 	if f ~= nil then
