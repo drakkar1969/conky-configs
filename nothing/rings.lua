@@ -161,9 +161,9 @@ widgets.wifi = {
 -- INITIALIZATION FUNCTIONS
 ------------------------------------------------------------------------------
 ---------------------------------------
--- Function init_widget
+-- Function init_widgets
 ---------------------------------------
-function init_widget()
+function init_widgets()
 	for i, w in pairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
 		w.height = lib.fonts.heading.height + lib.line_spacing * 2.5 + w.ring.outer_radius + (lib.line_spacing + lib.fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
@@ -219,7 +219,7 @@ function conky_main()
 	-- Initialize
 	if init_done == false then
 		lib.init_fonts(cr)
-		init_widget()
+		init_widgets()
 
 		init_done = true
 	end
