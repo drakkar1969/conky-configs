@@ -166,7 +166,7 @@ widgets.wifi = {
 function init_widgets()
 	for i, w in pairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
-		w.height = lib.fonts.heading.height + lib.line_spacing * 2.5 + w.ring.outer_radius + (lib.line_spacing + lib.fonts.text.height) * #w.text.items + lib.bg.padding_y * 2
+		w.height = lib.fonts.heading.height + lib.line_spacing * 3.5 + w.ring.outer_radius + lib.fonts.text.height * #w.text.items + lib.line_spacing * (#w.text.items - 1) + lib.bg.padding_y * 2
 
 		if widgets_style.layout == layouts.COLUMN then
 			w.x = 0
@@ -183,12 +183,13 @@ function init_widgets()
 		w.heading.y = w.y + lib.bg.padding_y
 
 		w.ring.x = w.heading.x
-		w.ring.y = w.heading.y + lib.line_spacing * 2.5 + w.ring.outer_radius
+		w.ring.y = w.heading.y + lib.fonts.heading.height + lib.line_spacing * 1.5 + w.ring.outer_radius
 
 		w.ring.inner_radius = w.ring.outer_radius - w.ring.mark_width - w.ring.mark_thickness
 
 		w.text.xs = w.x + lib.bg.padding_x
 		w.text.xe = w.x + w.width - lib.bg.padding_x
+		w.text.y = w.ring.y + lib.line_spacing * 2
 	end
 end
 
@@ -236,7 +237,7 @@ function conky_main()
 
 		-- Draw text
 		for i, item in pairs(w.text.items) do
-			local y = w.ring.y + (lib.line_spacing + lib.fonts.text.height) * i
+			local y = w.text.y + (lib.line_spacing + lib.fonts.text.height) * (i - 1)
 
 			lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, w.text.xs, y, item.label, w.text.xe - w.text.xs)
 			lib.draw_text(cr, lib.fonts.text, lib.halign.RIGHT, w.text.xe, y, item.value, w.text.xe - w.text.xs)
