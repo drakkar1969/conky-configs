@@ -2,7 +2,7 @@
 
 CONKYFOLDER=$(dirname $(realpath $0))
 
-sleep 3        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less for Xfce/LXDE etc
+sleep 2        # time (in s) for the DE to start; use ~20 for Gnome or KDE, less for Xfce/LXDE etc
 
 # Clock Rings
 # conky -d -c $CONKYFOLDER/clock_rings/clock_rings.conf
@@ -27,3 +27,10 @@ conky -d -c $CONKYFOLDER/nothing/rings.conf
 conky -d -c $CONKYFOLDER/nothing/weather.conf
 conky -d -c $CONKYFOLDER/nothing/player.conf
 conky -d -c $CONKYFOLDER/nothing/color.conf
+
+sleep 1
+
+# Hack to ensure conky windows are shown
+while IFS= read -r id; do
+	xdotool windowunmap $id && xdotool windowmap $id
+done <<< "$(xdotool search --class conky)"
