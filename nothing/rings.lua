@@ -33,8 +33,7 @@ local widgets_style = {
 ---------------------------------------
 -- CPU widget
 ---------------------------------------
-widgets.cpu = {
-	index = 1,
+widgets[1] = {
 	heading = {
 		label = 'CPU'
 	},
@@ -64,8 +63,7 @@ widgets.cpu = {
 ---------------------------------------
 -- MEMORY widget
 ---------------------------------------
-widgets.mem = {
-	index = 2,
+widgets[2] = {
 	heading = {
 		label = 'MEMORY'
 	},
@@ -95,8 +93,7 @@ widgets.mem = {
 ---------------------------------------
 -- DISK widget
 ---------------------------------------
-widgets.disk = {
-	index = 3,
+widgets[3] = {
 	heading = {
 		label = 'DISK'
 	},
@@ -129,8 +126,7 @@ widgets.disk = {
 local interface = 'wlp0s20f3'
 local wifi_max = 36000
 
-widgets.wifi = {
-	index = 4,
+widgets[4] = {
 	heading = {
 		label = 'WIRELESS'
 	},
@@ -164,18 +160,18 @@ widgets.wifi = {
 -- Function init_widgets
 ---------------------------------------
 function init_widgets()
-	for i, w in pairs(widgets) do
+	for i, w in ipairs(widgets) do
 		w.width = (lib.bg.padding_x + w.ring.padding_x + w.ring.outer_radius) * 2
 		w.height = lib.fonts.heading.height + lib.line_spacing * 3.5 + w.ring.outer_radius + lib.fonts.text.height * #w.text.items + lib.line_spacing * (#w.text.items - 1) + lib.bg.padding_y * 2
 
 		if widgets_style.layout == layouts.COLUMN then
 			w.x = 0
-			w.y = (w.index - 1) * (w.height + widgets_style.margin)
+			w.y = (i - 1) * (w.height + widgets_style.margin)
 		elseif widgets_style.layout == layouts.BOX then
-			w.x = (w.index%2 == 1 and 0 or w.width + widgets_style.margin)
-			w.y = (w.index <= 2 and 0 or w.height + widgets_style.margin)
+			w.x = (i%2 == 1 and 0 or w.width + widgets_style.margin)
+			w.y = (i <= 2 and 0 or w.height + widgets_style.margin)
 		else
-			w.x = (w.index - 1) * (w.width + widgets_style.margin)
+			w.x = (i - 1) * (w.width + widgets_style.margin)
 			w.y = 0
 		end
 
