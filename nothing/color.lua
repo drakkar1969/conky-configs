@@ -49,7 +49,7 @@ function conky_main()
 		local str = nil
 
 		if f ~= nil then
-			str = f:read('*a')
+			str = f:read('*l')
 			f:close()
 		end
 
@@ -74,7 +74,7 @@ function conky_shutdown()
 	lib.remove_xprop_accent()
 
 	io.output(accent_file)
-	io.write(string.format('0x%x', accent_color))
+	io.write(string.format('0x%x\n', accent_color))
 end
 
 ------------------------------------------------------------------------------
