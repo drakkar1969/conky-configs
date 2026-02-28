@@ -241,14 +241,14 @@ function conky_main()
 	lib.draw_text(cr, lib.fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
 	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
 
+	-- Draw weather status text
+	lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
+	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
+
 	-- Draw refresh button
 	if widget.button.show then
 		lib.draw_button(cr, widget.button)
 	end
-
-	-- Draw weather status text
-	lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
-	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
 
 	-- Destroy cairo context
 	cairo_destroy(cr)
@@ -265,9 +265,9 @@ end
 function conky_mouse(event)
 	if event.type ~= 'button_down' and event.type ~= 'button_up' then return end
 	
-	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super then return end
+	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super or event.mods.shift then return end
 
-	if widget.button.show and mouse_in_button(event, widget.button) and event.mods.shift == false then
+	if widget.button.show and mouse_in_button(event, widget.button) then
 		if event.type == 'button_down' then
 			widget.button.is_down = true
 		elseif event.type == 'button_up' and widget.button.is_down then
