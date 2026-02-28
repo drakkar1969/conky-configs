@@ -28,7 +28,7 @@ local weather = {
 
 local widget = {
 	horizontal = true,
-	halign = lib.halign.RIGHT,
+	halign = lib.halign.LEFT,
 	valign = lib.valign.TOP,
 	width = 700,
 	spacing_x = 32,

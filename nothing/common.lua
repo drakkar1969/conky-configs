@@ -24,9 +24,9 @@ lib.accent_palette = {
 
 lib.colors = {
 	default = 0xffffff,
-	caption = 0xaaaaaa,
+	caption = 0xbbbbbb,
 	heading = 0xaaaaaa,
-	player  = 0xbbbbbb,
+	player  = 0xaaaaaa,
 	footer  = 0xaaaaaa,
 	accent = lib.accent_palette[4].color
 }
