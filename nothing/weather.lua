@@ -32,7 +32,7 @@ local widget = {
 	valign = lib.valign.TOP,
 	width = 700,
 	spacing_x = 32,
-	spacing_y = 130,
+	spacing_y = 100,
 	time = {
 		date = '${time %a %d %b}',
 		time = '${time %R}'
@@ -68,9 +68,9 @@ local widget = {
 ---------------------------------------
 function init_widget()
 	if widget.horizontal then 
-		widget.height = lib.line_spacing * 4 + lib.fonts.text.height * 2 + lib.fonts.caption.height + lib.fonts.time.height + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 5 + lib.fonts.text.height * 2 + lib.fonts.caption.height + lib.fonts.time.height + lib.fonts.footer.height + lib.bg.padding_y * 2
 	else
-		widget.height = lib.line_spacing * 8.5 + lib.fonts.text.height * 3 + lib.fonts.caption.height * 3 + lib.fonts.time.height + lib.fonts.weather.height + widget.spacing_y + lib.bg.padding_y * 2
+		widget.height = lib.line_spacing * 9.5 + lib.fonts.text.height * 3 + lib.fonts.caption.height * 3 + lib.fonts.time.height + lib.fonts.weather.height + lib.fonts.footer.height + widget.spacing_y + lib.bg.padding_y * 2
 	end
 
 	if widget.halign == lib.halign.LEFT then
@@ -132,6 +132,9 @@ function init_widget()
 	else
 		widget.weather.location_y = widget.weather.description_y + lib.fonts.text.height + lib.line_spacing
 	end
+
+	widget.weather.update_x = widget.weather.location_x
+	widget.weather.update_y = widget.weather.location_y + lib.fonts.caption.height + lib.line_spacing
 end
 
 ---------------------------------------
@@ -198,6 +201,8 @@ function update_weather()
 
 		local icon = ((data and data.weather) and data.weather[1].icon)
 		widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
+
+		widget.weather.update = 'Last check '..os.date('%H:%M')
 
 		print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
 	else
@@ -271,6 +276,7 @@ function conky_main()
 	-- Draw weather status text
 	lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
 	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.location_x, widget.weather.location_y, widget.weather.location)
+	lib.draw_text(cr, lib.fonts.footer, lib.halign.LEFT, widget.weather.update_x, widget.weather.update_y, widget.weather.update)
 
 	-- Draw refresh button
 	if widget.button.show then

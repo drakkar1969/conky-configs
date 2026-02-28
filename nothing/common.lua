@@ -27,6 +27,7 @@ lib.colors = {
 	caption = 0xaaaaaa,
 	heading = 0xaaaaaa,
 	player  = 0xbbbbbb,
+	footer  = 0xaaaaaa,
 	accent = lib.accent_palette[4].color
 }
 
@@ -57,6 +58,9 @@ lib.fonts = {
 	},
 	weather = {
 		face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
+	},
+	footer = {
+		face = 'Inter', size = 20, stroke = 0.2, color = lib.colors.footer
 	}
 }
 
