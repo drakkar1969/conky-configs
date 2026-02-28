@@ -21,6 +21,8 @@ local accent_color = nil
 local weather = {
 	app_id = nil,
 	city = 'Kyiv,UA',
+	lat = nil,
+	lon = nil,
 	check_interval = 900
 }
 
@@ -150,14 +152,38 @@ function weather_token()
 end
 
 ---------------------------------------
--- Function update_weather
+-- Function update_coordinates
 ---------------------------------------
-function update_weather()
+function update_coordinates()
 	if weather.app_id then
 		local json = require('dkjson')
 
+		-- Download location data
+		local url = 'api.openweathermap.org/geo/1.0/direct?q='..weather.city..'&appid='..weather.app_id
+
+		local handle = io.popen('curl -s "'..url..'"')
+		local str = handle:read('*a')
+		handle:close()
+
+		-- Decode location data from json
+		local data, pos, err = json.decode(str, 1, nil)
+
+		weather.lat = ((data and data[1]) and data[1].lat)
+		weather.lon = ((data and data[1]) and data[1].lon)
+
+		widget.weather.location = ((data and data[1]) and data[1].name or '')
+	end
+end
+
+---------------------------------------
+-- Function update_weather
+---------------------------------------
+function update_weather()
+	if weather.app_id and weather.lat and weather.lon then
+		local json = require('dkjson')
+
 		-- Download weather data
-		local url = 'api.openweathermap.org/data/2.5/weather?q='..weather.city..'&appid='..weather.app_id..'&units=metric'
+		local url = 'api.openweathermap.org/data/2.5/weather?lat='..weather.lat..'&lon='..weather.lon..'&appid='..weather.app_id..'&units=metric'
 
 		local handle = io.popen('curl -s "'..url..'"')
 		local str = handle:read('*a')
@@ -166,7 +192,6 @@ function update_weather()
 		-- Decode weather data from json
 		local data, pos, err = json.decode(str, 1, nil)
 
-		widget.weather.location = (data and data.name or '')
 		widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
 		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
 		widget.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
@@ -210,6 +235,8 @@ function conky_main()
 		init_widget()
 
 		weather.app_id = weather_token()
+
+		update_coordinates()
 
 		update_weather()
 
