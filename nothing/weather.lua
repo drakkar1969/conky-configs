@@ -166,7 +166,7 @@ function update_coordinates()
 		handle:close()
 
 		-- Decode location data from json
-		local data, pos, err = json.decode(str, 1, nil)
+		local data = json.decode(str)
 
 		weather.lat = ((data and data[1]) and data[1].lat)
 		weather.lon = ((data and data[1]) and data[1].lon)
@@ -190,7 +190,7 @@ function update_weather()
 		handle:close()
 
 		-- Decode weather data from json
-		local data, pos, err = json.decode(str, 1, nil)
+		local data = json.decode(str)
 
 		widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
 		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
