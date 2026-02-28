@@ -49,7 +49,7 @@ widgets[1] = {
 		value = '${cpu cpu0}',
 		value_max = 100,
 		bg_color = lib.colors.default,
-		bg_alpha = 0.05,
+		bg_alpha = 0.1,
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
@@ -79,7 +79,7 @@ widgets[2] = {
 		value = '${memperc}',
 		value_max = 100,
 		bg_color = lib.colors.default,
-		bg_alpha = 0.05,
+		bg_alpha = 0.1,
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
@@ -109,7 +109,7 @@ widgets[3] = {
 		value = '${fs_used_perc /home}',
 		value_max = 100,
 		bg_color = lib.colors.default,
-		bg_alpha = 0.05,
+		bg_alpha = 0.1,
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
@@ -142,7 +142,7 @@ widgets[4] = {
 		value = '${downspeedf '..interface..'}',
 		value_max = wifi_max,
 		bg_color = lib.colors.default,
-		bg_alpha = 0.05,
+		bg_alpha = 0.1,
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},

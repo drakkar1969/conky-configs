@@ -55,7 +55,7 @@ local widget = {
 		value = 50,
 		value_max = 100,
 		bg_color = lib.colors.default,
-		bg_alpha = 0.05,
+		bg_alpha = 0.1,
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
