@@ -48,16 +48,16 @@ lib.fonts = {
 		face = 'Ndot 57', size = 32, stroke = 0.5, color = lib.colors.accent
 	},
 	player = {
-		face = 'Ndot 57', size = 34, stroke = 0, color = lib.colors.player
+		face = 'Ndot 55', size = 34, stroke = 0, color = lib.colors.player
 	},
 	title = {
-		face = 'Ndot77JPExtended', size = 44, stroke = 0.3, color = lib.colors.accent
+		face = 'Ndot', size = 44, stroke = 0.3, color = lib.colors.accent
 	},
 	time = {
-		face = 'Ndot77JPExtended', size = 84, stroke = 0.3, color = lib.colors.accent
+		face = 'Ndot', size = 84, stroke = 0.3, color = lib.colors.accent
 	},
 	weather = {
-		face = 'Ndot77JPExtended', size = 52, stroke = 0.3, color = lib.colors.accent
+		face = 'Ndot', size = 52, stroke = 0.3, color = lib.colors.accent
 	},
 	footer = {
 		face = 'Inter', size = 20, stroke = 0.2, color = lib.colors.footer
