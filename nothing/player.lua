@@ -37,6 +37,7 @@ local widget = {
 	cover = {
 		show = true,
 		margin = 16,
+		url = nil,
 		file = nil,
 		icon = string.gsub(conky_config, 'player.conf', 'icons/audio.svg'),
 		icon_size = 80,
@@ -146,55 +147,51 @@ end
 -- Function update_metadata
 ---------------------------------------
 function update_metadata()
-	local title = widget.player.playback_status == 'STOPPED' and 'No Track' or (widget.player:get_title() or 'Track')
+	-- Get cover art
+	local url = widget.player:print_metadata_prop('mpris:artUrl')
 
-	if title ~= widget.metadata.title then
-		-- Get cover art
-		local url = widget.player:print_metadata_prop('mpris:artUrl')
+	url = (widget.player.playback_status == 'STOPPED' and '' or url)
 
-		url = (widget.player.playback_status == 'STOPPED' and '' or url)
+	if url ~= widget.cover.url then
+		if url == nil or url == '' then
+			widget.cover.file = nil
+		elseif string.find(url, '^file://') then
+			widget.cover.file = string.gsub(url, 'file://', '')
+		elseif string.find(url, '^http') then
+			local file = '/tmp/conky_nothing_cover'
 
-		local cover_file = nil
+			local handle = io.popen('curl -s "'..url..'"')
+			local str = handle:read('*a')
+			handle:close()
 
-		if url ~= nil then
-			if string.find(url, '^file://') then
-				cover_file = string.gsub(url, 'file://', '')
-			elseif string.find(url, '^http') then
-				local file = '/tmp/conky_nothing_cover'
+			io.output(file)
+			io.write(str)
+			io.output():close()
 
-				local handle = io.popen('curl -s "'..url..'"')
-				local str = handle:read('*a')
-				handle:close()
-
-				io.output(file)
-				io.write(str)
-				io.output():close()
-
-				cover_file = file
-			end
-		end
-
-		if cover_file ~= widget.cover.file then
-			widget.cover.file = cover_file
-		end
-
-		-- Get metadata
-		widget.metadata.title = title
-
-		local subtitle = widget.player.playback_status == 'STOPPED' and '---' or (widget.player:get_artist() or 'Unknown Artist')
-
-		local album = widget.player:get_album()
-
-		if widget.show_album and subtitle and subtitle ~= '---' and album and album ~= '' then
-			widget.metadata.subtitle = subtitle..'  •  '..album
+			widget.cover.file = file
 		else
-			widget.metadata.subtitle = subtitle
+			widget.cover.file = nil
 		end
 
-		-- Get track length
-		local len_str = widget.player:print_metadata_prop('mpris:length')
-		widget.metadata.len = len_str and tonumber(len_str) or 0
+		widget.cover.url = url
 	end
+
+	-- Get metadata
+	widget.metadata.title = widget.player.playback_status == 'STOPPED' and 'No Track' or (widget.player:get_title() or 'Track')
+
+	local subtitle = widget.player.playback_status == 'STOPPED' and '---' or (widget.player:get_artist() or 'Unknown Artist')
+
+	local album = widget.player:get_album()
+
+	if widget.show_album and subtitle and subtitle ~= '---' and album and album ~= '' then
+		widget.metadata.subtitle = subtitle..'  •  '..album
+	else
+		widget.metadata.subtitle = subtitle
+	end
+
+	-- Get track length
+	local len_str = widget.player:print_metadata_prop('mpris:length')
+	widget.metadata.len = len_str and tonumber(len_str) or 0
 
 	-- Get position
 	widget.metadata.pos = widget.player.position or 0
@@ -207,7 +204,7 @@ end
 -- Function draw_cover
 ---------------------------------------
 function draw_cover(cr, cover)
-	if (cover.show == false or cover.file == nil or cover.file == '') then
+	if cover.show == false or cover.file == nil then
 		-- Draw audio icon
 		local xi = cover.x + (cover.size - cover.icon_size)/2
 		local yi = cover.y + (cover.size - cover.icon_size)/2
