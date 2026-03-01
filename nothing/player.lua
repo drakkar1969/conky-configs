@@ -25,6 +25,14 @@ local named_players = {
 	['Riff'] = { rank = 1, alias = 'Spotify' }
 }
 
+local icons = {
+	audio = string.gsub(conky_config, 'player.conf', 'icons/audio.svg'),
+	play = string.gsub(conky_config, 'player.conf', 'icons/audio-play.svg'),
+	pause = string.gsub(conky_config, 'player.conf', 'icons/audio-pause.svg'),
+	prev = string.gsub(conky_config, 'player.conf', 'icons/audio-prev.svg'),
+	next = string.gsub(conky_config, 'player.conf', 'icons/audio-next.svg')
+}
+
 local widget = {
 	halign = lib.halign.RIGHT,
 	valign = lib.valign.TOP,
@@ -39,7 +47,7 @@ local widget = {
 		margin = 16,
 		url = nil,
 		file = nil,
-		icon = string.gsub(conky_config, 'player.conf', 'icons/audio.svg'),
+		icon = icons.audio,
 		icon_size = 80,
 		icon_color = lib.colors.default,
 		icon_alpha = 0.2
@@ -60,8 +68,27 @@ local widget = {
 		fg_color = lib.colors.accent,
 		fg_alpha = 1
 	},
-	metadata = {
-		title = 'NOTHING-INIT'
+	metadata = {},
+	controls = {
+		spacing_x = 20,
+		color = lib.colors.caption,
+		alpha = 1,
+		alpha_disabled = 0.5,
+		play = {
+			icon = '',
+			size = 32,
+			is_down = false
+		},
+		prev = {
+			icon = icons.prev,
+			size = 28,
+			is_down = false
+		},
+		next = {
+			icon = icons.next,
+			size = 28,
+			is_down = false
+		}
 	}
 }
 
@@ -112,11 +139,20 @@ function init_widget(cr)
 	widget.metadata.subtitle_x = widget.metadata.title_x
 	widget.metadata.subtitle_y = widget.metadata.title_y + lib.fonts.title.height + lib.line_spacing
 
-	widget.metadata.status_x = widget.metadata.subtitle_x
-	widget.metadata.status_y = widget.metadata.subtitle_y + lib.fonts.text.height + lib.line_spacing * 1.5
+	widget.controls.prev.x = widget.metadata.subtitle_x
+	widget.controls.prev.y = widget.metadata.subtitle_y + lib.fonts.text.height + lib.line_spacing * 1.5
+
+	widget.controls.play.x = widget.controls.prev.x + widget.controls.prev.size + widget.controls.spacing_x
+	widget.controls.play.y = widget.controls.prev.y - (widget.controls.play.size - widget.controls.prev.size)/2
+
+	widget.controls.next.x = widget.controls.play.x + widget.controls.play.size + widget.controls.spacing_x
+	widget.controls.next.y = widget.controls.prev.y
 
 	widget.metadata.time_w = lib.text_width(cr, lib.fonts.caption, '0:00')
-	widget.metadata.stopped_w = lib.text_width(cr, lib.fonts.caption, 'STOPPED')
+	widget.metadata.time_h = lib.font_height(cr, lib.fonts.caption)
+
+	widget.metadata.time_x = widget.controls.next.x + widget.controls.next.size + widget.spacing_x * 3 + widget.metadata.time_w
+	widget.metadata.time_y = widget.controls.next.y + (widget.controls.next.size - widget.metadata.time_h)/2
 end
 
 ---------------------------------------
@@ -195,6 +231,9 @@ function update_metadata()
 
 	-- Get position
 	widget.metadata.pos = widget.player.position or 0
+
+	-- Get play/pause icon
+	widget.controls.play.icon = (widget.player.playback_status == 'PLAYING' and icons.pause or icons.play)
 end
 
 ------------------------------------------------------------------------------
@@ -284,23 +323,71 @@ function conky_main()
 
 		lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
 
+		-- Draw controls
+		local alpha = (widget.player.can_go_previous and widget.controls.alpha or widget.controls.alpha_disabled)
+
+		lib.draw_svg_icon(cr, widget.controls.prev.icon, widget.controls.prev.x, widget.controls.prev.y, widget.controls.prev.size, widget.controls.color, alpha)
+
+		alpha = (widget.player.playback_status ~= 'STOPPED' and widget.controls.alpha or widget.controls.alpha_disabled)
+
+		lib.draw_svg_icon(cr, widget.controls.play.icon, widget.controls.play.x, widget.controls.play.y, widget.controls.play.size, widget.controls.color, alpha)
+
+		alpha = (widget.player.can_go_next and widget.controls.alpha or widget.controls.alpha_disabled)
+
+		lib.draw_svg_icon(cr, widget.controls.next.icon, widget.controls.next.x, widget.controls.next.y, widget.controls.next.size, widget.controls.color, alpha)
+
 		-- Draw status
-		local x = widget.metadata.status_x
+		local x = widget.metadata.time_x
 
-		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, widget.player.playback_status)
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, x, widget.metadata.time_y, lib.microsecs_to_string(widget.metadata.pos))
 
-		x = x + widget.metadata.stopped_w + widget.spacing_x + widget.metadata.time_w
-
-		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.pos))
-
-		local dx, _ = lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, '  •  ')
+		local dx, _ = lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.time_y, '  •  ')
 
 		x = x + dx
 
-		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.status_y, lib.microsecs_to_string(widget.metadata.len))
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.time_y, lib.microsecs_to_string(widget.metadata.len))
 	end
 
 	-- Destroy cairo context
 	cairo_destroy(cr)
 	cairo_surface_destroy(cs)
+end
+
+------------------------------------------------------------------------------
+-- MOUSE EVENTS
+------------------------------------------------------------------------------
+function mouse_in_icon(event, icon)
+	return event.x >= icon.x and event.x < icon.x + icon.size and event.y >= icon.y and event.y < icon.y + icon.size
+end
+
+function conky_mouse(event)
+	if event.button ~= 'left' or event.mods.alt or event.mods.control or event.mods.super or event.mods.shift then return end
+
+	if event.type == 'button_down' then
+		if mouse_in_icon(event, widget.controls.prev) then
+			widget.controls.prev.is_down = true
+		elseif mouse_in_icon(event, widget.controls.play) then
+			widget.controls.play.is_down = true
+		elseif mouse_in_icon(event, widget.controls.next) then
+			widget.controls.next.is_down = true
+		end
+	elseif event.type == 'button_up' then
+		if mouse_in_icon(event, widget.controls.prev) and widget.controls.prev.is_down then
+			if widget.player.can_go_previous then
+				widget.player:previous()
+			end
+		elseif mouse_in_icon(event, widget.controls.play) and widget.controls.play.is_down then
+			if widget.player.playback_status ~= 'STOPPED' then
+				widget.player:play_pause()
+			end
+		elseif mouse_in_icon(event, widget.controls.next) and widget.controls.next.is_down then
+			if widget.player.can_go_next then
+				widget.player:next()
+			end
+		end
+
+		widget.controls.prev.is_down = false
+		widget.controls.play.is_down = false
+		widget.controls.next.is_down = false
+	end
 end
