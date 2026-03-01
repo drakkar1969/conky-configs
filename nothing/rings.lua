@@ -229,7 +229,7 @@ function conky_main()
 		lib.draw_text(cr, lib.fonts.heading, lib.halign.CENTER, w.heading.x, w.heading.y, w.heading.label)
 
 		-- Draw ring with label
-		lib.draw_ring(cr, w.ring, lib.fonts.ring)
+		lib.draw_ring(cr, w.ring)
 
 		-- Draw text
 		for i, item in pairs(w.text.items) do

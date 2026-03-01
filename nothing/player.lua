@@ -323,7 +323,7 @@ function conky_main()
 
 		-- Draw ring
 		widget.ring.value = (widget.metadata.len == 0 and 0 or widget.metadata.pos/widget.metadata.len * 100)
-		lib.draw_ring(cr, widget.ring, lib.fonts.ring)
+		lib.draw_ring(cr, widget.ring)
 
 		-- Draw cover art
 		draw_cover(cr, widget.cover)

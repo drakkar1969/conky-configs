@@ -298,7 +298,7 @@ end
 ---------------------------------------
 -- Function draw_ring
 ---------------------------------------
-function lib.draw_ring(cr, ring, font)
+function lib.draw_ring(cr, ring)
 	local str = conky_parse(ring.value)
 
 	-- Calculate ring value
@@ -331,7 +331,7 @@ function lib.draw_ring(cr, ring, font)
 	end
 
 	-- Draw ring text
-	lib.draw_text(cr, font, lib.halign.CENTER, ring.x, ring.y - font.height, ring.label)
+	lib.draw_text(cr, lib.fonts.ring, lib.halign.CENTER, ring.x, ring.y - lib.fonts.ring.height, ring.label)
 end
 
 ---------------------------------------
