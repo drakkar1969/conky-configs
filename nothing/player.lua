@@ -232,8 +232,12 @@ function update_metadata()
 	-- Get position
 	widget.metadata.pos = widget.player.position or 0
 
-	-- Get play/pause icon
+	-- Get controls
 	widget.controls.play.icon = (widget.player.playback_status == 'PLAYING' and icons.pause or icons.play)
+
+	widget.controls.play.enabled = (widget.player.playback_status ~= 'STOPPED')
+	widget.controls.prev.enabled = widget.player.can_go_previous
+	widget.controls.next.enabled = widget.player.can_go_next
 end
 
 ------------------------------------------------------------------------------
@@ -260,6 +264,15 @@ function draw_cover(cr, cover)
 
 		cairo_restore(cr)
 	end
+end
+
+---------------------------------------
+-- Function draw_control
+---------------------------------------
+function draw_control(cr, ctrl)
+	local alpha = (ctrl.enabled and widget.controls.alpha or widget.controls.alpha_disabled)
+
+	lib.draw_svg_icon(cr, ctrl.icon, ctrl.x, ctrl.y, ctrl.size, widget.controls.color, alpha)
 end
 
 ------------------------------------------------------------------------------
@@ -320,21 +333,12 @@ function conky_main()
 
 		-- Draw metadata
 		lib.draw_text(cr, lib.fonts.title, lib.halign.LEFT, widget.metadata.title_x, widget.metadata.title_y, widget.metadata.title, widget.metadata.max_width)
-
 		lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.metadata.subtitle_x, widget.metadata.subtitle_y, widget.metadata.subtitle, widget.metadata.max_width)
 
 		-- Draw controls
-		local alpha = (widget.player.can_go_previous and widget.controls.alpha or widget.controls.alpha_disabled)
-
-		lib.draw_svg_icon(cr, widget.controls.prev.icon, widget.controls.prev.x, widget.controls.prev.y, widget.controls.prev.size, widget.controls.color, alpha)
-
-		alpha = (widget.player.playback_status ~= 'STOPPED' and widget.controls.alpha or widget.controls.alpha_disabled)
-
-		lib.draw_svg_icon(cr, widget.controls.play.icon, widget.controls.play.x, widget.controls.play.y, widget.controls.play.size, widget.controls.color, alpha)
-
-		alpha = (widget.player.can_go_next and widget.controls.alpha or widget.controls.alpha_disabled)
-
-		lib.draw_svg_icon(cr, widget.controls.next.icon, widget.controls.next.x, widget.controls.next.y, widget.controls.next.size, widget.controls.color, alpha)
+		draw_control(cr, widget.controls.prev)
+		draw_control(cr, widget.controls.play)
+		draw_control(cr, widget.controls.next)
 
 		-- Draw status
 		local x = widget.metadata.time_x
