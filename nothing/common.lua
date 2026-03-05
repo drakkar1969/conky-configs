@@ -150,6 +150,23 @@ function lib.rgb_to_r_g_b(color, alpha)
 end
 
 ---------------------------------------
+-- Function draw_background
+---------------------------------------
+function lib.draw_background(cr, widget)
+	local conv = math.pi / 180
+
+	cairo_new_sub_path(cr)
+	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, -90 * conv, 0)
+	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 0, 90 * conv)
+	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 90 * conv, 180 * conv);
+	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, 180 * conv, 270 * conv);
+	cairo_close_path(cr)
+
+	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(lib.bg.color, 1))
+	cairo_fill(cr)
+end
+
+---------------------------------------
 -- Function font_height
 ---------------------------------------
 function lib.font_height(cr, font)
@@ -185,23 +202,6 @@ function lib.text_width(cr, font, text)
 	cairo_text_extents_t:destroy(t_extents)
 
 	return width
-end
-
----------------------------------------
--- Function draw_background
----------------------------------------
-function lib.draw_background(cr, widget)
-	local conv = math.pi / 180
-
-	cairo_new_sub_path(cr)
-	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, -90 * conv, 0)
-	cairo_arc(cr, widget.x + widget.width - lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 0, 90 * conv)
-	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + widget.height - lib.bg.border_radius, lib.bg.border_radius, 90 * conv, 180 * conv);
-	cairo_arc(cr, widget.x + lib.bg.border_radius, widget.y + lib.bg.border_radius, lib.bg.border_radius, 180 * conv, 270 * conv);
-	cairo_close_path(cr)
-
-	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(lib.bg.color, 1))
-	cairo_fill(cr)
 end
 
 ---------------------------------------
@@ -264,7 +264,7 @@ function lib.draw_text(cr, font, align, x, y, text, max_width)
 	end
 
 	-- Set font/color
-	cairo_select_font_face(cr, font.face, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL)
+	cairo_set_font_face(cr, font.face)
 	cairo_set_font_size(cr, font.size)
 	cairo_set_source_rgba(cr, lib.rgb_to_r_g_b(font.color, 1))
 
@@ -361,8 +361,6 @@ end
 -- Function draw_svg_icon
 ---------------------------------------
 function lib.draw_svg_icon(cr, file, x, y, size, color, alpha)
-	cairo_save(cr)
-
 	-- Load SVG image from file
 	local handle = rsvg_create_handle_from_file(file)
 
@@ -388,8 +386,6 @@ function lib.draw_svg_icon(cr, file, x, y, size, color, alpha)
 	RsvgRectangle:destroy(rect)
 
 	rsvg_destroy_handle(handle)
-
-	cairo_restore(cr)
 end
 
 ---------------------------------------
