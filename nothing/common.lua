@@ -1,4 +1,4 @@
-require 'rsvg'
+require('rsvg')
 
 local lib = {}
 
