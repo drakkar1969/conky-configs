@@ -46,8 +46,9 @@ local widget = {
 		icon_size = 64,
 		location = '',
 		description = '',
-		temperature = '',
-		feels_like = ''
+		temperature = 'n/a',
+		feels_like = '',
+		update = ''
 	},
 	button = {
 		show = true,
@@ -175,6 +176,8 @@ function update_coordinates()
 		weather.lon = ((data and data[1]) and data[1].lon)
 
 		widget.weather.location = ((data and data[1]) and data[1].name or '')
+	else
+		widget.weather.location = ''
 	end
 end
 
@@ -196,18 +199,24 @@ function update_weather()
 		local data = json.decode(str)
 
 		widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
-		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5)) or '-')
-		widget.weather.feels_like = ((data and data.main and data.main.feels_like) and tostring(math.floor(tonumber(data.main.feels_like) + 0.5)) or '-')
+		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5))..'°C' or 'n/a')
+		widget.weather.feels_like = ((data and data.main and data.main.feels_like) and 'Feels like '..tostring(math.floor(tonumber(data.main.feels_like) + 0.5))..'°C' or '')
 
 		local icon = ((data and data.weather) and data.weather[1].icon)
 		widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
 
-		widget.weather.update = 'Last check '..os.date('%H:%M')
-
 		print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
 	else
-		print('NOTHING: ERROR: Missing weather token ('..os.date('%Y-%m-%d %H:%M:%S')..')')
+		widget.weather.description = ''
+		widget.weather.temperature = 'n/a'
+		widget.weather.feels_like = ''
+		widget.weather.icon = ''
+		widget.weather.update = ''
+
+		print('NOTHING: ERROR: No weather data ('..os.date('%Y-%m-%d %H:%M:%S')..')')
 	end
+
+	widget.weather.update = 'Last check '..os.date('%H:%M')
 end
 
 ------------------------------------------------------------------------------
@@ -250,6 +259,10 @@ function conky_main()
 
 	-- Update weather if necessary
 	if updates ~= 0 and updates % weather.check_interval == 0 then
+		if weather.lat == nil or weather.lon == nil then
+			update_coordinates()
+		end
+
 		update_weather()
 	end
 
@@ -270,8 +283,10 @@ function conky_main()
 	end
 
 	-- Draw weather temperature text
-	lib.draw_text(cr, lib.fonts.weather, lib.halign.LEFT, widget.weather.temperature_x, widget.weather.temperature_y, widget.weather.temperature..'°C')
-	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, 'Feels like '..widget.weather.feels_like..'°C')
+	local x = (widget.weather.icon ~= '' and widget.weather.temperature_x or widget.weather.temperature_x - widget.weather.icon_size - widget.spacing_x)
+
+	lib.draw_text(cr, lib.fonts.weather, lib.halign.LEFT, x, widget.weather.temperature_y, widget.weather.temperature)
+	lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.weather.feels_like_x, widget.weather.feels_like_y, widget.weather.feels_like)
 
 	-- Draw weather status text
 	lib.draw_text(cr, lib.fonts.text, lib.halign.LEFT, widget.weather.description_x, widget.weather.description_y, widget.weather.description)
