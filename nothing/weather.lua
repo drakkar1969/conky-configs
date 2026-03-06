@@ -20,7 +20,7 @@ local accent_color = nil
 ------------------------------------------------------------------------------
 local weather = {
 	app_id = nil,
-	city = 'Kyiv,UA',
+	city = 'Krakow,PL',
 	lat = nil,
 	lon = nil,
 	check_interval = 900
