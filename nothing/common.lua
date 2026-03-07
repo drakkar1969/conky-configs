@@ -312,12 +312,17 @@ function lib.draw_ring(cr, ring)
 
 	-- Draw ring marks
 	for angle = ring.start_angle, ring.end_angle, ring.step do
-		local xs, ys = lib.ar_to_xy(ring.x, ring.y, angle, ring.outer_radius)
+		local xs, ys, xe, ye = 0, 0, 0, 0
+		
+		if angle <= value_angle and angle + ring.step > value_angle then
+			xs, ys = lib.ar_to_xy(ring.x, ring.y, angle, ring.outer_radius + ring.mark_outdent)
+			xe, ye = lib.ar_to_xy(ring.x, ring.y, angle, ring.inner_radius - ring.mark_indent)
+		else
+			xs, ys = lib.ar_to_xy(ring.x, ring.y, angle, ring.outer_radius)
+			xe, ye = lib.ar_to_xy(ring.x, ring.y, angle, ring.inner_radius)
+		end
 
 		cairo_move_to(cr, xs, ys)
-
-		local xe, ye = lib.ar_to_xy(ring.x, ring.y, angle, ring.inner_radius)
-
 		cairo_line_to(cr, xe, ye)
 
 		if angle <= value_angle then
