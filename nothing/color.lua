@@ -12,7 +12,7 @@ local lib = require('common')
 ------------------------------------------------------------------------------
 local init_done = false
 
-local accent_file = string.gsub(conky_config, 'color.conf', 'accent')
+local accent_file = string.gsub(conky_config, 'color.conf', 'color.accent')
 local accent_color = nil
 
 ------------------------------------------------------------------------------
