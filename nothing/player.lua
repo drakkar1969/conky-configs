@@ -148,11 +148,16 @@ function init_widget(cr)
 	widget.controls.next.x = widget.controls.play.x + widget.controls.play.size + widget.controls.spacing_x
 	widget.controls.next.y = widget.controls.prev.y
 
-	widget.metadata.time_w = lib.text_width(cr, lib.fonts.caption, '0:00')
-	widget.metadata.time_h = lib.font_height(cr, lib.fonts.caption)
+	local time_w = lib.text_width(cr, lib.fonts.caption, '0:00')
+	local time_h = lib.font_height(cr, lib.fonts.caption)
 
-	widget.metadata.time_x = widget.controls.next.x + widget.controls.next.size + widget.spacing_x * 3 + widget.metadata.time_w
-	widget.metadata.time_y = widget.controls.next.y + (widget.controls.next.size - widget.metadata.time_h)/2
+	local div_w = lib.text_width(cr, lib.fonts.caption, '  •  ')
+
+	widget.metadata.pos_x = widget.controls.next.x + widget.controls.next.size + widget.spacing_x * 3 + time_w
+	widget.metadata.pos_y = widget.controls.next.y + (widget.controls.next.size - time_h)/2
+
+	widget.metadata.len_x = widget.metadata.pos_x + div_w
+	widget.metadata.len_y = widget.metadata.pos_y
 end
 
 ---------------------------------------
@@ -341,15 +346,9 @@ function conky_main()
 		draw_control(cr, widget.controls.next)
 
 		-- Draw status
-		local x = widget.metadata.time_x
-
-		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, x, widget.metadata.time_y, lib.microsecs_to_string(widget.metadata.pos))
-
-		local dx, _ = lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.time_y, '  •  ')
-
-		x = x + dx
-
-		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, x, widget.metadata.time_y, lib.microsecs_to_string(widget.metadata.len))
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, widget.metadata.pos_x, widget.metadata.pos_y, lib.microsecs_to_string(widget.metadata.pos))
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.RIGHT, widget.metadata.len_x, widget.metadata.len_y, '  •  ')
+		lib.draw_text(cr, lib.fonts.caption, lib.halign.LEFT, widget.metadata.len_x, widget.metadata.len_y, lib.microsecs_to_string(widget.metadata.len))
 	end
 
 	-- Destroy cairo context
