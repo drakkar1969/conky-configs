@@ -86,6 +86,8 @@ widget.items[2] = {
 ---------------------------------------
 -- DISK widget
 ---------------------------------------
+local partition = '/home'
+
 widget.items[3] = {
 	heading = {
 		label = 'DISK'
@@ -94,8 +96,8 @@ widget.items[3] = {
 		step = 9,
 		mark_width = 12,
 		mark_thickness = 5,
-		label = '${fs_used_perc /home}%',
-		value = '${fs_used_perc /home}',
+		label = '${fs_used_perc '..partition..'}%',
+		value = '${fs_used_perc '..partition..'}',
 		value_max = 100,
 	},
 	text = {
