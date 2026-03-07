@@ -319,6 +319,10 @@ function conky_mouse(event)
 		if event.type == 'button_down' then
 			widget.button.is_down = true
 		elseif event.type == 'button_up' and widget.button.is_down then
+			if weather.lat == nil or weather.lon == nil then
+				update_coordinates()
+			end
+
 			update_weather()
 
 			widget.button.is_down = false
