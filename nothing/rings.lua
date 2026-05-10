@@ -116,7 +116,7 @@ widget.items[3] = {
 -- WIFI widget
 ---------------------------------------
 local interface = 'wlp0s20f3'
-local wifi_max = 36000
+local wifi_max = 67000
 
 widget.items[4] = {
 	heading = {
