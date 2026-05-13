@@ -170,12 +170,16 @@ function update_coordinates()
 		handle:close()
 
 		-- Decode location data from json
-		local data = json.decode(str)
+		if str and str ~= '' then
+			local data = json.decode(str)
 
-		weather.lat = ((data and data[1]) and data[1].lat)
-		weather.lon = ((data and data[1]) and data[1].lon)
+			weather.lat = ((data and data[1]) and data[1].lat)
+			weather.lon = ((data and data[1]) and data[1].lon)
 
-		widget.weather.location = ((data and data[1]) and data[1].name or '')
+			widget.weather.location = ((data and data[1]) and data[1].name or '')
+		else
+			widget.weather.location = ''
+		end
 	else
 		widget.weather.location = ''
 	end
