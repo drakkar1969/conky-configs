@@ -20,7 +20,8 @@ local accent_color = nil
 ------------------------------------------------------------------------------
 local weather = {
 	app_id = nil,
-	city = 'Krakow,PL',
+	city = 'Kyiv',
+	country = 'UA',
 	lat = nil,
 	lon = nil,
 	check_interval = 900
@@ -46,7 +47,7 @@ local widget = {
 		icon_size = 64,
 		location = '',
 		description = '',
-		temperature = 'n/a',
+		temperature = '',
 		feels_like = '',
 		update = ''
 	},
@@ -163,7 +164,7 @@ function update_coordinates()
 		local json = require('dkjson')
 
 		-- Download location data
-		local url = 'api.openweathermap.org/geo/1.0/direct?q='..weather.city..'&appid='..weather.app_id
+		local url = 'api.openweathermap.org/geo/1.0/direct?q='..weather.city..','..weather.country..'&appid='..weather.app_id
 
 		local handle = io.popen('curl -s "'..url..'"')
 		local str = handle:read('*a')
@@ -178,10 +179,10 @@ function update_coordinates()
 
 			widget.weather.location = ((data and data[1]) and data[1].name or '')
 		else
-			widget.weather.location = ''
+			widget.weather.location = weather.city
 		end
 	else
-		widget.weather.location = ''
+		widget.weather.location = weather.city
 	end
 end
 
@@ -200,27 +201,31 @@ function update_weather()
 		handle:close()
 
 		-- Decode weather data from json
-		local data = json.decode(str)
+		if str and str ~= '' then
+			local data = json.decode(str)
 
-		widget.weather.description = ((data and data.weather) and data.weather[1].main or '')
-		widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5))..'°C' or 'n/a')
-		widget.weather.feels_like = ((data and data.main and data.main.feels_like) and 'Feels like '..tostring(math.floor(tonumber(data.main.feels_like) + 0.5))..'°C' or '')
+			widget.weather.description = ((data and data.weather) and data.weather[1].main or 'No data')
+			widget.weather.temperature = ((data and data.main and data.main.temp) and tostring(math.floor(tonumber(data.main.temp) + 0.5))..'°C' or '--°C')
+			widget.weather.feels_like = ((data and data.main and data.main.feels_like) and 'Feels like '..tostring(math.floor(tonumber(data.main.feels_like) + 0.5))..'°C' or 'Feels like --°C')
 
-		local icon = ((data and data.weather) and data.weather[1].icon)
-		widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or '')
+			local icon = ((data and data.weather) and data.weather[1].icon)
+			widget.weather.icon = (icon and string.gsub(conky_config, 'weather.conf', 'weather/'..icon..'.png') or string.gsub(conky_config, 'weather.conf', 'weather/error.png'))
 
-		print('NOTHING: Weather data updated at '..os.date('%Y-%m-%d %H:%M:%S'))
+			widget.weather.update = 'Last check '..os.date('%H:%M')
+		else
+			widget.weather.description = 'No data'
+			widget.weather.temperature = '--°C'
+			widget.weather.feels_like = 'Feels like --°C'
+			widget.weather.icon = string.gsub(conky_config, 'weather.conf', 'weather/error.png')
+			widget.weather.update = 'Check failed '..os.date('%H:%M')
+		end
 	else
-		widget.weather.description = ''
-		widget.weather.temperature = 'n/a'
-		widget.weather.feels_like = ''
-		widget.weather.icon = ''
-		widget.weather.update = ''
-
-		print('NOTHING: ERROR: No weather data ('..os.date('%Y-%m-%d %H:%M:%S')..')')
+		widget.weather.description = 'No data'
+		widget.weather.temperature = '--°C'
+		widget.weather.feels_like = 'Feels like --°C'
+		widget.weather.icon = string.gsub(conky_config, 'weather.conf', 'weather/error.png')
+		widget.weather.update = 'Check failed '..os.date('%H:%M')
 	end
-
-	widget.weather.update = 'Last check '..os.date('%H:%M')
 end
 
 ------------------------------------------------------------------------------
