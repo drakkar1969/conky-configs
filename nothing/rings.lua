@@ -2,7 +2,6 @@
 -- LUA MODULES
 ------------------------------------------------------------------------------
 require('cairo')
-require('cairo_xlib')
 
 package.path = package.path..';'..string.gsub(conky_config, 'rings.conf', '?.lua')
 local lib = require('common')
@@ -236,12 +235,10 @@ end
 function conky_main()
 	local updates = tonumber(conky_parse('${updates}'))
 
-	if conky_window == nil then return end
-
 	if updates < 2 then return end
 
 	-- Create cairo context
-	local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, conky_window.width, conky_window.height)
+	local cs = conky_surface()
 
 	local cr = cairo_create(cs)
 
@@ -285,5 +282,4 @@ function conky_main()
 
 	-- Destroy cairo context
 	cairo_destroy(cr)
-	cairo_surface_destroy(cs)
 end
