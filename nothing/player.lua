@@ -21,7 +21,7 @@ local accent_color = nil
 local named_players = {
 	['Lollypop'] = { rank = 2 },
 	['com.github.neithern.g4music'] = { rank = 1, alias = 'Gapless' },
-	['Riff'] = { rank = 1, alias = 'Spotify' }
+	['dev.diegovsky.Riff'] = { rank = 1, alias = 'Spotify' }
 }
 
 local icons = {
